@@ -1,0 +1,3 @@
+<div>
+    LOADING...
+</div><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/livewire/admin/user-management/table-placeholder.blade.php ENDPATH**/ ?>

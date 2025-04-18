@@ -1,0 +1,1 @@
+<flux:input wire:model.live="search" placeholder="Search Users" clearable />
