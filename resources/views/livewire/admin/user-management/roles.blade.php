@@ -23,30 +23,36 @@
     </div>
 
     <!-- Show Roles Table -->
-    <flux:checkbox.group>
-    <flux:table :paginate="$this->roles" class="mt-3">
-        <flux:table.columns>
-            <flux:table.column class="w-0 overflow-hidden p-0 m-0">
-                <flux:checkbox.all
-                    :x-show="($this->roles->count() <= 3)?true:false"
-                />
-            </flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
-            <flux:table.column>Permissions</flux:table.column>
-            <flux:table.column></flux:table.column>
-        </flux:table.columns>
+    <div class="relative">
+        <flux:checkbox.group>
+        <flux:table :paginate="$this->roles" class="mt-3" wire:loading.class="opacity-50" wire:target="create,update,delete,deleteSelected,search,sort">
+            <flux:table.columns>
+                <flux:table.column class="w-0 overflow-hidden p-0 m-0">
+                    <flux:checkbox.all
+                        :x-show="($this->roles->count() <= 3)?true:false"
+                    />
+                </flux:table.column>
+                <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
+                <flux:table.column>Permissions</flux:table.column>
+                <flux:table.column></flux:table.column>
+            </flux:table.columns>
 
-        <flux:table.rows>
-            @forelse ($this->roles as $role)
-                <x-admin.user-management.roles.row :$role />
-            @empty
-                <flux:table.row>
-                    <flux:table.cell class="whitespace-nowrap">No user-defined roles in database.</flux:table.cell>
-                </flux:table.row>                
-            @endforelse
-        </flux:table.rows>
-    </flux:table>
-    </flux:checkbox.group>
+            <flux:table.rows>
+                @forelse ($this->roles as $role)
+                    <x-admin.user-management.roles.row :$role />
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell class="whitespace-nowrap">No user-defined roles in database.</flux:table.cell>
+                    </flux:table.row>                
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+        </flux:checkbox.group>
+
+        <div class="absolute inset-0 flex" wire:loading wire:target="create,update,delete,deleteSelected,search,sort">
+            <flux:icon.loading class="size-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+        </div>
+    </div>
 
     <!-- Add/Edit Role Form -->
     <x-admin.user-management.roles.form-modal />

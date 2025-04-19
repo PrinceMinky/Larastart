@@ -23,29 +23,35 @@
     </div>
 
     <!-- Show Permissions Table -->
-    <flux:checkbox.group>
-    <flux:table :paginate="$this->permissions" class="mt-3">
-        <flux:table.columns>
-            <flux:table.column class="w-0 overflow-hidden p-0 m-0">
-                <flux:checkbox.all
-                    :x-show="($this->permissions->count() <= 0)?true:false"
-                />
-            </flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
-            <flux:table.column></flux:table.column>
-        </flux:table.columns>
+    <div class="relative">
+        <flux:checkbox.group>
+        <flux:table :paginate="$this->permissions" class="mt-3" wire:loading.class="opacity-50" wire:target="create,update,delete,deleteSelected,search,sort">
+            <flux:table.columns>
+                <flux:table.column class="w-0 overflow-hidden p-0 m-0">
+                    <flux:checkbox.all
+                        :x-show="($this->permissions->count() <= 0)?true:false"
+                    />
+                </flux:table.column>
+                <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
+                <flux:table.column></flux:table.column>
+            </flux:table.columns>
 
-        <flux:table.rows>
-            @forelse ($this->permissions as $permission)
-                <x-admin.user-management.permissions.row :$permission />
-            @empty
-                <flux:table.row>
-                    <flux:table.cell colspan="3">No permissions added.</flux:table.cell>
-                </flux:table.row>
-            @endforelse
-        </flux:table.rows>
-    </flux:table>
-    </flux:checkbox.group>
+            <flux:table.rows>
+                @forelse ($this->permissions as $permission)
+                    <x-admin.user-management.permissions.row :$permission />
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell colspan="3">No permissions added.</flux:table.cell>
+                    </flux:table.row>
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+        </flux:checkbox.group>
+        
+        <div class="absolute inset-0 flex" wire:loading wire:target="create,update,delete,deleteSelected,search,sort">
+            <flux:icon.loading class="size-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+        </div>
+    </div>
 
     <!-- Add/Edit Permission Form -->
     <x-admin.user-management.permissions.form-modal />
