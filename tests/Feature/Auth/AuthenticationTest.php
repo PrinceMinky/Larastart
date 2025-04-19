@@ -12,11 +12,26 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('users can authenticate using the login screen', function () {
+test('users can authenticate with their email using the login screen', function () {
     $user = User::factory()->create();
 
     $response = Livewire::test(Login::class)
         ->set('email', $user->email)
+        ->set('password', 'password')
+        ->call('login');
+
+    $response
+        ->assertHasNoErrors()
+        ->assertRedirect(route('dashboard', absolute: false));
+
+    $this->assertAuthenticated();
+});
+
+test('users can authenticate with their username using the login screen', function () {
+    $user = User::factory()->create();
+
+    $response = Livewire::test(Login::class)
+        ->set('email', $user->username)
         ->set('password', 'password')
         ->call('login');
 

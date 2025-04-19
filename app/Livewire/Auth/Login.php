@@ -16,7 +16,7 @@ use Livewire\Component;
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
-    #[Validate('required|string|email')]
+    #[Validate('required|string')]
     public string $email = '';
 
     #[Validate('required|string')]
@@ -30,20 +30,25 @@ class Login extends Component
     public function login(): void
     {
         $this->validate();
-
+    
         $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+    
+        $credentials = [
+            filter_var($this->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username' => $this->email,
+            'password' => $this->password,
+        ];
+    
+        if (! Auth::attempt($credentials, $this->remember)) {
             RateLimiter::hit($this->throttleKey());
-
+    
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
-
+    
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
-
+    
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
@@ -61,6 +66,8 @@ class Login extends Component
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
+
+
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }

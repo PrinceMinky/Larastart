@@ -48,13 +48,14 @@
 
             <flux:menu>
                 <flux:menu.radio.group>
-                    <flux:profile
-                        :href="route('dashboard')"
-                        :name="auth()->user()->name"
-                        avatar:color="auto"
-                        :chevron="false"
-                        class="w-full"
-                    />
+                    <div class="flex items-center gap-2">
+                        <flux:avatar :name="auth()->user()->name" color="auto" />
+            
+                        <div class="flex flex-col gap-0">
+                            <flux:heading>{{ auth()->user()->name }}</flux:heading>
+                            <flux:text class="text-xs">{{ auth()->user()->username }}</flux:text>
+                        </div>
+                    </div>
                 </flux:menu.radio.group>
 
                 <flux:menu.separator />
