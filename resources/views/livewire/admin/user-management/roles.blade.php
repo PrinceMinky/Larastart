@@ -44,7 +44,7 @@
                     <x-admin.user-management.roles.row :$role />
                 @empty
                     <flux:table.row>
-                        <flux:table.cell class="whitespace-nowrap">No user-defined roles in database.</flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap" colspan="4">No user-defined roles in database.</flux:table.cell>
                     </flux:table.row>                
                 @endforelse
             </flux:table.rows>
