@@ -14,10 +14,12 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Title;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+#[Title('Permissions Management')]
 #[Layout('components.layouts.admin')]
 class Permissions extends BaseComponent
 {

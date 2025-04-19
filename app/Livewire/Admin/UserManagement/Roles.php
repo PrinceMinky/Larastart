@@ -12,10 +12,14 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Title;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+
+#[Title('Roles Management')]
 #[Layout('components.layouts.admin')]
 class Roles extends BaseComponent
 {

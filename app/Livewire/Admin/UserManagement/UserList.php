@@ -15,9 +15,11 @@ use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 
+#[Title('User Management')]
 #[Layout('components.layouts.admin')]
 class UserList extends BaseComponent
 {

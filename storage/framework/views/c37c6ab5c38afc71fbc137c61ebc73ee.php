@@ -1,4 +1,4 @@
-<!--[if BLOCK]><![endif]--><?php if($this->permissions()->count() !== 0): ?>
+<!--[if BLOCK]><![endif]--><?php if($this->roles()->count() !== 0): ?>
 <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'export','icon' => 'archive-box-arrow-down']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

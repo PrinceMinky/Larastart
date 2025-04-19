@@ -30,9 +30,9 @@
         <flux:table :paginate="$this->roles" class="mt-3" wire:loading.class="opacity-50" wire:target="create,update,delete,deleteSelected,search,sort">
             <flux:table.columns>
                 <flux:table.column class="w-0 overflow-hidden p-0 m-0">
-                    <flux:checkbox.all
-                        :x-show="($this->roles->count() <= 3)?true:false"
-                    />
+                    @if($this->roles->count() >= 4)
+                        <flux:checkbox.all />
+                    @endif
                 </flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
                 <flux:table.column>Permissions</flux:table.column>
