@@ -10,6 +10,7 @@ use App\Traits\WithModal;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -172,6 +173,22 @@ class UserList extends BaseComponent
 
         $this->reset('selectedUserIds');
         $this->resetAndCloseModal();
+    }
+
+    public function impersonate($id): void
+    {
+        $this->authorize('impersonate users');
+
+        $user = User::findOrFail($id);
+        Auth::loginUsingId($user->id);
+
+        $this->toast([
+            'heading' => 'Impersonating User',
+            'text' => 'You are now logged in as user: ' . $user->name,
+            'variant' => 'success',
+        ]);
+
+        $this->redirectRoute('dashboard', navigate: true);
     }
 
     private function loadUserData($id = null): void

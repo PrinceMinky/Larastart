@@ -20,7 +20,7 @@ class RoleAndPermissionTableSeeder extends Seeder
 
             'view admin dashboard',
 
-            'view users', 'create users', 'edit users', 'delete users',
+            'view users', 'create users', 'edit users', 'delete users','impersonate users',
             'view roles', 'create roles', 'edit roles', 'delete roles',
             'view permissions', 'create permissions', 'edit permissions', 'delete permissions',
         ];

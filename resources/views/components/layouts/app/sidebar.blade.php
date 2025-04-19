@@ -18,7 +18,7 @@
                     <flux:navlist.item icon="home" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                @canany(['manage users', 'manage roles', 'manage permissions'])
+                @canany(['view users', 'view roles', 'view permissions'])
                 <flux:navlist.group :heading="__('User Management')" :expandable="true" :expanded="request()->routeIs('admin.user.*')">
                     <flux:navlist.item icon="users" :href="route('admin.user.index')" :current="request()->routeIs('admin.user.index')" wire:navigate>{{ __('All Users') }}</flux:navlist.item>
                     <flux:navlist.item icon="user-group" :href="route('admin.user.role')" :current="request()->routeIs('admin.user.role')" wire:navigate>{{ __('Roles') }}</flux:navlist.item>

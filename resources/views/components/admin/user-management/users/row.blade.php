@@ -33,6 +33,12 @@
             <flux:button icon="ellipsis-horizontal" size="sm" />
 
             <flux:menu>
+                @if(! $user->hasRole('Super Admin'))
+                    @can('impersonate users')
+                        <flux:menu.item icon="key" wire:click="impersonate({{ $user->id }})">Impersonate User</flux:menu.item>
+                    @endcan
+                @endif
+
                 <flux:menu.item icon="pencil" wire:click="showForm({{ $user->id }})">Edit User</flux:menu.item>
                 
                 @if(! $user->hasRole('Super Admin'))
