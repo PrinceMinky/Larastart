@@ -29,9 +29,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('dashboard', AdminDashboard::class)->name('dashboard')->can('view admin dashboard');
 
         // User Management
-        Route::get('user-management', UserList::class)->name('user.index')->can('view user management');
-        Route::get('user-management/roles', Roles::class)->name('user.role')->can('view roles management');
-        Route::get('user-management/permissions', Permissions::class)->name('user.permission')->can('view permissions management');
+        Route::get('user-management', UserList::class)->name('user.index')->can('view users');
+        Route::get('user-management/roles', Roles::class)->name('user.role')->can('view roles');
+        Route::get('user-management/permissions', Permissions::class)->name('user.permission')->can('view permissions');
     });
 });
 

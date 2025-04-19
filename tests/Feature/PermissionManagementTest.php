@@ -10,8 +10,8 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('user with correct permissions can access permissions screen', function () {
     $role = Role::create(['name' => 'Admin']);
-    Permission::create(['name' => 'view permissions management']);
-    $role->syncPermissions('view permissions management');
+    Permission::create(['name' => 'view permissions']);
+    $role->syncPermissions('view permissions');
 
     $user = User::factory()->create();
     $user->assignRole('Admin');
