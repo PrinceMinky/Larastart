@@ -168,6 +168,11 @@ class Roles extends BaseComponent
         $this->selectedPermissions = $role->permissions->pluck('name')->toArray();
     }
 
+    public function export()
+    {
+        return Role::toCsv();
+    }
+
     public function render(): View
     {
         return view('livewire.admin.user-management.roles');

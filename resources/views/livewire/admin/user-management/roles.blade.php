@@ -19,6 +19,8 @@
         
         <div class="flex gap-2">
             <x-admin.user-management.roles.multiple-actions />
+
+            <x-admin.user-management.roles.export-button />
         </div>
     </div>
 

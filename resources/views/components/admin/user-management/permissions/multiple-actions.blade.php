@@ -8,4 +8,6 @@
     <form wire:submit="deleteSelected">
         <flux:button type="submit" variant="danger" wire:target="deleteSelected">Delete</flux:button>
     </form>
+
+    <flux:separator vertical class="my-2" />
 </div>

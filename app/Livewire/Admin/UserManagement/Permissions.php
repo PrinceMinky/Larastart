@@ -332,6 +332,11 @@ class Permissions extends BaseComponent
         $this->createResource = true;
     }
 
+    public function export()
+    {
+        return Permission::toCsv();
+    }
+
     public function render(): View
     {
         return view('livewire.admin.user-management.permissions');

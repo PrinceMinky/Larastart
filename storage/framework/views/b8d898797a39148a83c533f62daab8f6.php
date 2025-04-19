@@ -63,4 +63,25 @@
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
     </form>
+
+    <?php if (isset($component)) { $__componentOriginalc481942d30cc0ab06077963cf20a45e8 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc481942d30cc0ab06077963cf20a45e8 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::separator','data' => ['vertical' => true,'class' => 'my-2']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::separator'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['vertical' => true,'class' => 'my-2']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc481942d30cc0ab06077963cf20a45e8)): ?>
+<?php $attributes = $__attributesOriginalc481942d30cc0ab06077963cf20a45e8; ?>
+<?php unset($__attributesOriginalc481942d30cc0ab06077963cf20a45e8); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc481942d30cc0ab06077963cf20a45e8)): ?>
+<?php $component = $__componentOriginalc481942d30cc0ab06077963cf20a45e8; ?>
+<?php unset($__componentOriginalc481942d30cc0ab06077963cf20a45e8); ?>
+<?php endif; ?>
 </div><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/admin/user-management/roles/multiple-actions.blade.php ENDPATH**/ ?>

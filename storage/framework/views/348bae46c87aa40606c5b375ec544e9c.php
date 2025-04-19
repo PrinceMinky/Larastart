@@ -112,6 +112,27 @@
 <?php $component = $__componentOriginalc00485de3c75ac5ec79d7f0f803d87f8; ?>
 <?php unset($__componentOriginalc00485de3c75ac5ec79d7f0f803d87f8); ?>
 <?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginale3d1882c3f909840c032423e47ba3c21 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale3d1882c3f909840c032423e47ba3c21 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin.user-management.roles.export-button','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('admin.user-management.roles.export-button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale3d1882c3f909840c032423e47ba3c21)): ?>
+<?php $attributes = $__attributesOriginale3d1882c3f909840c032423e47ba3c21; ?>
+<?php unset($__attributesOriginale3d1882c3f909840c032423e47ba3c21); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale3d1882c3f909840c032423e47ba3c21)): ?>
+<?php $component = $__componentOriginale3d1882c3f909840c032423e47ba3c21; ?>
+<?php unset($__componentOriginale3d1882c3f909840c032423e47ba3c21); ?>
+<?php endif; ?>
         </div>
     </div>
 

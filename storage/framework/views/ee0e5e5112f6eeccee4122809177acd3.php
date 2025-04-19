@@ -112,6 +112,27 @@
 <?php $component = $__componentOriginal6893be50e1bda36745e66e27df623c4d; ?>
 <?php unset($__componentOriginal6893be50e1bda36745e66e27df623c4d); ?>
 <?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginala2064dd5457041afc2933386037ba160 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginala2064dd5457041afc2933386037ba160 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin.user-management.permissions.export-button','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('admin.user-management.permissions.export-button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginala2064dd5457041afc2933386037ba160)): ?>
+<?php $attributes = $__attributesOriginala2064dd5457041afc2933386037ba160; ?>
+<?php unset($__attributesOriginala2064dd5457041afc2933386037ba160); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginala2064dd5457041afc2933386037ba160)): ?>
+<?php $component = $__componentOriginala2064dd5457041afc2933386037ba160; ?>
+<?php unset($__componentOriginala2064dd5457041afc2933386037ba160); ?>
+<?php endif; ?>
         </div>
     </div>
 

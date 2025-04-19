@@ -185,6 +185,11 @@ class UserList extends BaseComponent
         $this->isSuperAdmin = $user->hasRole('Super Admin');
     }
 
+    public function export()
+    {
+        return User::toCsv();
+    }
+
     public function render(): View
     {
         return view('livewire.admin.user-management.index');

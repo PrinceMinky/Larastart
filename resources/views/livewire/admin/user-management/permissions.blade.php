@@ -19,6 +19,8 @@
         
         <div class="flex gap-2">
             <x-admin.user-management.permissions.multiple-actions />
+
+            <x-admin.user-management.permissions.export-button />
         </div>
     </div>
 
