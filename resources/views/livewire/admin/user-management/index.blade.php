@@ -26,7 +26,11 @@
     <flux:checkbox.group>
     <flux:table :paginate="$this->users" class="mt-3">
         <flux:table.columns>
-            <flux:table.column class="w-0 overflow-hidden p-0 m-0"><flux:checkbox.all /></flux:table.column>
+            <flux:table.column class="w-0 overflow-hidden p-0 m-0">
+                <flux:checkbox.all
+                    :x-show="($this->users->count() <= 1)?true:false"
+                />
+            </flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'date_of_birth'" :direction="$sortDirection" wire:click="sort('date_of_birth')">Age</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'email'" :direction="$sortDirection" wire:click="sort('email')">Email</flux:table.column>

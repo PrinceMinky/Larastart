@@ -155,16 +155,17 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-0 overflow-hidden p-0 m-0']); ?><?php if (isset($component)) { $__componentOriginal56d1ee5891d66f2938e3231b69d1ee2c = $component; } ?>
+<?php $component->withAttributes(['class' => 'w-0 overflow-hidden p-0 m-0']); ?>
+                <?php if (isset($component)) { $__componentOriginal56d1ee5891d66f2938e3231b69d1ee2c = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal56d1ee5891d66f2938e3231b69d1ee2c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::checkbox.all','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::checkbox.all','data' => ['xShow' => ($this->permissions->count() <= 0)?true:false]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::checkbox.all'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
+<?php $component->withAttributes(['x-show' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(($this->permissions->count() <= 0)?true:false)]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal56d1ee5891d66f2938e3231b69d1ee2c)): ?>
@@ -174,7 +175,8 @@
 <?php if (isset($__componentOriginal56d1ee5891d66f2938e3231b69d1ee2c)): ?>
 <?php $component = $__componentOriginal56d1ee5891d66f2938e3231b69d1ee2c; ?>
 <?php unset($__componentOriginal56d1ee5891d66f2938e3231b69d1ee2c); ?>
-<?php endif; ?> <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal5c727a82f5e7858d0ad7f1030e4c25e8)): ?>
 <?php $attributes = $__attributesOriginal5c727a82f5e7858d0ad7f1030e4c25e8; ?>
