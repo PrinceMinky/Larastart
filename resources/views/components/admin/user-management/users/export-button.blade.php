@@ -1,3 +1,3 @@
 @if($this->users()->count() !== 0)
-<flux:button wire:click="export" icon="archive-box-arrow-down">Export</flux:button>
+<flux:button wire:confirm="Are you sure you wish to download this file?" wire:click="export" icon="archive-box-arrow-down">Export</flux:button>
 @endif
