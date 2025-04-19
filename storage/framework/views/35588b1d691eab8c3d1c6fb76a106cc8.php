@@ -37,16 +37,16 @@
 
             <?php if (isset($component)) { $__componentOriginal6cdb42459f68d5ce2e97131ae988e57c = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6cdb42459f68d5ce2e97131ae988e57c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::brand','data' => ['href' => ''.e(route('home')).'','name' => 'Larastart']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::brand','data' => ['href' => ''.e(route('home')).'','name' => ''.e(config('app.name')).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::brand'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['href' => ''.e(route('home')).'','name' => 'Larastart']); ?>
+<?php $component->withAttributes(['href' => ''.e(route('home')).'','name' => ''.e(config('app.name')).'']); ?>
                  <?php $__env->slot('logo', null, []); ?> 
-                    <div class="size-6 rounded shrink-0 bg-accent text-accent-foreground flex items-center justify-center"><i class="font-serif font-bold">L</i></div>
+                    <div class="size-6 rounded shrink-0 bg-accent text-accent-foreground flex items-center justify-center"><i class="font-serif font-bold"><?php echo e(first_letter(config('app.name'))); ?></i></div>
                  <?php $__env->endSlot(); ?>
              <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

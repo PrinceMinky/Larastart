@@ -7,9 +7,9 @@
         <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <flux:brand href="{{ route('home') }}" name="Larastart">
+            <flux:brand href="{{ route('home') }}" name="{{ config('app.name') }}">
                 <x-slot name="logo">
-                    <div class="size-6 rounded shrink-0 bg-accent text-accent-foreground flex items-center justify-center"><i class="font-serif font-bold">L</i></div>
+                    <div class="size-6 rounded shrink-0 bg-accent text-accent-foreground flex items-center justify-center"><i class="font-serif font-bold">{{ first_letter(config('app.name')) }}</i></div>
                 </x-slot>
             </flux:brand>
 
