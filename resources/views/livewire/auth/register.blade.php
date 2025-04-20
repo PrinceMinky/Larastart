@@ -43,6 +43,13 @@
             selectable-header
         />
 
+        <!-- Country -->
+        <flux:select wire:model="country" placeholder="Choose Country" variant="listbox" searchable label="Country">
+            @foreach (App\Enums\Country::cases() as $country)
+                <flux:select.option value="{{ $country->value }}">{{ $country->label() }}</flux:select.option>
+            @endforeach
+        </flux:select>
+
         <!-- Password -->
         <flux:input
             wire:model="password"

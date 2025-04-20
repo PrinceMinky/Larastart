@@ -1,13 +1,13 @@
 <section>
-    <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('Dashboard') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __('Welcome to your dashboard!') }}</flux:subheading>
-        <flux:separator variant="subtle" />
-    </div>
-    
-    @can('view admin dashboard')
-    <flux:card class="mb-5">
-        <flux:button :href="route('admin.dashboard')">Admin Dashboard</flux:button>
-    </flux:card>
-    @endcan
+    <!-- Display heading -->
+    <x-page-heading>
+        <x-slot name="heading">{{ __('Dashboard') }}</x-slot>
+        <x-slot name="subheading">{{ __('Welcome to your dashboard!') }}</x-slot>
+
+        <x-slot name="actions">
+            @can('view admin dashboard')
+                <flux:button :href="route('admin.dashboard')">Admin Dashboard</flux:button>
+            @endcan
+        </x-slot>
+    </x-page-heading>
 </section>

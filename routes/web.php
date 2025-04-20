@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\UserSearch;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\UserManagement\Permissions;
 use App\Livewire\Admin\UserManagement\Roles;
@@ -8,17 +9,19 @@ use App\Livewire\Dashboard;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Livewire\UserProfile;
 use App\Livewire\Welcome;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Welcome::class)->name('home');
 
-Route::get('dashboard', Dashboard::class)
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
+
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
+
+    Route::get('users', UserSearch::class)->name('users.list');
+    Route::get('profile/{username}', UserProfile::class)->name('profile.show');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');

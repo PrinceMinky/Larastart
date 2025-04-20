@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Enums\Country;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Carbon;
@@ -11,6 +12,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 #[Layout('components.layouts.auth')]
 class Register extends Component
@@ -22,6 +25,8 @@ class Register extends Component
     public string $email = '';
 
     public ?Carbon $date_of_birth;
+
+    public Country $country;
 
     public string $password = '';
 
@@ -37,6 +42,7 @@ class Register extends Component
             'username' => ['required', 'string', 'max:30', 'regex:/^[a-zA-Z0-9._-]+$/', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'date_of_birth' => ['required', Rule::date()->before(today()->subYears(13))],
+            'country' => ['required'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -45,9 +51,9 @@ class Register extends Component
 
         event(new Registered(($user = User::create($validated))));
 
-        Auth::login($user);
-
         $this->assignRole($user);
+
+        Auth::login($user);
 
         $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
@@ -55,9 +61,40 @@ class Register extends Component
     private function assignRole(User $user)
     {
         if ($user->id === 1) {
+            $this->createRolesAndPermissions();
             $user->assignRole('Super Admin');
         } else {
             $user->assignRole('User');
+        }
+    }
+
+    private function createRolesAndPermissions()
+    {
+        $roles = ['Super Admin', 'Admin', 'User'];
+        $permissions = [
+            'view dashboard',
+
+            'view admin dashboard',
+
+            'view users', 'create users', 'edit users', 'delete users','impersonate users',
+            'view roles', 'create roles', 'edit roles', 'delete roles',
+            'view permissions', 'create permissions', 'edit permissions', 'delete permissions',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        foreach ($roles as $roleName) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
+
+            if ($roleName === 'Super Admin') {
+                $role->givePermissionTo(Permission::all());
+            } elseif ($roleName === 'Admin') {
+                $role->givePermissionTo(['view dashboard', 'view admin dashboard']);
+            } elseif ($roleName === 'User') {
+                $role->givePermissionTo(['view dashboard']);
+            }
         }
     }
 }

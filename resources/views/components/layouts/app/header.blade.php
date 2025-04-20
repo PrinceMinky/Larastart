@@ -18,6 +18,10 @@
             <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </flux:navbar.item>
+
+            <flux:navlist.item icon="users" :href="route('users.list')" :current="request()->routeIs('users.list')" wire:navigate>
+                {{ __('Users') }}
+            </flux:navlist.item>
             @endauth
         </flux:navbar>
 
@@ -87,20 +91,22 @@
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')">
+                @auth
                 <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
                 </flux:navlist.item>
+
+                <flux:navlist.item icon="users" :href="route('users.list')" :current="request()->routeIs('users.list')" wire:navigate>
+                    {{ __('Users') }}
+                </flux:navlist.item>
+                @endauth
             </flux:navlist.group>
         </flux:navlist>
-
-        <flux:spacer />
-
-        
     </flux:sidebar>
 
     <flux:container>
         {{ $slot }}
-    </flux:flux:container>
+    </flux:container>
     @fluxScripts
 </body>
 </html>

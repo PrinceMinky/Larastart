@@ -16,7 +16,8 @@ class UserTableSeeder extends Seeder
             'name' => 'Super Admin',
             'username' => 'super.admin',
             'email' => 'super.admin@larastart.com',
-            'date_of_birth' => '1988-09-03',
+            'date_of_birth' => '1988-03-09',
+            'country' => 'GB',
             'email_verified_at' => now(),
             'password' => 'password',
         ]);
@@ -27,6 +28,7 @@ class UserTableSeeder extends Seeder
             'username' => 'awesome.admin',
             'email' => 'awesome.admin@larastart.com',
             'date_of_birth' => '1988-10-25',
+            'country' => 'GB',
             'email_verified_at' => now(),
             'password' => 'password',
         ]);

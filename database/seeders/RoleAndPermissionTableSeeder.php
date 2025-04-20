@@ -16,8 +16,6 @@ class RoleAndPermissionTableSeeder extends Seeder
         // Array of roles and permissions
         $roles = ['Super Admin', 'Admin', 'User'];
         $permissions = [
-            'view dashboard',
-
             'view admin dashboard',
 
             'view users', 'create users', 'edit users', 'delete users','impersonate users',

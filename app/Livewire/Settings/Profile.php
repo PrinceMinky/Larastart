@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Enums\Country;
 use App\Livewire\BaseComponent;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,8 @@ class Profile extends BaseComponent
     public string $email = '';
 
     public $date_of_birth = '';
+    
+    public Country $country;
 
     /**
      * Mount the component.
@@ -30,6 +33,7 @@ class Profile extends BaseComponent
         $this->username = Auth::user()->username;
         $this->email = Auth::user()->email;
         $this->date_of_birth = Auth::user()->date_of_birth;
+        $this->country = Auth::user()->country;
     }
 
     /**
@@ -54,6 +58,7 @@ class Profile extends BaseComponent
             ],
 
             'date_of_birth' => ['required', Rule::date()->before(today()->subYears(13))],
+            'country' => ['required'],
         ]);
 
         $user->fill($validated);

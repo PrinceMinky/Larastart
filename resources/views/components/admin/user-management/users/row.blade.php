@@ -16,9 +16,11 @@
         </div>
     </flux:table.cell>
 
-    <flux:table.cell class="whitespace-nowrap">{{ $user->date_of_birth->age }}</flux:table.cell>
-
     <flux:table.cell class="whitespace-nowrap">{{ $user->email }}</flux:table.cell>
+
+    <flux:table.cell class="whitespace-nowrap">{{ $user->country->label() }}</flux:table.cell>
+
+    <flux:table.cell class="whitespace-nowrap">{{ $user->date_of_birth->age }}</flux:table.cell>
 
     <flux:table.cell class="whitespace-nowrap">
         @foreach ($user->roles as $role)

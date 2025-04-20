@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\UserManagement;
 
+use App\Enums\Country;
 use App\Livewire\BaseComponent;
 use App\Models\User;
 use App\Traits\Searchable;
@@ -35,6 +36,8 @@ class UserList extends BaseComponent
     public string $email = '';
 
     public ?Carbon $date_of_birth;
+    
+    public Country $country;
 
     public string $password = '';
 
@@ -104,8 +107,8 @@ class UserList extends BaseComponent
             'username' => $this->username,
             'email' => $this->email,
             'date_of_birth' => $this->date_of_birth,
+            'country' => $this->country,
             'password' => ($this->password) ? $this->password : 'password',
-            'roles' => $this->roles,
         ]);
         $user->syncRoles($this->roles);
 
@@ -129,7 +132,7 @@ class UserList extends BaseComponent
             'username' => $this->username,
             'email' => $this->email,
             'date_of_birth' => $this->date_of_birth,
-            'roles' => $this->roles,
+            'country' => $this->country,
         ], !empty($this->password) ? ['password' => $this->password] : []));
 
         $user->syncRoles($this->roles);
@@ -200,6 +203,7 @@ class UserList extends BaseComponent
         $this->username = $user->username;
         $this->email = $user->email;
         $this->date_of_birth = $user->date_of_birth;
+        $this->country = $user->country;
         $this->roles = $user->getRoleNames();
         $this->isSuperAdmin = $user->hasRole('Super Admin');
     }
