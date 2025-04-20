@@ -1,1 +1,0 @@
-<?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-post/index.blade.php ENDPATH**/ ?>

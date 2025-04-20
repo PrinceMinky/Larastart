@@ -19,7 +19,7 @@ class UserProfile extends BaseComponent
     
     public function mount($username)
     {
-        $this->user = User::whereUsername($username)->with(['posts','following','followers'])->first();
+        $this->user = User::whereUsername($username)->with(['posts','following','followers'])->firstOrFail();
     }
 
     public function showModal($type)

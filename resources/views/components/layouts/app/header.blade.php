@@ -15,10 +15,6 @@
 
         <flux:navbar class="-mb-px max-lg:hidden">
             @auth
-            <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </flux:navbar.item>
-
             <flux:navlist.item icon="users" :href="route('users.list')" :current="request()->routeIs('users.list')" wire:navigate>
                 {{ __('Users') }}
             </flux:navlist.item>
@@ -40,6 +36,18 @@
             </flux:navbar.item>
         </flux:navbar>
         @endguest
+
+        @auth
+        <flux:navbar class="-mb-px max-lg:hidden">
+            @if(auth()->user()->followers()->wherePivot('status', 'pending')->count() > 0)
+            <flux:navbar.item badge="{{ auth()->user()->followers()->wherePivot('status', 'pending')->count() }}" :href="route('follow.requests')" :current="request()->routeIs('follow.requests')" wire:navigate>
+                {{ __('Follow Requests') }}
+            </flux:navbar.item>
+            
+            <flux:separator vertical />
+            @endif
+        </flux:navbar>
+        @endauth
 
         <!-- Desktop User Menu -->
         @auth

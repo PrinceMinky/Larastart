@@ -330,25 +330,24 @@
             </div>
         </form>
         <?php else: ?>
-            <?php if (isset($component)) { $__componentOriginalabb65eb3f7b300f1428fbf3ee2951306 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalabb65eb3f7b300f1428fbf3ee2951306 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.truncate-text','data' => ['text' => $post->content]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('truncate-text'); ?>
+            <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => ['size' => 'lg']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::text'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['text' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($post->content)]); ?>
-<?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['size' => 'lg']); ?><?php echo e($post->content); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginalabb65eb3f7b300f1428fbf3ee2951306)): ?>
-<?php $attributes = $__attributesOriginalabb65eb3f7b300f1428fbf3ee2951306; ?>
-<?php unset($__attributesOriginalabb65eb3f7b300f1428fbf3ee2951306); ?>
+<?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
+<?php $attributes = $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
+<?php unset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginalabb65eb3f7b300f1428fbf3ee2951306)): ?>
-<?php $component = $__componentOriginalabb65eb3f7b300f1428fbf3ee2951306; ?>
-<?php unset($__componentOriginalabb65eb3f7b300f1428fbf3ee2951306); ?>
+<?php if (isset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
+<?php $component = $__componentOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
+<?php unset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
 <?php endif; ?>
         <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 

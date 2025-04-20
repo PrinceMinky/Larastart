@@ -1,1 +1,0 @@
-components.user-post.index

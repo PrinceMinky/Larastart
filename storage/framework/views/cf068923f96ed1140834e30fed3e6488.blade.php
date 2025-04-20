@@ -1,1 +1,0 @@
-components.user-profile.status-form

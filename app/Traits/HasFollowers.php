@@ -10,8 +10,13 @@ trait HasFollowers
 {
     public function follow($userId)
     {
+        if (Auth::user()->id === $userId) {
+            return;
+        }
+
         $user = User::findOrFail($userId);
         $status = $user->is_private ? 'pending' : 'accepted';
+
     
         Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
     }

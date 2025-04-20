@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('post_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->foreignId('post_id')->constrained('posts')->onDelete('cascade'); // Cascade delete
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
-            // Ensure a user can only like a post once
-            $table->unique(['post_id', 'user_id']);
         });
     }
 
@@ -27,6 +24,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::table('post_likes', function (Blueprint $table) {
+            $table->dropForeign(['post_id']);
+            $table->dropForeign(['user_id']);
+        });    
+        
+        Schema::dropIfExists('post_likes');
     }
 };

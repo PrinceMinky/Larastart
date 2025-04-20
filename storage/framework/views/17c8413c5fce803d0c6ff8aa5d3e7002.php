@@ -1,1 +1,0 @@
-components.user-post.index<?php /**PATH C:\Users\micha\Herd\larastart\storage\framework\views/b072c3c2904f654b22b071099a03d611.blade.php ENDPATH**/ ?>

@@ -6,6 +6,7 @@ use App\Livewire\Admin\UserManagement\Permissions;
 use App\Livewire\Admin\UserManagement\Roles;
 use App\Livewire\Admin\UserManagement\UserList;
 use App\Livewire\Dashboard;
+use App\Livewire\FollowRequests;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Privacy;
@@ -20,6 +21,8 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::get('dashboard', Dashboard::class)->name('dashboard');
+
+    Route::get('follow-requests', FollowRequests::class)->name('follow.requests');
 
     Route::get('users', UserSearch::class)->name('users.list');
     Route::get('profile/{username}', UserProfile::class)->name('profile.show');

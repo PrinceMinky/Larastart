@@ -23,6 +23,10 @@ class Privacy extends BaseComponent
             'is_private' => $this->privacy
         ]);
 
+        if (!$this->privacy) { 
+            Auth::user()->followers()->update(['status' => 'accepted']);
+        }
+
         $this->toast([
             'heading' => 'Privacy updated',
             'text' => 'Your privacy settings have been updated',

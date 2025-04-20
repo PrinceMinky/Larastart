@@ -62,7 +62,7 @@
             </div>
         </form>
         @else
-            <x-truncate-text :text="$post->content" />
+            <flux:text size="lg">{{ $post->content }}</flux:text>
         @endif
 
         <div class="flex justify-end gap-2">

@@ -28,8 +28,9 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars); ?>
 
-<!--[if BLOCK]><![endif]--><?php if(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
-    <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<!--[if BLOCK]><![endif]--><?php if(auth()->user()->id !== $user->id): ?>
+    <?php if(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
+        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -48,8 +49,8 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-<?php elseif(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'pending')->exists()): ?>
-    <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+    <?php elseif(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'pending')->exists()): ?>
+        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -68,8 +69,8 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-<?php elseif($user->isFollowing(auth()->user()) && !$user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
-    <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+    <?php elseif($user->isFollowing(auth()->user()) && !$user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
+        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'follow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -88,8 +89,8 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-<?php else: ?>
-    <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+    <?php else: ?>
+        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'follow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -108,4 +109,5 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 <?php endif; ?><!--[if ENDBLOCK]><![endif]--><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-profile/follow-button.blade.php ENDPATH**/ ?>

@@ -1,1 +1,0 @@
-components.user-profile.post<?php /**PATH C:\Users\micha\Herd\larastart\storage\framework\views/ecd3abca481c01de45c5b12f3608491f.blade.php ENDPATH**/ ?>

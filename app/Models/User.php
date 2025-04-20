@@ -139,6 +139,12 @@ class User extends Authenticatable
         $this->following()->detach($user->id);
     }
 
+    public function followRequests()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id')
+            ->wherePivot('status', 'pending');
+    }
+
     public function likedPosts()
     {
         return $this->belongsToMany(Post::class, 'post_likes')->withTimestamps();
