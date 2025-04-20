@@ -5,7 +5,9 @@
         <x-slot name="subheading">{{ __('Permissions that are assigned to use groups.') }}</x-slot>
 
         <x-slot name="actions">
+            @can('create permissions')
             <flux:button wire:click="showForm" wire:target="showForm" variant="primary">Add Permission</flux:button>
+            @endcan
         </x-slot>
     </x-page-heading>
 
@@ -29,11 +31,13 @@
         <flux:checkbox.group>
         <flux:table :paginate="$this->permissions" class="mt-3" wire:loading.class="opacity-50" wire:target="create,update,delete,deleteSelected,search,sort">
             <flux:table.columns>
+                @can('delete permissions')
                 <flux:table.column class="w-0 overflow-hidden p-0 m-0">
                     @if($this->permissions->count() != 0)
                         <flux:checkbox.all />
                     @endif
                 </flux:table.column>
+                @endcan
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>

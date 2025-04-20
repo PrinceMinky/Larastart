@@ -169,7 +169,7 @@ class UserList extends BaseComponent
         User::whereIn('id', $this->selectedUserIds)->delete();
 
         $this->toast([
-            'heading' => 'User deleted',
+            'heading' => 'Users deleted',
             'text' => 'Users have successfully been deleted.',
             'variant' => 'danger',
         ]);
@@ -210,6 +210,8 @@ class UserList extends BaseComponent
 
     public function export()
     {
+        $this->authorize('export users');
+        
         return User::toCsv();
     }
 

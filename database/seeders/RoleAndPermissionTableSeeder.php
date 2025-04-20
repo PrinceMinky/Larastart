@@ -18,9 +18,9 @@ class RoleAndPermissionTableSeeder extends Seeder
         $permissions = [
             'view admin dashboard',
 
-            'view users', 'create users', 'edit users', 'delete users','impersonate users',
-            'view roles', 'create roles', 'edit roles', 'delete roles',
-            'view permissions', 'create permissions', 'edit permissions', 'delete permissions',
+            'view users', 'create users', 'edit users', 'delete users', 'export users','impersonate users',
+            'view roles', 'create roles', 'edit roles', 'delete roles', 'export roles',
+            'view permissions', 'create permissions', 'edit permissions', 'delete permissions', 'export permissions'
         ];
 
         // Create permissions if they don't exist
@@ -36,9 +36,13 @@ class RoleAndPermissionTableSeeder extends Seeder
             if ($roleName === 'Super Admin') {
                 $role->givePermissionTo(Permission::all());
             } elseif ($roleName === 'Admin') {
-                $role->givePermissionTo(['view dashboard', 'view admin dashboard']);
-            } elseif ($roleName === 'User') {
-                $role->givePermissionTo(['view dashboard']);
+                $role->givePermissionTo([
+                    'view admin dashboard',
+
+                    'view users', 'create users', 'edit users',
+                    'view roles', 
+                    'view permissions',
+                ]);
             }
         }
     }

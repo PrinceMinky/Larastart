@@ -1,4 +1,5 @@
 <div class="flex gap-2 items-center" x-show="$wire.selectedUserIds.length > 0">
+    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete users')): ?>
     <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -84,4 +85,5 @@
 <?php $component = $__componentOriginalc481942d30cc0ab06077963cf20a45e8; ?>
 <?php unset($__componentOriginalc481942d30cc0ab06077963cf20a45e8); ?>
 <?php endif; ?>
+    <?php endif; ?>
 </div><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/admin/user-management/users/multiple-actions.blade.php ENDPATH**/ ?>

@@ -174,6 +174,8 @@ class Roles extends BaseComponent
 
     public function export()
     {
+        $this->authorize('export roles');
+        
         return Role::toCsv();
     }
 

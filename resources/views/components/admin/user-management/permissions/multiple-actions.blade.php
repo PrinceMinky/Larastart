@@ -1,4 +1,5 @@
 <div class="flex gap-2 items-center" x-show="$wire.selectedPermissionIds.length > 0">
+    @can('delete permissions')
     <flux:text>
         <span x-text="$wire.selectedPermissionIds.length"></span> selected
     </flux:text>
@@ -10,4 +11,5 @@
     </form>
 
     <flux:separator vertical class="my-2" />
+    @endcan
 </div>

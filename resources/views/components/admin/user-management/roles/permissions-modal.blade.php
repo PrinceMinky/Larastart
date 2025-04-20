@@ -13,7 +13,7 @@
                 $action = $parts[0] ?? '';
                 $resource = implode(' ', array_slice($parts, 1)) ?? '';
                 
-                if (in_array($action, ['create', 'edit', 'view', 'delete']) && !empty($resource)) {
+                if (in_array($action, ['create', 'edit', 'view', 'delete','export']) && !empty($resource)) {
                     $resourceGroups[$resource][] = $action;
                 } else {
                     $singlePermissions[] = $permission;

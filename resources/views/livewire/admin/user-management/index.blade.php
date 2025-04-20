@@ -5,7 +5,9 @@
         <x-slot name="subheading">{{ __('A comprehensive list of your websites users.') }}</x-slot>
 
         <x-slot name="actions">
+            @can('create users')
             <flux:button wire:click="showForm" variant="primary">Add User</flux:button>
+            @endcan
         </x-slot>
     </x-page-heading>
 
@@ -29,11 +31,13 @@
         <flux:checkbox.group>
         <flux:table :paginate="$this->users" class="relative mt-3" wire:loading.class="opacity-50" wire:target="create,update,delete,deleteSelected,search,sort">
             <flux:table.columns>
+                @can('delete users')
                 <flux:table.column class="w-0 overflow-hidden p-0 m-0">
                     @if($this->users->count() >= 2)
                         <flux:checkbox.all />
                     @endif
                 </flux:table.column>
+                @endcan
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'email'" :direction="$sortDirection" wire:click="sort('email')">Email</flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'country'" :direction="$sortDirection" wire:click="sort('country')">Country</flux:table.column>

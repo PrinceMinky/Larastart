@@ -28,7 +28,7 @@
                 $permissionAction = $permissionParts[0] ?? '';
                 $permissionResource = implode(' ', array_slice($permissionParts, 1)) ?? '';
 
-                if (in_array($permissionAction, ['create', 'edit', 'view', 'delete']) && !empty($permissionResource)) {
+                if (in_array($permissionAction, ['create', 'edit', 'view', 'delete','export']) && !empty($permissionResource)) {
                     $resourceGroups[$permissionResource][] = $permission->name;
                 } else {
                     $singlePermissions[] = $permission->name;

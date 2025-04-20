@@ -25,7 +25,7 @@ class Permissions extends BaseComponent
 {
     use Searchable, Sortable, WithModal, WithPagination;
 
-    private const ACTIONS = ['view', 'create', 'edit', 'delete'];
+    private const ACTIONS = ['view', 'create', 'edit', 'delete','export'];
 
     public $permissionId = '';
 
@@ -336,6 +336,8 @@ class Permissions extends BaseComponent
 
     public function export()
     {
+        $this->authorize('export permissions');
+        
         return Permission::toCsv();
     }
 

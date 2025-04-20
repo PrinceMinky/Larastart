@@ -1,9 +1,11 @@
 <flux:table.row :key="$user->id">
+    @can('delete users')
     <flux:table.cell class="whitespace-nowrap">
         @if(! $user->hasRole('Super Admin'))
         <flux:checkbox wire:model="selectedUserIds" value="{{ $user->id }}" />
         @endif
     </flux:table.cell>
+    @endcan
 
     <flux:table.cell class="flex items-center gap-3">
         <div class="flex items-center gap-2">
@@ -33,22 +35,30 @@
     </flux:table.cell>
 
     <flux:table.cell class="whitespace-nowrap text-right">
+        @canany(['impersonate users','edit users','delete users'])
+        @if(! $user->hasRole('Super Admin'))
         <flux:dropdown>
             <flux:button icon="ellipsis-horizontal" size="sm" />
 
             <flux:menu>
                 @if(! $user->hasRole('Super Admin') && $user->id !== auth()->user()->id)
                     @can('impersonate users')
-                        <flux:menu.item icon="key" wire:click="impersonate({{ $user->id }})">Impersonate User</flux:menu.item>
+                    <flux:menu.item icon="key" wire:click="impersonate({{ $user->id }})">Impersonate User</flux:menu.item>
                     @endcan
                 @endif
 
+                @can('edit users')
                 <flux:menu.item icon="pencil" wire:click="showForm({{ $user->id }})">Edit User</flux:menu.item>
+                @endcan
                 
                 @if(! $user->hasRole('Super Admin') && $user->id !== auth()->user()->id)
+                @can('delete users')
                 <flux:menu.item icon="trash" wire:click="showConfirmDeleteForm({{ $user->id }})" variant="danger">Delete User</flux:menu.item>
+                @endcan
                 @endif
             </flux:menu>
         </flux:dropdown>
+        @endif
+        @endcanany
     </flux:table.cell>
 </flux:table.row>
