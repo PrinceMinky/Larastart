@@ -78,4 +78,25 @@ class User extends Authenticatable
     {   
         return Auth::user()->id === $givenId;
     }
+
+    /**
+     * Determine if authenticated user is the selected user or has a specific permission.
+     * If permission is null, bypass the check.
+     */
+    public function hasAccessToUser($user, $permissions = null)
+    {
+        if ($permissions !== null) {
+            if (is_array($permissions)) {
+                foreach ($permissions as $permission) {
+                    if (Auth::user()->can($permission)) {
+                        return true;
+                    }
+                }
+            } elseif (Auth::user()->can($permissions)) {
+                return true;
+            }
+        }
+    
+        return $this->me($user->id) || !$user->is_private;
+    }
 }

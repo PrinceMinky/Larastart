@@ -8,7 +8,7 @@
             <x-user-profile.status-form />
 
             <!-- Show Posts -->
-            @if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true)
+            @if(auth()->user()->hasAccessToUser($this->user, 'view users'))
             <div class="flex flex-col gap-2">
                 @forelse ($this->posts() as $post)
                     <x-user-profile.post :$post />

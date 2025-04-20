@@ -9,6 +9,7 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['wire:key' => ''.e($post->id).'','class' => 'relative flex flex-col gap-2 group','size' => 'sm']); ?>
+        <!--[if BLOCK]><![endif]--><?php if(Auth::user()->hasAccessToUser($post->user, 'delete posts')): ?>
         <div class="absolute top-2 right-2">
             <?php if (isset($component)) { $__componentOriginal2b4bb2cd4b8f1a3c08bae49ea918b888 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2b4bb2cd4b8f1a3c08bae49ea918b888 = $attributes; } ?>
@@ -91,6 +92,7 @@
 <?php unset($__componentOriginal2b4bb2cd4b8f1a3c08bae49ea918b888); ?>
 <?php endif; ?>
         </div>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
         <div class="flex gap-2">
             <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>

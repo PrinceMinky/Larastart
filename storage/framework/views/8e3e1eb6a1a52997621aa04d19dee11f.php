@@ -46,7 +46,7 @@
 <?php endif; ?>
 
             <!-- Show Posts -->
-            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true): ?>
+            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->hasAccessToUser($this->user, 'view users')): ?>
             <div class="flex flex-col gap-2">
                 <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $this->posts(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php if (isset($component)) { $__componentOriginala13bf1da599e542c00963de35b9209a4 = $component; } ?>

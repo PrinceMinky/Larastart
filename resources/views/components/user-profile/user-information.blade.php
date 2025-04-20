@@ -6,7 +6,7 @@
         <flux:subheading>{{ $this->user->username }}</flux:subheading>
     </div>
 
-    @if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true)
+    @if(auth()->user()->hasAccessToUser($this->user, 'view users'))
     <div class="flex flex-col gap-0">
         <div class="flex justify-between w-full">
             <flux:text variant="strong">Age</flux:text>
@@ -25,7 +25,7 @@
     </div>
     @endif
 
-    @if(auth()->user()->id === $this->user->id)
+    @if(auth()->user()->me($this->user->id))
     <flux:button wire:navigate :href="route('settings.profile')" size="sm">Edit Profile</flux:button>
     @endif
 </div>

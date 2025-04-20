@@ -1,5 +1,6 @@
 <div>
     <flux:card wire:key="{{ $post->id }}" class="relative flex flex-col gap-2 group" size="sm">
+        @if(Auth::user()->hasAccessToUser($post->user, 'delete posts'))
         <div class="absolute top-2 right-2">
             <flux:dropdown position="bottom" align="end">
                 <flux:button icon="ellipsis-horizontal" size="sm" />
@@ -9,6 +10,7 @@
                 </flux:menu>
             </flux:dropdown>
         </div>
+        @endif
 
         <div class="flex gap-2">
             <flux:avatar :name="$post->user->name" color="auto" />

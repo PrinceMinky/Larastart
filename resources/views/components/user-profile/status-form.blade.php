@@ -1,6 +1,6 @@
 <div>
     <!-- Post Form -->
-    @if(auth()->user()->id === $this->user->id)
+    @if(auth()->user()->me($this->user->id))
         <div class="mb-4">
         <flux:textarea 
             x-data="{shiftPressed: false}" 

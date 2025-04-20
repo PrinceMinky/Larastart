@@ -95,7 +95,30 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?><?php echo e($user->name); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?>
+                    <?php if (isset($component)) { $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::link','data' => ['href' => route('profile.show', ['username' => $user->username]),'variant' => 'subtle','external' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::link'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('profile.show', ['username' => $user->username])),'variant' => 'subtle','external' => true]); ?>
+                    <?php echo e($user->name); ?>
+
+                     <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
+<?php $attributes = $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
+<?php unset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
+<?php $component = $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
+<?php unset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
+<?php endif; ?>
+                 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
 <?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>

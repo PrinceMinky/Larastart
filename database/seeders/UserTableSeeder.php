@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -36,6 +37,10 @@ class UserTableSeeder extends Seeder
 
         User::factory(200)->create()->each(function (User $user) {
             $user->assignRole('User');
+
+            Post::factory(rand(0, 10))->create([
+                'user_id' => $user->id
+            ]);        
         });
     }
 }

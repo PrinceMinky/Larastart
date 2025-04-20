@@ -12,7 +12,11 @@
             <flux:avatar :name="$user->name" color="auto" />
 
             <div class="flex flex-col gap-0">
-                <flux:heading>{{ $user->name }}</flux:heading>
+                <flux:heading>
+                    <flux:link :href="route('profile.show', ['username' => $user->username])" variant="subtle" :external="true">
+                    {{ $user->name }}
+                    </flux:link>
+                </flux:heading>
                 <flux:text class="text-xs">{{ $user->username }}</flux:text>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <div>
     <!-- Post Form -->
-    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->id === $this->user->id): ?>
+    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->me($this->user->id)): ?>
         <div class="mb-4">
         <?php if (isset($component)) { $__componentOriginal0ee30026125d1a66523211147b00e4dc = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0ee30026125d1a66523211147b00e4dc = $attributes; } ?>
