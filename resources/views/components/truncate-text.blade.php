@@ -3,7 +3,7 @@
 @endphp
 
 <div x-data="{ expanded: false }" class="post-content">
-    <flux:text x-show="!expanded" class="short-text">
+    <flux:text x-show="!expanded" class="break-all short-text">
         {!! $formatted['short_text'] !!}
 
         @if ($formatted['truncated'])
@@ -13,7 +13,7 @@
         @endif
     </flux:text>
     
-    <flux:text x-show="expanded" class="full-text">
+    <flux:text x-show="expanded" class="break-all">
         {!! $formatted['full_text'] !!}
     </flux:text>
 </div>

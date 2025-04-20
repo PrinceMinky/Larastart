@@ -351,81 +351,91 @@
 <?php unset($__componentOriginalabb65eb3f7b300f1428fbf3ee2951306); ?>
 <?php endif; ?>
         <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-        
-        <?php if (isset($component)) { $__componentOriginalc481942d30cc0ab06077963cf20a45e8 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalc481942d30cc0ab06077963cf20a45e8 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::separator','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::separator'); ?>
+
+        <div class="flex justify-end gap-2">
+            <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'togglePostLike('.e($post->id).')','class' => 'text-sm cursor-pointer','size' => 'sm','icon' => 'hand-thumb-up']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['wire:click' => 'togglePostLike('.e($post->id).')','class' => 'text-sm cursor-pointer','size' => 'sm','icon' => 'hand-thumb-up']); ?>
+                <?php echo e(auth()->user()->hasLiked($post) ? 'Unlike' : 'Like'); ?>
+
+             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['@click' => 'alert(\'Coming Soon...\')','class' => 'text-sm cursor-pointer','size' => 'sm','icon' => 'chat-bubble-left-ellipsis']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['@click' => 'alert(\'Coming Soon...\')','class' => 'text-sm cursor-pointer','size' => 'sm','icon' => 'chat-bubble-left-ellipsis']); ?>
+                Comment
+             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+        </div>
+
+        <!--[if BLOCK]><![endif]--><?php if($post->likes()->count() >= 1): ?>
+            <?php if (isset($component)) { $__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::card.index','data' => ['size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::card'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['size' => 'sm']); ?>
+                <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::text'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalc481942d30cc0ab06077963cf20a45e8)): ?>
-<?php $attributes = $__attributesOriginalc481942d30cc0ab06077963cf20a45e8; ?>
-<?php unset($__attributesOriginalc481942d30cc0ab06077963cf20a45e8); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalc481942d30cc0ab06077963cf20a45e8)): ?>
-<?php $component = $__componentOriginalc481942d30cc0ab06077963cf20a45e8; ?>
-<?php unset($__componentOriginalc481942d30cc0ab06077963cf20a45e8); ?>
-<?php endif; ?>
+                    Liked by 
+                    <?php if(auth()->user()->hasLiked($post)): ?>
+                        you
+                        <?php if($post->likes()->count() > 1): ?>
+                            <span wire:click="likedBy(<?php echo e($post->id); ?>)" class="cursor-pointer">
+                                and <?php echo e($post->likes()->count() - 1); ?> <?php echo e(Str::plural('other', $post->likes()->count() - 1)); ?>
 
-        <div class="flex gap-5">
-            <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => ['class' => 'flex gap-2 items-center text-xs']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::text'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'flex gap-2 items-center text-xs']); ?>
-                <?php if (isset($component)) { $__componentOriginalc97a625ce2f8a8c029c73a1ffa5332ab = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalc97a625ce2f8a8c029c73a1ffa5332ab = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.hand-thumb-up','data' => ['size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::icon.hand-thumb-up'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['size' => 'sm']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalc97a625ce2f8a8c029c73a1ffa5332ab)): ?>
-<?php $attributes = $__attributesOriginalc97a625ce2f8a8c029c73a1ffa5332ab; ?>
-<?php unset($__attributesOriginalc97a625ce2f8a8c029c73a1ffa5332ab); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalc97a625ce2f8a8c029c73a1ffa5332ab)): ?>
-<?php $component = $__componentOriginalc97a625ce2f8a8c029c73a1ffa5332ab; ?>
-<?php unset($__componentOriginalc97a625ce2f8a8c029c73a1ffa5332ab); ?>
-<?php endif; ?>
-                <?php if (isset($component)) { $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::link','data' => ['variant' => 'subtle','clase' => 'text-sm','class' => 'cursor-pointer','@click' => 'alert(\'Coming Soon...\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::link'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'subtle','clase' => 'text-sm','class' => 'cursor-pointer','@click' => 'alert(\'Coming Soon...\')']); ?>
-                    Like
+                            </span>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                    <?php else: ?>
+                        <span wire:click="likedBy(<?php echo e($post->id); ?>)" class="cursor-pointer">
+                            <?php echo e($post->likes()->count()); ?> <?php echo e(Str::plural('other', $post->likes()->count())); ?>
+
+                        </span>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                  <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
-<?php $attributes = $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
-<?php unset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
-<?php $component = $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
-<?php unset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
-<?php endif; ?>
-             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
 <?php $attributes = $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
@@ -435,69 +445,17 @@
 <?php $component = $__componentOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
 <?php unset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
 <?php endif; ?>
-
-            <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => ['class' => 'flex gap-2 items-center text-xs']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::text'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'flex gap-2 items-center text-xs']); ?>
-                <?php if (isset($component)) { $__componentOriginal6e9611292c8c65029053d5659638524a = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal6e9611292c8c65029053d5659638524a = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chat-bubble-left-ellipsis','data' => ['size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::icon.chat-bubble-left-ellipsis'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['size' => 'sm']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal6e9611292c8c65029053d5659638524a)): ?>
-<?php $attributes = $__attributesOriginal6e9611292c8c65029053d5659638524a; ?>
-<?php unset($__attributesOriginal6e9611292c8c65029053d5659638524a); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal6e9611292c8c65029053d5659638524a)): ?>
-<?php $component = $__componentOriginal6e9611292c8c65029053d5659638524a; ?>
-<?php unset($__componentOriginal6e9611292c8c65029053d5659638524a); ?>
-<?php endif; ?>
-                <?php if (isset($component)) { $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::link','data' => ['variant' => 'subtle','clase' => 'text-sm','class' => 'cursor-pointer','@click' => 'alert(\'Coming Soon...\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::link'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'subtle','clase' => 'text-sm','class' => 'cursor-pointer','@click' => 'alert(\'Coming Soon...\')']); ?>
-                    Comment
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
-<?php $attributes = $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
-<?php unset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
-<?php $component = $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
-<?php unset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
-<?php endif; ?>
              <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
-<?php $attributes = $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
-<?php unset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
+<?php if (isset($__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec)): ?>
+<?php $attributes = $__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec; ?>
+<?php unset($__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
-<?php $component = $__componentOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
-<?php unset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
+<?php if (isset($__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec)): ?>
+<?php $component = $__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec; ?>
+<?php unset($__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec); ?>
 <?php endif; ?>
-        </div>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec)): ?>
@@ -509,4 +467,160 @@
 <?php unset($__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec); ?>
 <?php endif; ?>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+
+    <?php if (isset($component)) { $__componentOriginal8cc9d3143946b992b324617832699c5f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8cc9d3143946b992b324617832699c5f = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'show-likes','class' => 'md:w-96']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::modal'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['name' => 'show-likes','class' => 'md:w-96']); ?>
+        <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => ['size' => 'lg']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::heading'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['size' => 'lg']); ?>Likes <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
+<?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
+<?php unset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
+<?php $component = $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
+<?php unset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
+<?php endif; ?>
+        
+        <div class="flex flex-col gap-3 mt-4">
+            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->likedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $like): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex gap-2">
+                    <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.index','data' => ['name' => $like->name,'color' => 'auto']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['name' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($like->name),'color' => 'auto']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $attributes = $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $component = $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+                    
+                    <div class="flex flex-col gap-0">
+                        <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::heading'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+                            <?php if (isset($component)) { $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::link','data' => ['wire:navigate' => true,'href' => route('profile.show', ['username' => $like->username]),'variant' => 'ghost','class' => 'flex gap-0 !no-underline !hover:no-underline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::link'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['wire:navigate' => true,'href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('profile.show', ['username' => $like->username])),'variant' => 'ghost','class' => 'flex gap-0 !no-underline !hover:no-underline']); ?>
+                                <?php echo e($like->name); ?>
+
+                             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
+<?php $attributes = $__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
+<?php unset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
+<?php $component = $__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477; ?>
+<?php unset($__componentOriginal54ddb5b70b37b1e1cf0f2f95e4c53477); ?>
+<?php endif; ?>
+                         <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
+<?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
+<?php unset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
+<?php $component = $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
+<?php unset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
+<?php endif; ?>
+                        <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::text'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?><?php echo e($like->username); ?> <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
+<?php $attributes = $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
+<?php unset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
+<?php $component = $__componentOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
+<?php unset($__componentOriginal0638ebfbd490c7a414275d493e14cb4e); ?>
+<?php endif; ?>
+                    </div>
+                </div>
+    
+                <div>
+                    <?php if (isset($component)) { $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.follow-button','data' => ['user' => $like]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('user-profile.follow-button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['user' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($like)]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b)): ?>
+<?php $attributes = $__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b; ?>
+<?php unset($__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b)): ?>
+<?php $component = $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b; ?>
+<?php unset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
+<?php endif; ?>
+                </div>
+            </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+        </div>
+     <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8cc9d3143946b992b324617832699c5f)): ?>
+<?php $attributes = $__attributesOriginal8cc9d3143946b992b324617832699c5f; ?>
+<?php unset($__attributesOriginal8cc9d3143946b992b324617832699c5f); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8cc9d3143946b992b324617832699c5f)): ?>
+<?php $component = $__componentOriginal8cc9d3143946b992b324617832699c5f; ?>
+<?php unset($__componentOriginal8cc9d3143946b992b324617832699c5f); ?>
+<?php endif; ?>
 </div><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-post/show.blade.php ENDPATH**/ ?>

@@ -64,24 +64,73 @@
         @else
             <x-truncate-text :text="$post->content" />
         @endif
-        
-        <flux:separator />
 
-        <div class="flex gap-5">
-            <flux:text class="flex gap-2 items-center text-xs">
-                <flux:icon.hand-thumb-up size="sm" />
-                <flux:link variant="subtle" clase="text-sm" class="cursor-pointer" @click="alert('Coming Soon...')">
-                    Like
-                </flux:link>
-            </flux:text>
+        <div class="flex justify-end gap-2">
+            <flux:button
+                wire:click="togglePostLike({{ $post->id }})"
+                class="text-sm cursor-pointer"
+                size="sm"
+                icon="hand-thumb-up"
+                >
+                {{ auth()->user()->hasLiked($post) ? 'Unlike' : 'Like' }}
+            </flux:button>
 
-            <flux:text class="flex gap-2 items-center text-xs">
-                <flux:icon.chat-bubble-left-ellipsis size="sm" />
-                <flux:link variant="subtle" clase="text-sm" class="cursor-pointer" @click="alert('Coming Soon...')">
-                    Comment
-                </flux:link>
-            </flux:text>
+            <flux:button
+                @click="alert('Coming Soon...')"
+                class="text-sm cursor-pointer"
+                size="sm"
+                icon="chat-bubble-left-ellipsis"
+                >
+                Comment
+            </flux:button>
         </div>
+
+        @if($post->likes()->count() >= 1)
+            <flux:card size="sm">
+                <flux:text>
+                    Liked by 
+                    @if(auth()->user()->hasLiked($post))
+                        you
+                        @if($post->likes()->count() > 1)
+                            <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
+                                and {{ $post->likes()->count() - 1 }} {{ Str::plural('other', $post->likes()->count() - 1) }}
+                            </span>
+                        @endif
+                    @else
+                        <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
+                            {{ $post->likes()->count() }} {{ Str::plural('other', $post->likes()->count()) }}
+                        </span>
+                    @endif
+                </flux:text>
+            </flux:card>
+        @endif
     </flux:card>
     @endforeach
+
+    <flux:modal name="show-likes" class="md:w-96">
+        <flux:heading size="lg">Likes</flux:heading>
+        
+        <div class="flex flex-col gap-3 mt-4">
+            @foreach($this->likedUsers as $like)
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex gap-2">
+                    <flux:avatar :name="$like->name" color="auto" />
+                    
+                    <div class="flex flex-col gap-0">
+                        <flux:heading>
+                            <flux:link wire:navigate :href="route('profile.show', ['username' => $like->username])" variant="ghost" class="flex gap-0 !no-underline !hover:no-underline">
+                                {{ $like->name }}
+                            </flux:link>
+                        </flux:heading>
+                        <flux:text>{{ $like->username }}</flux:text>
+                    </div>
+                </div>
+    
+                <div>
+                    <x-user-profile.follow-button :user="$like" />
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </flux:modal>
 </div>

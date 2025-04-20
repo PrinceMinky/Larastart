@@ -6,15 +6,20 @@ use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
 use App\Models\Post;
 use App\Models\User;
+use App\Traits\HasFollowers;
+use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
 
 class UserPost extends BaseComponent
 {
+    use WithModal, HasFollowers;
+
     public User $user;
     public $status = '';
     public $userId = null;
     public $editingPostId = null;
     public $editingContent = '';
+    public $likedUsers = [];
 
     public function mount()
     {
@@ -26,18 +31,18 @@ class UserPost extends BaseComponent
     {
         if ($this->userId) {
             return Post::where('user_id', $this->userId)
-                ->with('user')
+                ->with(['user', 'likes'])
                 ->latest()
                 ->get();
         }
         
         $followingIds = Auth::user()->following()
             ->wherePivot('status', 'accepted')
-            ->pluck('users.id'); 
-
+            ->pluck('users.id');
+    
         return Post::where('user_id', Auth::id()) 
             ->orWhereIn('user_id', $followingIds) 
-            ->with('user')
+            ->with(['user', 'likes'])
             ->latest() 
             ->get();
     }
@@ -114,6 +119,25 @@ class UserPost extends BaseComponent
             'text' => 'Status deleted!',
             'variant' => 'danger'
         ]);
+    }
+
+    public function togglePostLike($postId)
+    {
+        $post = Post::findOrFail($postId);
+        $user = Auth::user();
+
+        if ($user->hasLiked($post)) {
+            $user->likedPosts()->detach($post->id);
+        } else {
+            $user->likedPosts()->attach($post->id);
+        }
+    }
+
+    public function likedBy($postId)
+    {
+        $this->likedUsers = Post::find($postId)->likes()->get();
+
+        $this->resetAndShowModal('show-likes');
     }
 
     public function render()
