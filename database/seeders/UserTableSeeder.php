@@ -13,22 +13,22 @@ class UserTableSeeder extends Seeder
     public function run(): void
     {
         $superAdmin = User::create([
-            'name' => 'Super Admin',
-            'username' => 'super.admin',
-            'email' => 'super.admin@larastart.com',
+            'name' => 'Michael King',
+            'username' => 'michael.king',
+            'email' => 'michael.king@larastart.com',
             'date_of_birth' => '1988-03-09',
-            'country' => 'GB',
+            'country' => 'UKG',
             'email_verified_at' => now(),
             'password' => 'password',
         ]);
         $superAdmin->assignRole('Super Admin');
 
         $awesomeAdmin = User::create([
-            'name' => 'Awesome Admin',
-            'username' => 'awesome.admin',
-            'email' => 'awesome.admin@larastart.com',
+            'name' => 'Rachael Johnson',
+            'username' => 'rachael.johnson',
+            'email' => 'rachael.johnson@larastart.com',
             'date_of_birth' => '1988-10-25',
-            'country' => 'GB',
+            'country' => 'UKG',
             'email_verified_at' => now(),
             'password' => 'password',
         ]);
