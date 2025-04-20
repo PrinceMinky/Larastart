@@ -25,7 +25,7 @@
         <!-- Right Pane (posts etc) -->
         <div class="w-full md:w-3/4">
             <!-- Show Posts -->
-            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->hasAccessToUser($this->user, 'view users')): ?>
+            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->hasAccessToUser($this->user)): ?>
                 <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];

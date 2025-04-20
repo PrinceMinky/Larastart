@@ -6,7 +6,7 @@
         <!-- Right Pane (posts etc) -->
         <div class="w-full md:w-3/4">
             <!-- Show Posts -->
-            @if(auth()->user()->hasAccessToUser($this->user, 'view users'))
+            @if(auth()->user()->hasAccessToUser($this->user))
                 @livewire('user-post', ['userId' => $user->id])
             @else
                 <x-user-profile.private />

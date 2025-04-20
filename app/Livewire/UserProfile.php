@@ -6,8 +6,6 @@ use App\Models\User;
 use App\Livewire\BaseComponent;
 use App\Traits\HasFollowers;
 use App\Traits\WithModal;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Computed;
 
 class UserProfile extends BaseComponent
 {
