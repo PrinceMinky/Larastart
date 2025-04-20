@@ -61,6 +61,7 @@
 <?php endif; ?>
     </div>
 
+    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true): ?>
     <div class="flex flex-col gap-0">
         <div class="flex justify-between w-full">
             <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
@@ -185,8 +186,9 @@
 <?php endif; ?>
         </div>
     </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
-    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->id === $this->user->id): ?>
+    <?php if(auth()->user()->id === $this->user->id): ?>
     <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:navigate' => true,'href' => route('settings.profile'),'size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

@@ -46,7 +46,8 @@
 <?php endif; ?>
 
             <!-- Show Posts -->
-            <div class="flex flex-col gap-2 mt-4">
+            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true): ?>
+            <div class="flex flex-col gap-2">
                 <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $this->posts(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php if (isset($component)) { $__componentOriginala13bf1da599e542c00963de35b9209a4 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala13bf1da599e542c00963de35b9209a4 = $attributes; } ?>
@@ -69,7 +70,7 @@
 <?php unset($__componentOriginala13bf1da599e542c00963de35b9209a4); ?>
 <?php endif; ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->id === $this->user->id): ?>
+                    <?php if(auth()->user()->id === $this->user->id): ?>
                         <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::text','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -112,6 +113,28 @@
                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
+            <?php else: ?>
+                <?php if (isset($component)) { $__componentOriginal00ebbd91ce8537898aa962db3e8ab776 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal00ebbd91ce8537898aa962db3e8ab776 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.private','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('user-profile.private'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal00ebbd91ce8537898aa962db3e8ab776)): ?>
+<?php $attributes = $__attributesOriginal00ebbd91ce8537898aa962db3e8ab776; ?>
+<?php unset($__attributesOriginal00ebbd91ce8537898aa962db3e8ab776); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal00ebbd91ce8537898aa962db3e8ab776)): ?>
+<?php $component = $__componentOriginal00ebbd91ce8537898aa962db3e8ab776; ?>
+<?php unset($__componentOriginal00ebbd91ce8537898aa962db3e8ab776); ?>
+<?php endif; ?>
+            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
         </div>
     </div>
 </section><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/livewire/user-profile/index.blade.php ENDPATH**/ ?>

@@ -34,14 +34,40 @@
         <div class="flex flex-col gap-0">
             <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => ['class' => 'flex gap-0']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::heading'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?><?php echo e($user->name); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['class' => 'flex gap-0']); ?>
+                <?php echo e($user->name); ?>
+
+
+                <!--[if BLOCK]><![endif]--><?php if($user->is_private): ?>
+                <?php if (isset($component)) { $__componentOriginal7649f9fde3f65e39f506d39dd1ac88cb = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal7649f9fde3f65e39f506d39dd1ac88cb = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.lock-closed','data' => ['variant' => 'micro']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.lock-closed'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'micro']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal7649f9fde3f65e39f506d39dd1ac88cb)): ?>
+<?php $attributes = $__attributesOriginal7649f9fde3f65e39f506d39dd1ac88cb; ?>
+<?php unset($__attributesOriginal7649f9fde3f65e39f506d39dd1ac88cb); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal7649f9fde3f65e39f506d39dd1ac88cb)): ?>
+<?php $component = $__componentOriginal7649f9fde3f65e39f506d39dd1ac88cb; ?>
+<?php unset($__componentOriginal7649f9fde3f65e39f506d39dd1ac88cb); ?>
+<?php endif; ?>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
 <?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>

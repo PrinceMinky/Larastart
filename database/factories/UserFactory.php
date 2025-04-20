@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'country' => Country::random(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'is_private' => rand(0,1),
             'remember_token' => Str::random(10),
         ];
     }

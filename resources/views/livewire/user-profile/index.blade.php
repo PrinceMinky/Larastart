@@ -8,7 +8,8 @@
             <x-user-profile.status-form />
 
             <!-- Show Posts -->
-            <div class="flex flex-col gap-2 mt-4">
+            @if(auth()->user()->can('view users') || auth()->user()->me($this->user->id) === true || auth()->user()->me($this->user->id) === false && $this->user->is_private !== true)
+            <div class="flex flex-col gap-2">
                 @forelse ($this->posts() as $post)
                     <x-user-profile.post :$post />
                 @empty
@@ -19,6 +20,9 @@
                     @endif
                 @endforelse
             </div>
+            @else
+                <x-user-profile.private />
+            @endif
         </div>
     </div>
 </section>

@@ -9,6 +9,7 @@ use App\Traits\HasPosts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -30,6 +31,7 @@ class User extends Authenticatable
         'country',
         'profile_picture',
         'password',
+        'is_private',
     ];
 
     /**
@@ -54,6 +56,7 @@ class User extends Authenticatable
             'date_of_birth' => 'datetime',
             'password' => 'hashed',
             'country' => Country::class,
+            'is_private' => 'boolean',
         ];
     }
 
@@ -66,5 +69,13 @@ class User extends Authenticatable
             ->explode(' ')
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+    /**
+     * Determine if authenticated user is selected user
+     */
+    public function me($givenId)
+    {   
+        return Auth::user()->id === $givenId;
     }
 }

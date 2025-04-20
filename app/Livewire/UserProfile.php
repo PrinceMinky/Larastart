@@ -21,11 +21,15 @@ class UserProfile extends BaseComponent
     #[Computed]
     public function posts()
     {
-        return Post::with('user')->latest()->get();
+        return Post::with('user')->whereUserId($this->user->id)->latest()->get();
     }
     
     public function post()
     {
+        if (! Auth::user()->me($this->user->id)) {
+            abort(403, 'You are not authorized to post on this profile.');
+        }
+        
         $this->validate([
             'status' => 'required|min:3'
         ]);

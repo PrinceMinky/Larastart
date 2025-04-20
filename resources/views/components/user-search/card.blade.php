@@ -5,7 +5,13 @@
         <flux:avatar :name="$user->name" color="auto" />
         
         <div class="flex flex-col gap-0">
-            <flux:heading>{{ $user->name }}</flux:heading>
+            <flux:heading class="flex gap-0">
+                {{ $user->name }}
+
+                @if($user->is_private)
+                <flux:icon.lock-closed variant="micro" />
+                @endif
+            </flux:heading>
             <flux:text>{{ $user->username }}</flux:text>
         </div>
     </div>
