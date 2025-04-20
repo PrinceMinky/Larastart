@@ -19,7 +19,7 @@ class UserSearch extends Component
     {
         $query = User::query();
 
-        $query->with('posts');
+        $query->with(['posts','following','followers']);
 
         $this->applySearch($query, ['name','username','email']);
 

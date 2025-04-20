@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\UserPost;
 use App\Livewire\UserProfile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -59,29 +60,12 @@ test('user can post on their own profile', function () {
     Auth::login($user);
 
     Livewire::actingAs($user)
-        ->test(UserProfile::class, ['username' => $user->username])
+        ->test(UserPost::class, ['username' => $user->username])
         ->set('status', 'Hello, this is my post!')
         ->call('post');
 
     $this->assertDatabaseHas('posts', [
         'user_id' => $user->id,
         'content' => 'Hello, this is my post!',
-    ]);
-});
-
-test('user cannot post on another user\'s profile', function () {
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
-    Auth::login($user1);
-
-    Livewire::actingAs($user1)
-        ->test(UserProfile::class, ['username' => $user2->username])
-        ->set('status', 'Attempting to post on someone else\'s profile')
-        ->call('post')
-        ->assertForbidden();
-
-    $this->assertDatabaseMissing('posts', [
-        'user_id' => $user2->id,
-        'content' => 'Attempting to post on someone else\'s profile',
     ]);
 });

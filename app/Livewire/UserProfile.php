@@ -5,60 +5,70 @@ namespace App\Livewire;
 use App\Models\User;
 use App\Livewire\BaseComponent;
 use App\Models\Post;
+use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 
 class UserProfile extends BaseComponent
 {
+    use WithModal;
+
     public User $user;
-    public $status = '';
+
+    public $modalType = '';
     
     public function mount($username)
     {
-        $this->user = User::whereUsername($username)->with('posts')->first();
+        $this->user = User::whereUsername($username)->with(['posts','following','followers'])->first();
+    }
+
+    public function follow($userId)
+    {
+        $user = User::findOrFail($userId);
+        $status = $user->is_private ? 'pending' : 'accepted';
+    
+        Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
     }
     
-    #[Computed]
-    public function posts()
+    public function unfollow($userId)
     {
-        return Post::with('user')->whereUserId($this->user->id)->latest()->get();
-    }
-    
-    public function post()
-    {
-        if (! Auth::user()->me($this->user->id)) {
-            abort(403, 'You are not authorized to post on this profile.');
+        $user = User::findOrFail($userId);
+        Auth::user()->following()->detach($user->id);
+        
+        if ($this->getFollowing()->isEmpty()) {
+            $this->resetAndCloseModal();
         }
-        
-        $this->validate([
-            'status' => 'required|min:3'
-        ]);
-        
-        Auth::user()->posts()->create([
-            'content' => $this->status
-        ]);
-        
-        $this->reset('status');
-        
-        $this->toast([
-            'text' => 'Status updated!',
-            'variant' => 'success'
-        ]);
     }
-    
-    public function deletePost($postId)
+
+    #[Computed]
+    public function followingCount()
     {
-        $this->authorize('delete posts');
-        
-        $post = Auth::user()->posts()->whereId($postId)->firstOrFail();
-        $post->delete();
-        
-        $this->toast([
-            'text' => 'Status deleted!',
-            'variant' => 'danger'
-        ]);
+        return $this->user->following->where('pivot.status', 'accepted')->count();
     }
-    
+
+    #[Computed]
+    public function followerCount()
+    {
+        return $this->user->followers->where('pivot.status', 'accepted')->count();
+    }
+
+    public function getFollowers()
+    {
+        return $this->user->followers->where('pivot.status', 'accepted');
+    }
+
+    public function getFollowing()
+    {
+        return $this->user->following->where('pivot.status', 'accepted');
+    }
+
+    public function showModal($type)
+    {
+        $this->modalType = $type;
+
+        $this->resetAndShowModal('showModal');
+    }
+        
     public function render()
     {
         return view('livewire.user-profile.index');

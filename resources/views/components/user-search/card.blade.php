@@ -23,6 +23,16 @@
                 Posts
                 <flux:badge size="sm">{{ $user->posts->count() }}</flux:badge>
             </flux:text>
+            
+            <flux:text size="sm" variant="subtle" class="flex flex-col items-start">
+                Following
+                <flux:badge size="sm">{{ $user->following->where('pivot.status', 'accepted')->count() }}</flux:badge>
+            </flux:text>
+            
+            <flux:text size="sm" variant="subtle" class="flex flex-col items-start">
+                Followers
+                <flux:badge size="sm">{{ $user->followers->where('pivot.status', 'accepted')->count() }}</flux:badge>
+            </flux:text>
         </div>
     </div>
 </flux:card>

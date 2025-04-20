@@ -1,0 +1,1 @@
+components.user-profile.status-form<?php /**PATH C:\Users\micha\Herd\larastart\storage\framework\views/cf068923f96ed1140834e30fed3e6488.blade.php ENDPATH**/ ?>

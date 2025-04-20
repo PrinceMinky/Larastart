@@ -37,10 +37,25 @@ class UserTableSeeder extends Seeder
 
         User::factory(200)->create()->each(function (User $user) {
             $user->assignRole('User');
-
+        
+            // Create random posts
             Post::factory(rand(0, 10))->create([
                 'user_id' => $user->id
-            ]);        
+            ]);
+        
+            // Get a random subset of users to follow
+            $randomUsersToFollow = User::where('id', '!=', $user->id) // Exclude self
+                                       ->inRandomOrder()
+                                       ->limit(rand(5, 20)) // Random number of follows
+                                       ->get();
+        
+            foreach ($randomUsersToFollow as $followingUser) {
+                $status = $followingUser->is_private ? 'pending' : 'accepted'; // Private users require approval
+                
+                $user->following()->syncWithoutDetaching([
+                    $followingUser->id => ['status' => $status]
+                ]);
+            }
         });
     }
 }
