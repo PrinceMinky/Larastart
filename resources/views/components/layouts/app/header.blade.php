@@ -39,8 +39,8 @@
 
         @auth
         <flux:navbar class="-mb-px max-lg:hidden">
-            @if(auth()->user()->followers()->wherePivot('status', 'pending')->count() > 0)
-            <flux:navbar.item badge="{{ auth()->user()->followers()->wherePivot('status', 'pending')->count() }}" :href="route('follow.requests')" :current="request()->routeIs('follow.requests')" wire:navigate>
+            @if($followRequestCount > 0)
+            <flux:navbar.item badge="{{ $followRequestCount }}" :href="route('follow.requests')" :current="request()->routeIs('follow.requests')" wire:navigate>
                 {{ __('Follow Requests') }}
             </flux:navbar.item>
             

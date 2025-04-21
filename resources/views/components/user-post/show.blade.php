@@ -85,20 +85,20 @@
             </flux:button>
         </div>
 
-        @if($post->likes()->count() >= 1)
+        @if($post->likes_count >= 1)
             <flux:card size="sm">
                 <flux:text>
                     Liked by 
                     @if(auth()->user()->hasLiked($post))
                         you
-                        @if($post->likes()->count() > 1)
+                        @if($post->likes_count > 1)
                             <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
-                                and {{ $post->likes()->count() - 1 }} {{ Str::plural('other', $post->likes()->count() - 1) }}
+                                and {{ $post->likes_count - 1 }} {{ Str::plural('other', $post->likes_count - 1) }}
                             </span>
                         @endif
                     @else
                         <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
-                            {{ $post->likes()->count() }} {{ Str::plural('other', $post->likes()->count()) }}
+                            {{ $post->likes_count }} {{ Str::plural('other', $post->likes_count) }}
                         </span>
                     @endif
                 </flux:text>
@@ -111,23 +111,23 @@
         <flux:heading size="lg">Likes</flux:heading>
         
         <div class="flex flex-col gap-3 mt-4">
-            @foreach($this->likedUsers as $like)
+            @foreach($this->likedUsers as $user)
             <div class="flex items-center justify-between gap-2">
                 <div class="flex gap-2">
-                    <flux:avatar :name="$like->name" color="auto" />
+                    <flux:avatar :name="$user->name" color="auto" />
                     
                     <div class="flex flex-col gap-0">
                         <flux:heading>
-                            <flux:link wire:navigate :href="route('profile.show', ['username' => $like->username])" variant="ghost" class="flex gap-0 !no-underline !hover:no-underline">
-                                {{ $like->name }}
+                            <flux:link wire:navigate :href="route('profile.show', ['username' => $user->username])" variant="ghost" class="flex gap-0 !no-underline !hover:no-underline">
+                                {{ $user->name }}
                             </flux:link>
                         </flux:heading>
-                        <flux:text>{{ $like->username }}</flux:text>
+                        <flux:text>{{ $user->username }}</flux:text>
                     </div>
                 </div>
     
                 <div>
-                    <x-user-profile.follow-button :user="$like" />
+                    <x-user-profile.follow-button :user="$user" />
                 </div>
             </div>
             @endforeach

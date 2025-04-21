@@ -225,17 +225,17 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['class' => '-mb-px max-lg:hidden']); ?>
-            <?php if(auth()->user()->followers()->wherePivot('status', 'pending')->count() > 0): ?>
+            <?php if($followRequestCount > 0): ?>
             <?php if (isset($component)) { $__componentOriginalc4cbba45ed073bedf6d5fbbd59b58e48 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc4cbba45ed073bedf6d5fbbd59b58e48 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navbar.item','data' => ['badge' => ''.e(auth()->user()->followers()->wherePivot('status', 'pending')->count()).'','href' => route('follow.requests'),'current' => request()->routeIs('follow.requests'),'wire:navigate' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navbar.item','data' => ['badge' => ''.e($followRequestCount).'','href' => route('follow.requests'),'current' => request()->routeIs('follow.requests'),'wire:navigate' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navbar.item'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['badge' => ''.e(auth()->user()->followers()->wherePivot('status', 'pending')->count()).'','href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('follow.requests')),'current' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request()->routeIs('follow.requests')),'wire:navigate' => true]); ?>
+<?php $component->withAttributes(['badge' => ''.e($followRequestCount).'','href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('follow.requests')),'current' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request()->routeIs('follow.requests')),'wire:navigate' => true]); ?>
                 <?php echo e(__('Follow Requests')); ?>
 
              <?php echo $__env->renderComponent(); ?>

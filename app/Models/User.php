@@ -124,6 +124,10 @@ class User extends Authenticatable
 
     public function isFollowing(User $user)
     {
+        if ($this->relationLoaded('following')) {
+            return $this->following->contains('id', $user->id);
+        }
+        
         return $this->following()->where('following_id', $user->id)->exists();
     }
     
@@ -150,8 +154,18 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class, 'post_likes')->withTimestamps();
     }
 
-    public function hasLiked(Post $post)
+    public function hasLiked($post)
     {
-        return $this->likedPosts()->where('post_id', $post->id)->exists();
+        $postId = $post instanceof \Illuminate\Database\Eloquent\Model ? $post->id : $post;
+        
+        if ($post instanceof \Illuminate\Database\Eloquent\Model && $post->relationLoaded('likes')) {
+            return $post->likes->contains('id', $this->id);
+        }
+        
+        if (!isset($this->likedPostsCache)) {
+            $this->likedPostsCache = $this->likedPosts()->pluck('post_id')->toArray();
+        }
+        
+        return in_array($postId, $this->likedPostsCache);
     }
 }

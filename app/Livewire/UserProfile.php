@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Livewire\BaseComponent;
 use App\Traits\HasFollowers;
 use App\Traits\WithModal;
+use Illuminate\Support\Facades\Auth;
 
 class UserProfile extends BaseComponent
 {
@@ -17,7 +18,32 @@ class UserProfile extends BaseComponent
     
     public function mount($username)
     {
-        $this->user = User::whereUsername($username)->with(['posts','following','followers'])->firstOrFail();
+        $this->user = User::whereUsername($username)
+            ->with(['posts', 'following', 'followers'])
+            ->firstOrFail();
+            
+        if (Auth::check()) {
+            Auth::user()->load(['following' => function($query) {
+                $query->where('following_id', $this->user->id);
+            }]);
+        }
+    }
+
+    public function getLikedUsersProperty()
+    {
+        $users = User::whereIn('id', $this->post->likes->pluck('user_id'))
+                    ->with(['followers' => function($query) {
+                        $query->where('follower_id', auth()->id);
+                    }])
+                    ->get();
+        
+        if (Auth::check()) {
+            Auth::user()->load(['following' => function($query) use ($users) {
+                $query->whereIn('following_id', $users->pluck('id'));
+            }]);
+        }
+        
+        return $users;
     }
 
     public function showModal($type)

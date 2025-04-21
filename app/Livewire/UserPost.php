@@ -20,31 +20,48 @@ class UserPost extends BaseComponent
     public $editingPostId = null;
     public $editingContent = '';
     public $likedUsers = [];
+    private $postsCache = null;
 
+    // In your UserPost class
     public function mount()
     {
         $this->user = Auth::user();
+        
+        // Pre-cache liked posts for the authenticated user
+        if (Auth::check()) {
+            Auth::user()->likedPostsCache = Auth::user()->likedPosts()->pluck('post_id')->toArray();
+        }
     }
 
     #[Computed]
     public function posts()
     {
-        if ($this->userId) {
-            return Post::where('user_id', $this->userId)
-                ->with(['user', 'likes'])
-                ->latest()
-                ->get();
+        if ($this->postsCache !== null) {
+            return $this->postsCache;
         }
         
-        $followingIds = Auth::user()->following()
-            ->wherePivot('status', 'accepted')
-            ->pluck('users.id');
-    
-        return Post::where('user_id', Auth::id()) 
-            ->orWhereIn('user_id', $followingIds) 
-            ->with(['user', 'likes'])
-            ->latest() 
+        $query = Post::query();
+        
+        if ($this->userId) {
+            $query->where('user_id', $this->userId);
+        } else {
+            $followingIds = Auth::user()->following()
+                ->wherePivot('status', 'accepted')
+                ->pluck('users.id');
+                
+            $query->where('user_id', Auth::id())
+                  ->orWhereIn('user_id', $followingIds);
+        }
+        
+        $this->postsCache = $query->with([
+                'user:id,name,username',
+                'likes:id,name,username,post_likes.post_id'
+            ])
+            ->withCount('likes')
+            ->latest()
             ->get();
+            
+        return $this->postsCache;
     }
 
     public function post()
@@ -125,18 +142,35 @@ class UserPost extends BaseComponent
     {
         $post = Post::findOrFail($postId);
         $user = Auth::user();
-
+    
         if ($user->hasLiked($post)) {
             $user->likedPosts()->detach($post->id);
         } else {
             $user->likedPosts()->attach($post->id);
         }
+        
+        $this->postsCache = null;
+        
+        if (isset($user->likedPostsCache)) {
+            unset($user->likedPostsCache);
+        }
     }
 
     public function likedBy($postId)
     {
-        $this->likedUsers = Post::find($postId)->likes()->get();
+        $post = Post::findOrFail($postId);   
 
+        $likedUsers = $post->likes()
+            ->with(['followers' => function($query) {
+                $query->where('follower_id', auth()->id);
+            }])
+            ->get();
+        
+        Auth::user()->load(['following' => function($query) use ($likedUsers) {
+            $query->whereIn('following_id', $likedUsers->pluck('id'));
+        }]);
+        
+        $this->likedUsers = $likedUsers;
         $this->resetAndShowModal('show-likes');
     }
 

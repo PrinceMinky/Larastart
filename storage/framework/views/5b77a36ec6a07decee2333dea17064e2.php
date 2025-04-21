@@ -28,8 +28,30 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars); ?>
 
-<!--[if BLOCK]><![endif]--><?php if(auth()->user()->id !== $user->id): ?>
-    <?php if(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
+<!--[if BLOCK]><![endif]--><?php if(auth()->check() && auth()->user()->id !== $user->id): ?>
+    <?php
+        // Check if the follow status is preloaded
+        $isUserFollowing = false;
+        $followStatus = null;
+        
+        if (auth()->user()->relationLoaded('following')) {
+            $isUserFollowing = auth()->user()->following->contains('id', $user->id);
+        }
+        
+        if ($user->relationLoaded('followers')) {
+            $follower = $user->followers->where('id', auth()->id())->first();
+            if ($follower) {
+                $followStatus = $follower->pivot->status ?? null;
+            }
+        }
+        
+        $isFollowingCurrentUser = false;
+        if (auth()->user()->relationLoaded('followers')) {
+            $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
+        }
+    ?>
+
+    <!--[if BLOCK]><![endif]--><?php if($isUserFollowing && $followStatus === 'accepted'): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -49,7 +71,7 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-    <?php elseif(auth()->user()->isFollowing($user) && $user->followers()->where('follower_id', auth()->id())->where('status', 'pending')->exists()): ?>
+    <?php elseif($isUserFollowing && $followStatus === 'pending'): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -69,7 +91,7 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-    <?php elseif($user->isFollowing(auth()->user()) && !$user->followers()->where('follower_id', auth()->id())->where('status', 'accepted')->exists()): ?>
+    <?php elseif($isFollowingCurrentUser && !$isUserFollowing): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'follow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
