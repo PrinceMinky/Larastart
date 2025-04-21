@@ -1,11 +1,13 @@
 <?php
 
-use App\Livewire\BlockUser;
-use App\Livewire\UserPost;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
+use App\Livewire\UserPost;
+use App\Livewire\BlockUser;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Livewire\UserProfile;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 

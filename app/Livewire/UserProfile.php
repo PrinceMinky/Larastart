@@ -7,6 +7,7 @@ use App\Livewire\BaseComponent;
 use App\Traits\HasFollowers;
 use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 
 class UserProfile extends BaseComponent
 {
@@ -31,6 +32,26 @@ class UserProfile extends BaseComponent
                 $query->where('following_id', $this->user->id);
             }]);
         }
+    }
+
+    #[Computed]
+    public function mutualFollowers()
+    {
+        if (!Auth::check()) {
+            return collect(); // Return an empty collection if not authenticated
+        }
+
+        // Get IDs of people following the profile owner
+        $profileFollowers = $this->user->followers->pluck('id');
+
+        // Get IDs of people following the authenticated user
+        $authFollowers = Auth::user()->followers->pluck('id');
+
+        // Find mutual followers
+        $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
+
+        // Retrieve mutual followers' user instances
+        return User::whereIn('id', $mutualFollowerIds)->get();
     }
 
     public function getLikedUsersProperty()

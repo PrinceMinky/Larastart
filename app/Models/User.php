@@ -160,6 +160,21 @@ class User extends Authenticatable
             ->wherePivot('status', 'pending');
     }
 
+    public function getMutualFollowersProperty()
+    {
+        if (!Auth::check()) {
+            return collect(); 
+        }
+
+        $profileFollowers = $this->user->followers->pluck('id');
+
+        $authFollowers = Auth::user()->followers->pluck('id');
+
+        $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
+
+        return User::whereIn('id', $mutualFollowerIds)->get();
+    }
+
     public function likedPosts()
     {
         return $this->belongsToMany(Post::class, 'post_likes')->withTimestamps();
