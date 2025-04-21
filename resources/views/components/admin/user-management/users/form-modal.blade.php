@@ -72,6 +72,9 @@
             description="If left blank password will be defaulted to: password"
         />
 
+        <!-- Privacy -->
+        <flux:switch wire:model="is_private" label="Make profile private" align="left" />
+
         <div class="flex gap-2">
             <flux:spacer />
 

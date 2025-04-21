@@ -13,12 +13,17 @@
 
             <div class="flex flex-col gap-0">
                 <flux:heading>
-                    <flux:link :href="route('profile.show', ['username' => $user->username])" variant="subtle" :external="true">
-                    {{ $user->name }}
+                    <flux:link :href="route('profile.show', ['username' => $user->username])" variant="subtle" :external="true" class="flex gap-2">
+                        {{ $user->name }}
                     </flux:link>
                 </flux:heading>
                 <flux:text class="text-xs">{{ $user->username }}</flux:text>
             </div>
+            @if($user->is_private)
+            <flux:tooltip content="Profile is set to private">
+                <flux:icon.lock-closed variant="micro" />
+            </flux:tooltip>
+            @endif
         </div>
     </flux:table.cell>
 

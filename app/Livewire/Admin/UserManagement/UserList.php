@@ -41,6 +41,8 @@ class UserList extends BaseComponent
 
     public string $password = '';
 
+    public bool $is_private = false;
+
     public $roles = [];
 
     public bool $isSuperAdmin = false;
@@ -113,6 +115,7 @@ class UserList extends BaseComponent
             'email' => $this->email,
             'date_of_birth' => $this->date_of_birth,
             'country' => $this->country,
+            'is_private' => $this->is_private,
             'password' => ($this->password) ? $this->password : 'password',
         ]);
         $user->syncRoles($this->roles);
@@ -138,6 +141,7 @@ class UserList extends BaseComponent
             'email' => $this->email,
             'date_of_birth' => $this->date_of_birth,
             'country' => $this->country,
+            'is_private' => $this->is_private,
         ], !empty($this->password) ? ['password' => $this->password] : []));
 
         $user->syncRoles($this->roles);
@@ -209,6 +213,7 @@ class UserList extends BaseComponent
         $this->email = $user->email;
         $this->date_of_birth = $user->date_of_birth;
         $this->country = $user->country;
+        $this->is_private = $user->is_private;
         $this->roles = $user->getRoleNames();
         $this->isSuperAdmin = $user->hasRole('Super Admin');
     }
