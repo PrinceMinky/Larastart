@@ -125,19 +125,16 @@ test('unblocking a user does not restore follow relationships', function () {
     ]);
 });
 
-test('blocked user gets 404 when accessing a profile', function () {
+test('blocked user is redirected when accessing a profile', function () {
     $authUser = User::factory()->create();
     $blockedUser = User::factory()->create();
-
-    // Act: Block the user
+    
     $authUser->blockedUsers()->attach($blockedUser->id);
 
-    // Simulate login of the blocked user
     Auth::login($blockedUser);
 
-    // Attempt to access the profile of the blocker
     $this->get(route('profile.show', ['username' => $authUser->username]))
-        ->assertNotFound();
+        ->assertRedirect(route('error.404'));
 });
 
 test('unblocked user can view the profile', function () {

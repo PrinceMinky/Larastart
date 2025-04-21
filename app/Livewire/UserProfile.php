@@ -23,7 +23,7 @@ class UserProfile extends BaseComponent
             ->firstOrFail();
     
         if (Auth::check() && $this->user->blockedUsers()->where('blocked_user_id', Auth::id())->exists()) {
-            abort(404);
+            return redirect()->route('error.404'); 
         }
     
         if (Auth::check()) {
