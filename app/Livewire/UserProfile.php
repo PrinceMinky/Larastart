@@ -21,7 +21,11 @@ class UserProfile extends BaseComponent
         $this->user = User::whereUsername($username)
             ->with(['posts', 'following', 'followers'])
             ->firstOrFail();
-            
+    
+        if (Auth::check() && $this->user->blockedUsers()->where('blocked_user_id', Auth::id())->exists()) {
+            abort(404);
+        }
+    
         if (Auth::check()) {
             Auth::user()->load(['following' => function($query) {
                 $query->where('following_id', $this->user->id);

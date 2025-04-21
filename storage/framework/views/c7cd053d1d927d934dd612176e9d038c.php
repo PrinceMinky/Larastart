@@ -353,6 +353,23 @@
 <?php $component = $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b; ?>
 <?php unset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
 <?php endif; ?>
+
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('block-user', ['user' => $this->user]);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-3537791119-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
     <!-- Following Modal -->

@@ -1,7 +1,7 @@
 <?php
 
+use App\Livewire\BlockUser;
 use App\Livewire\UserPost;
-use App\Livewire\UserProfile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
@@ -68,4 +68,84 @@ test('user can post on their own profile', function () {
         'user_id' => $user->id,
         'content' => 'Hello, this is my post!',
     ]);
+});
+
+test('blocking a user unfollows them', function () {
+    $authUser = User::factory()->create();
+    $blockedUser = User::factory()->create();
+
+    // Simulate following before blocking
+    $authUser->following()->attach($blockedUser->id);
+    $blockedUser->following()->attach($authUser->id);
+
+    // Act: Block the user
+    Livewire::actingAs($authUser)
+        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->call('toggleBlock');
+
+    // Assert: Check that follow relationships were removed
+    $this->assertDatabaseMissing('followers', [
+        'user_id' => $authUser->id,
+        'following_id' => $blockedUser->id,
+    ]);
+
+    $this->assertDatabaseMissing('followers', [
+        'user_id' => $blockedUser->id,
+        'following_id' => $authUser->id,
+    ]);
+});
+
+test('unblocking a user does not restore follow relationships', function () {
+    $authUser = User::factory()->create();
+    $blockedUser = User::factory()->create();
+
+    // Simulate following before blocking
+    $authUser->following()->attach($blockedUser->id);
+    $blockedUser->following()->attach($authUser->id);
+
+    // Act: Block the user
+    Livewire::actingAs($authUser)
+        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->call('toggleBlock');
+
+    // Act: Unblock the user
+    Livewire::actingAs($authUser)
+        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->call('toggleBlock');
+
+    // Assert: Ensure follow relationships were not restored
+    $this->assertDatabaseMissing('followers', [
+        'user_id' => $authUser->id,
+        'following_id' => $blockedUser->id,
+    ]);
+
+    $this->assertDatabaseMissing('followers', [
+        'user_id' => $blockedUser->id,
+        'following_id' => $authUser->id,
+    ]);
+});
+
+test('blocked user gets 404 when accessing a profile', function () {
+    $authUser = User::factory()->create();
+    $blockedUser = User::factory()->create();
+
+    // Act: Block the user
+    $authUser->blockedUsers()->attach($blockedUser->id);
+
+    // Simulate login of the blocked user
+    Auth::login($blockedUser);
+
+    // Attempt to access the profile of the blocker
+    $this->get(route('profile.show', ['username' => $authUser->username]))
+        ->assertNotFound();
+});
+
+test('unblocked user can view the profile', function () {
+    $user = User::factory()->create();
+    $viewer = User::factory()->create();
+
+    Auth::login($viewer);
+
+    $this->get(route('profile.show', ['username' => $user->username]))
+        ->assertOk();
 });

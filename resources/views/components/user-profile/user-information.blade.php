@@ -45,6 +45,8 @@
         <flux:button wire:navigate :href="route('settings.profile')" size="sm">Edit Profile</flux:button>
     @else
         <x-user-profile.follow-button :user="$this->user" />
+
+        <livewire:block-user :user="$this->user" />
     @endif
 
     <!-- Following Modal -->
