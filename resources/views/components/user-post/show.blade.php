@@ -62,7 +62,7 @@
             </div>
         </form>
         @else
-            <flux:text size="lg">{{ $post->content }}</flux:text>
+            <flux:text size="lg">{!! nl2br(strip_tags($post->content)) !!}</flux:text>
         @endif
 
         <div class="flex justify-end gap-2">
