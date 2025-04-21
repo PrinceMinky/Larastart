@@ -2,25 +2,17 @@
 
 @if(auth()->check() && auth()->user()->id !== $user->id)
     @php
-        // Check if the follow status is preloaded
         $isUserFollowing = false;
         $followStatus = null;
-        
-        if (auth()->user()->relationLoaded('following')) {
-            $isUserFollowing = auth()->user()->following->contains('id', $user->id);
+                
+        $isUserFollowing = auth()->user()->following->contains('id', $user->id);
+
+        $follower = $user->followers->where('id', auth()->id())->first();
+        if ($follower) {
+            $followStatus = $follower->pivot->status ?? null;
         }
-        
-        if ($user->relationLoaded('followers')) {
-            $follower = $user->followers->where('id', auth()->id())->first();
-            if ($follower) {
-                $followStatus = $follower->pivot->status ?? null;
-            }
-        }
-        
-        $isFollowingCurrentUser = false;
-        if (auth()->user()->relationLoaded('followers')) {
-            $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
-        }
+
+        $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
     @endphp
 
     @if($isUserFollowing && $followStatus === 'accepted')

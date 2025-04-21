@@ -34,21 +34,20 @@ unset($__defined_vars); ?>
         $isUserFollowing = false;
         $followStatus = null;
         
-        if (auth()->user()->relationLoaded('following')) {
-            $isUserFollowing = auth()->user()->following->contains('id', $user->id);
-        }
         
-        if ($user->relationLoaded('followers')) {
+            $isUserFollowing = auth()->user()->following->contains('id', $user->id);
+        
+        
+        
             $follower = $user->followers->where('id', auth()->id())->first();
             if ($follower) {
                 $followStatus = $follower->pivot->status ?? null;
             }
-        }
         
-        $isFollowingCurrentUser = false;
-        if (auth()->user()->relationLoaded('followers')) {
+        
+        
             $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
-        }
+        
     ?>
 
     <!--[if BLOCK]><![endif]--><?php if($isUserFollowing && $followStatus === 'accepted'): ?>
