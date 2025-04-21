@@ -50,15 +50,17 @@ class Permissions extends BaseComponent
     #[Computed]
     public function permissions(): LengthAwarePaginator
     {
-        $query = Permission::query();
-
-        if ($this->sortBy) {
-            $query->orderBy($this->sortBy, $this->sortDirection);
+        static $cachedPermissions = null; 
+    
+        if ($cachedPermissions) {
+            return $cachedPermissions; 
         }
-
+        
+        $query = Permission::query();
+        $query->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query);
         $this->applySearch($query);
-
-        return $query->paginate(25);
+    
+        return $cachedPermissions = $query->paginate(25); 
     }
 
     public function showForm($id = null): void

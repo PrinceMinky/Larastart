@@ -43,15 +43,17 @@ class Roles extends BaseComponent
     #[Computed]
     public function roles(): LengthAwarePaginator
     {
-        $query = Role::query();
-
-        if ($this->sortBy) {
-            $query->orderBy($this->sortBy, $this->sortDirection);
+        static $cachedRoles = null; 
+    
+        if ($cachedRoles) {
+            return $cachedRoles; 
         }
-
+        
+        $query = Role::query();
+        $query->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query);
         $this->applySearch($query);
-
-        return $query->paginate(25);
+    
+        return $cachedRoles = $query->paginate(25); 
     }
 
     #[Computed]

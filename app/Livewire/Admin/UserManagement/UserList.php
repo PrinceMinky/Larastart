@@ -62,13 +62,18 @@ class UserList extends BaseComponent
     #[Computed]
     public function users(): LengthAwarePaginator
     {
-        $query = User::query()
-            ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
-            ->with('roles');
-
-        $this->applySearch($query, ['name','username','email']);
-            
-        return $query->paginate(25);
+        static $cachedUsers = null;
+    
+        if ($cachedUsers) {
+            return $cachedUsers;
+        }
+    
+        $query = User::query();
+        $query->with('roles:name');
+        $query->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query);
+        $this->applySearch($query, ['name', 'username', 'email']);
+    
+        return $cachedUsers = $query->paginate(25);
     }
 
     #[Computed]
