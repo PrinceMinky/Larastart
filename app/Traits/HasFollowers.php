@@ -10,20 +10,19 @@ trait HasFollowers
 {
     public function follow($userId)
     {
-        if (Auth::user()->id === $userId) {
+        if (Auth::id() === $userId) {
             return;
         }
-
-        $user = User::findOrFail($userId);
+    
+        $user = User::where('id', $userId)->select('id', 'is_private')->firstOrFail();
         $status = $user->is_private ? 'pending' : 'accepted';
-
     
         Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
     }
     
     public function unfollow($userId)
     {
-        $user = User::findOrFail($userId);
+        $user = User::where('id', $userId)->select('id', 'is_private')->firstOrFail();
         Auth::user()->following()->detach($user->id);
         
         if ($this->getFollowing()->isEmpty()) {

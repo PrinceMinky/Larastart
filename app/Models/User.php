@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -85,7 +86,8 @@ class User extends Authenticatable
      */
     public function hasAccessToUser($user, $permissions = null)
     {
-        // Check if the user has specific permissions
+        static $accessCache = [];
+    
         if ($permissions !== null) {
             if (is_array($permissions)) {
                 foreach ($permissions as $permission) {
@@ -98,16 +100,25 @@ class User extends Authenticatable
             }
         }
     
-        // Check if the user is the same or if their profile is public
         if ($this->me($user->id) || !$user->is_private) {
             return true;
         }
     
-        // NEW: Check if the user follows and the request was accepted
-        return $user->followers()
-            ->where('follower_id', Auth::id())
-            ->wherePivot('status', 'accepted')
-            ->exists();
+        $cacheKey = 'access_' . Auth::id() . '_' . $user->id;
+    
+        if (array_key_exists($cacheKey, $accessCache)) {
+            return $accessCache[$cacheKey];
+        }
+    
+        $accessCache[$cacheKey] = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
+            return $user->followers()
+                ->where('follower_id', Auth::id())
+                ->wherePivot('status', 'accepted')
+                ->limit(1)
+                ->exists();
+        });
+    
+        return $accessCache[$cacheKey];
     }
 
     public function followers()

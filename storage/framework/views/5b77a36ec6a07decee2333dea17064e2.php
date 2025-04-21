@@ -30,24 +30,17 @@ unset($__defined_vars); ?>
 
 <!--[if BLOCK]><![endif]--><?php if(auth()->check() && auth()->user()->id !== $user->id): ?>
     <?php
-        // Check if the follow status is preloaded
         $isUserFollowing = false;
         $followStatus = null;
-        
-        
-            $isUserFollowing = auth()->user()->following->contains('id', $user->id);
-        
-        
-        
-            $follower = $user->followers->where('id', auth()->id())->first();
-            if ($follower) {
-                $followStatus = $follower->pivot->status ?? null;
-            }
-        
-        
-        
-            $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
-        
+                
+        $isUserFollowing = auth()->user()->following->contains('id', $user->id);
+
+        $follower = $user->followers->where('id', auth()->id())->first();
+        if ($follower) {
+            $followStatus = $follower->pivot->status ?? null;
+        }
+
+        $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
     ?>
 
     <!--[if BLOCK]><![endif]--><?php if($isUserFollowing && $followStatus === 'accepted'): ?>
