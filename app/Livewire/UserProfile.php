@@ -5,13 +5,14 @@ namespace App\Livewire;
 use App\Models\User;
 use App\Livewire\BaseComponent;
 use App\Traits\HasFollowers;
+use App\Traits\WithBlockedUser;
 use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 
 class UserProfile extends BaseComponent
 {
-    use WithModal, HasFollowers;
+    use WithModal, WithBlockedUser, HasFollowers;
 
     public User $user;
 
@@ -54,22 +55,6 @@ class UserProfile extends BaseComponent
         return User::whereIn('id', $mutualFollowerIds)->get();
     }
 
-    public function getLikedUsersProperty()
-    {
-        $users = User::whereIn('id', $this->post->likes->pluck('user_id'))
-                    ->with(['followers' => function($query) {
-                        $query->where('follower_id', auth()->id);
-                    }])
-                    ->get();
-        
-        if (Auth::check()) {
-            Auth::user()->load(['following' => function($query) use ($users) {
-                $query->whereIn('following_id', $users->pluck('id'));
-            }]);
-        }
-        
-        return $users;
-    }
 
     public function showModal($type)
     {

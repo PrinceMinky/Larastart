@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Traits;
 
-use App\Livewire\BaseComponent;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class BlockUser extends BaseComponent
+trait WithBlockedUser
 {
     public User $user;
-    public bool $isBlocked;
+    public bool $isBlocked = false;
 
     public function mount(User $user)
     {
@@ -37,10 +36,5 @@ class BlockUser extends BaseComponent
         : ['heading' => 'User Unblocked', 'text' => "You have unblocked {$this->user->name}.", 'variant' => 'success'];
     
         $this->toast($status);
-    }
-
-    public function render()
-    {
-        return view('livewire.block-user');
     }
 }

@@ -1,13 +1,13 @@
 <?php if (isset($component)) { $__componentOriginal8cc9d3143946b992b324617832699c5f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8cc9d3143946b992b324617832699c5f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'showModal','class' => 'md:w-96']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'show-likes','class' => 'md:w-96']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'showModal','class' => 'md:w-96']); ?>
+<?php $component->withAttributes(['name' => 'show-likes','class' => 'md:w-96']); ?>
     <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => ['size' => 'lg']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -17,7 +17,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['size' => 'lg']); ?><?php echo e($this->modalType === 'following' ? 'Following' : 'Followers'); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['size' => 'lg']); ?>Likes <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
 <?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
@@ -29,7 +29,7 @@
 <?php endif; ?>
     
     <div class="flex flex-col gap-3 mt-4">
-        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->modalType === 'following' ? $this->getFollowing() : $this->getFollowers(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $likedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <?php if (isset($component)) { $__componentOriginal604f762ebba642dec299b73e06b66b92 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal604f762ebba642dec299b73e06b66b92 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.modal-row','data' => ['user' => $user]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -61,4 +61,4 @@
 <?php if (isset($__componentOriginal8cc9d3143946b992b324617832699c5f)): ?>
 <?php $component = $__componentOriginal8cc9d3143946b992b324617832699c5f; ?>
 <?php unset($__componentOriginal8cc9d3143946b992b324617832699c5f); ?>
-<?php endif; ?><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-profile/following-modal.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-post/likes-modal.blade.php ENDPATH**/ ?>

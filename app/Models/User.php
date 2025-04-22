@@ -175,6 +175,11 @@ class User extends Authenticatable
         return User::whereIn('id', $mutualFollowerIds)->get();
     }
 
+    public function followsMe()
+    {
+        return $this->following->contains(Auth::id());
+    }
+
     public function likedPosts()
     {
         return $this->belongsToMany(Post::class, 'post_likes')->withTimestamps();

@@ -162,7 +162,7 @@ class UserPost extends BaseComponent
 
         $likedUsers = $post->likes()
             ->with(['followers' => function($query) {
-                $query->where('follower_id', auth()->id);
+                $query->where('follower_id', Auth::id());
             }])
             ->get();
         
