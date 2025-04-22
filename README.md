@@ -123,4 +123,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
+<<<<<<< HEAD
 This project is open-sourced software licensed under the [MIT license](LICENSE.md).
+=======
+This project is open-sourced software licensed under the [MIT license](LICENSE.md).
+>>>>>>> 943cc577c799ac23de563fb3586488fb1f7d7766
