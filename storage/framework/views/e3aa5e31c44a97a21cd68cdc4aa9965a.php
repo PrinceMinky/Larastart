@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-3 w-full">
-    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->me($this->user->id)): ?>
-    <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+    <!--[if BLOCK]><![endif]--><?php if($this->user->is_me()): ?>
+        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:navigate' => true,'href' => route('settings.profile'),'size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -20,7 +20,7 @@
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
     <?php else: ?>
-    <?php if (isset($component)) { $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b = $component; } ?>
+        <?php if (isset($component)) { $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.follow-button','data' => ['user' => $this->user]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('user-profile.follow-button'); ?>
@@ -41,7 +41,7 @@
 <?php unset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
 <?php endif; ?>
 
-    <?php if (isset($component)) { $__componentOriginal9f18c7d06c6ea73c5ddb250e47a2229a = $component; } ?>
+        <?php if (isset($component)) { $__componentOriginal9f18c7d06c6ea73c5ddb250e47a2229a = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal9f18c7d06c6ea73c5ddb250e47a2229a = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.block-button','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('user-profile.block-button'); ?>

@@ -18,12 +18,12 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->belongsToMany(User::class, 'post_likes')->withTimestamps();
+        return $this->belongsToMany(User::class, 'post_like')->withTimestamps();
     }
 
     public function likedByUsers()
     {
-        return $this->belongsToMany(User::class, 'post_likes')->withTimestamps();
+        return $this->belongsToMany(User::class, 'post_like')->withTimestamps();
     }
 
     public function isLikedBy(User $user)

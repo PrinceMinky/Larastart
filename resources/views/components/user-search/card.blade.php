@@ -1,4 +1,4 @@
-<flux:card size="sm" wire:key="{{ $user->id }}" wire:navigate :href="route('profile.show', ['username' => $user->username])"
+<flux:card size="sm" wire:key="{{ $user->id }}" wire:navigate :href="$user->url()"
     class="cursor-pointer transition-shadow hover:shadow-md">
     
     <div class="flex gap-2">

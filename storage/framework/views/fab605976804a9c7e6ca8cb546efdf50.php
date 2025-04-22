@@ -1,13 +1,13 @@
 <?php if (isset($component)) { $__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::card.index','data' => ['size' => 'sm','wire:key' => ''.e($user->id).'','wire:navigate' => true,'href' => route('profile.show', ['username' => $user->username]),'class' => 'cursor-pointer transition-shadow hover:shadow-md']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::card.index','data' => ['size' => 'sm','wire:key' => ''.e($user->id).'','wire:navigate' => true,'href' => $user->url(),'class' => 'cursor-pointer transition-shadow hover:shadow-md']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::card'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['size' => 'sm','wire:key' => ''.e($user->id).'','wire:navigate' => true,'href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('profile.show', ['username' => $user->username])),'class' => 'cursor-pointer transition-shadow hover:shadow-md']); ?>
+<?php $component->withAttributes(['size' => 'sm','wire:key' => ''.e($user->id).'','wire:navigate' => true,'href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($user->url()),'class' => 'cursor-pointer transition-shadow hover:shadow-md']); ?>
     
     <div class="flex gap-2">
         <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>

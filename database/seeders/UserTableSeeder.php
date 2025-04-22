@@ -41,7 +41,13 @@ class UserTableSeeder extends Seeder
             // Create random posts
             Post::factory(rand(0, 10))->create([
                 'user_id' => $user->id
-            ]);
+            ])->each(function ($post) {
+                $users = User::inRandomOrder()->take(rand(1, 5))->get(); // Select random users to like the post
+            
+                foreach ($users as $likingUser) {
+                    $likingUser->likedPosts()->attach($post->id);
+                }
+            });
         
             // Get a random subset of users to follow
             $randomUsersToFollow = User::where('id', '!=', $user->id) // Exclude self

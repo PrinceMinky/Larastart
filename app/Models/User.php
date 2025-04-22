@@ -73,11 +73,27 @@ class User extends Authenticatable
     }
 
     /**
+     * Return url link as a string
+     */
+    public function url()
+    {
+        return route('profile.show', ['username' => $this->username]);
+    }
+
+    /**
      * Determine if authenticated user is selected user
      */
     public function me($givenId)
     {   
         return Auth::user()->id === $givenId;
+    }
+
+    /**
+     * Determine if authenticated user is selected user
+     */
+    public function is_me()
+    {   
+        return Auth::user()->id === $this->id;
     }
 
     /**
@@ -182,7 +198,7 @@ class User extends Authenticatable
 
     public function likedPosts()
     {
-        return $this->belongsToMany(Post::class, 'post_likes')->withTimestamps();
+        return $this->belongsToMany(Post::class, 'post_like')->withTimestamps();
     }
 
     public function hasLiked($post)

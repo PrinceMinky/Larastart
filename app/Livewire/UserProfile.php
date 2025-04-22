@@ -41,19 +41,15 @@ class UserProfile extends BaseComponent
     public function mutualFollowers()
     {
         if (!Auth::check()) {
-            return collect(); // Return an empty collection if not authenticated
+            return collect(); 
         }
 
-        // Get IDs of people following the profile owner
         $profileFollowers = $this->user->followers->pluck('id');
 
-        // Get IDs of people following the authenticated user
         $authFollowers = Auth::user()->followers->pluck('id');
 
-        // Find mutual followers
         $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
 
-        // Retrieve mutual followers' user instances
         return User::whereIn('id', $mutualFollowerIds)->get();
     }
 

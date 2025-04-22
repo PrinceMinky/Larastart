@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Events\PostLiked;
 use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
 use App\Models\Post;
@@ -22,12 +23,10 @@ class UserPost extends BaseComponent
     public $likedUsers = [];
     private $postsCache = null;
 
-    // In your UserPost class
     public function mount()
     {
         $this->user = Auth::user();
         
-        // Pre-cache liked posts for the authenticated user
         if (Auth::check()) {
             Auth::user()->likedPostsCache = Auth::user()->likedPosts()->pluck('post_id')->toArray();
         }
@@ -55,7 +54,7 @@ class UserPost extends BaseComponent
         
         $this->postsCache = $query->with([
                 'user:id,name,username',
-                'likes:id,name,username,post_likes.post_id'
+                'likes:id,name,username,post_like.post_id'
             ])
             ->withCount('likes')
             ->latest()
@@ -147,6 +146,8 @@ class UserPost extends BaseComponent
             $user->likedPosts()->detach($post->id);
         } else {
             $user->likedPosts()->attach($post->id);
+
+            event(new PostLiked($post, $user));
         }
         
         $this->postsCache = null;

@@ -10,11 +10,12 @@ trait WithBlockedUser
 
     public function initializeBlockStatus()
     {
-        if (Auth::check()) {
-            $this->isBlocked = Auth::user()->blockedUsers()->where('blocked_user_id', $this->user->id)->exists();
-        } else {
-            $this->isBlocked = false;
-        }
+        $this->isBlocked = $this->checkBlockStatus();
+    }
+
+    public function checkBlockStatus()
+    {
+        return Auth::check() && Auth::user()->blockedUsers()->where('blocked_user_id', $this->user->id)->exists();
     }
 
     public function toggleBlock()
