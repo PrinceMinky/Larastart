@@ -4,6 +4,6 @@
     @else
     <x-user-profile.follow-button :user="$this->user" />
 
-    <x-user-profile.block-button :user="$this->user" />
+    <x-user-profile.block-button />
     @endif
 </div>

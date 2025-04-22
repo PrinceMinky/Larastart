@@ -82,7 +82,7 @@ test('blocking a user unfollows them', function () {
 
     // Act: Block the user
     Livewire::actingAs($authUser)
-        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->test(UserProfile::class, ['username' => $blockedUser->username])
         ->call('toggleBlock');
 
     // Assert: Check that follow relationships were removed
@@ -107,12 +107,12 @@ test('unblocking a user does not restore follow relationships', function () {
 
     // Act: Block the user
     Livewire::actingAs($authUser)
-        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->test(UserProfile::class, ['username' => $blockedUser->username])
         ->call('toggleBlock');
 
     // Act: Unblock the user
     Livewire::actingAs($authUser)
-        ->test(BlockUser::class, ['user' => $blockedUser])
+        ->test(UserProfile::class, ['username' => $blockedUser->username])
         ->call('toggleBlock');
 
     // Assert: Ensure follow relationships were not restored

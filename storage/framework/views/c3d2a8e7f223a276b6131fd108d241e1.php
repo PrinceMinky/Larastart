@@ -108,5 +108,4 @@
 <?php unset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
 <?php endif; ?>
     </div>
-    lol
 </div><?php /**PATH C:\Users\micha\Herd\larastart\resources\views/components/user-profile/modal-row.blade.php ENDPATH**/ ?>

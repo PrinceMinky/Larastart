@@ -1,5 +1,3 @@
-@props(['user'])
-
 <div class="flex flex-col">
     @if($this->isBlocked)
         <flux:button wire:click="toggleBlock">Unblock</flux:button>

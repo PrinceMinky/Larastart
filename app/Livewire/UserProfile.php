@@ -33,6 +33,8 @@ class UserProfile extends BaseComponent
                 $query->where('following_id', $this->user->id);
             }]);
         }
+        
+        $this->initializeBlockStatus();
     }
 
     #[Computed]

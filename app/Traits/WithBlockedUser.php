@@ -2,18 +2,19 @@
 
 namespace App\Traits;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 trait WithBlockedUser
 {
-    public User $user;
     public bool $isBlocked = false;
 
-    public function mount(User $user)
+    public function initializeBlockStatus()
     {
-        $this->user = $user;
-        $this->isBlocked = Auth::user()->blockedUsers()->where('blocked_user_id', $user->id)->exists();
+        if (Auth::check()) {
+            $this->isBlocked = Auth::user()->blockedUsers()->where('blocked_user_id', $this->user->id)->exists();
+        } else {
+            $this->isBlocked = false;
+        }
     }
 
     public function toggleBlock()
@@ -23,17 +24,18 @@ trait WithBlockedUser
         if ($this->isBlocked) {
             $authUser->blockedUsers()->detach($this->user->id);
         } else {
-            $authUser->blockedUsers()->attach($this->user->id);
-    
-            $authUser->following()->detach($this->user->id);
-            $this->user->following()->detach($authUser->id);
+            if (! $authUser->blockedUsers()->where('blocked_user_id', $this->user->id)->exists()) {
+                $authUser->blockedUsers()->attach($this->user->id);
+                $authUser->following()->detach($this->user->id);
+                $this->user->following()->detach($authUser->id);
+            }
         }
-    
-        $this->isBlocked = !$this->isBlocked;
+        
+        $this->isBlocked = $authUser->blockedUsers()->where('blocked_user_id', $this->user->id)->exists();
 
         $status = $this->isBlocked
-        ? ['heading' => 'User Blocked', 'text' => "You have blocked {$this->user->name}.", 'variant' => 'danger']
-        : ['heading' => 'User Unblocked', 'text' => "You have unblocked {$this->user->name}.", 'variant' => 'success'];
+            ? ['heading' => 'User Blocked', 'text' => "You have blocked {$this->user->name}.", 'variant' => 'danger']
+            : ['heading' => 'User Unblocked', 'text' => "You have unblocked {$this->user->name}.", 'variant' => 'success'];
     
         $this->toast($status);
     }
