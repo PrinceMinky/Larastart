@@ -21,20 +21,49 @@ class UserProfile extends BaseComponent
     public function mount($username)
     {
         $this->user = User::whereUsername($username)
-            ->with(['posts', 'following', 'followers'])
+            ->with(['posts'])
             ->firstOrFail();
-    
-        if (Auth::check() && $this->user->blockedUsers()->where('blocked_user_id', Auth::id())->exists()) {
-            return redirect()->route('error.404'); 
-        }
-    
+        
         if (Auth::check()) {
-            Auth::user()->load(['following' => function($query) {
-                $query->where('following_id', $this->user->id);
-            }]);
+            $this->cacheBlockStatusData();
+            
+            if ($this->isBlockedBy($this->user->id, Auth::id())) {
+                return redirect()->route('error.404'); 
+            }
+            
+            if (Auth::id() == $this->user->id) {
+                $this->preloadFollowData();
+            }
         }
         
         $this->initializeBlockStatus();
+    }
+
+    protected function cacheFollowRelationships()
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        $currentUser = Auth::user();
+
+        $currentUser->setRelation('following', 
+            $currentUser->following()->get()
+        );
+        
+        $currentUser->setRelation('followers', 
+            $currentUser->followers()->get()
+        );
+        
+        if ($this->user->id !== $currentUser->id) {
+            $this->user->setRelation('followers', 
+                $this->user->followers()->get()
+            );
+            
+            $this->user->setRelation('following', 
+                $this->user->following()->get()
+            );
+        }
     }
 
     #[Computed]

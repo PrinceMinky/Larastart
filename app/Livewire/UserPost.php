@@ -146,8 +146,8 @@ class UserPost extends BaseComponent
             $user->likedPosts()->detach($post->id);
         } else {
             $user->likedPosts()->attach($post->id);
-
-            event(new PostLiked($post, $user));
+            
+            broadcast(new PostLiked($post, $user))->toOthers();
         }
         
         $this->postsCache = null;

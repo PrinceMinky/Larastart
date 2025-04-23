@@ -29,4 +29,9 @@ class PostLiked implements ShouldBroadcast
     {
         return new PrivateChannel('user.' . $this->post->user_id);
     }
+
+    public function broadcastAs()
+    {
+        return 'post.liked';
+    }
 }

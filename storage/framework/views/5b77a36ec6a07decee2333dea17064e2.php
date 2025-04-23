@@ -30,20 +30,10 @@ unset($__defined_vars); ?>
 
 <!--[if BLOCK]><![endif]--><?php if(auth()->check() && auth()->user()->id !== $user->id): ?>
     <?php
-        $isUserFollowing = false;
-        $followStatus = null;
-                
-        $isUserFollowing = auth()->user()->following->contains('id', $user->id);
-
-        $follower = $user->followers->where('id', auth()->id())->first();
-        if ($follower) {
-            $followStatus = $follower->pivot->status ?? null;
-        }
-
-        $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
+        $followButtonState = $this->getFollowButtonState($user->id);
     ?>
-
-    <!--[if BLOCK]><![endif]--><?php if($isUserFollowing && $followStatus === 'accepted'): ?>
+    
+    <!--[if BLOCK]><![endif]--><?php if($followButtonState === 'following'): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -63,7 +53,7 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-    <?php elseif($isUserFollowing && $followStatus === 'pending'): ?>
+    <?php elseif($followButtonState === 'pending'): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'unfollow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -83,7 +73,7 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-    <?php elseif($isFollowingCurrentUser && !$isUserFollowing): ?>
+    <?php elseif($followButtonState === 'follow_back'): ?>
         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['wire:click' => 'follow('.e($user->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

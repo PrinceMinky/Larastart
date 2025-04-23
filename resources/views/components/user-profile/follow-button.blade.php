@@ -2,24 +2,14 @@
 
 @if(auth()->check() && auth()->user()->id !== $user->id)
     @php
-        $isUserFollowing = false;
-        $followStatus = null;
-                
-        $isUserFollowing = auth()->user()->following->contains('id', $user->id);
-
-        $follower = $user->followers->where('id', auth()->id())->first();
-        if ($follower) {
-            $followStatus = $follower->pivot->status ?? null;
-        }
-
-        $isFollowingCurrentUser = auth()->user()->followers->contains('id', $user->id);
+        $followButtonState = $this->getFollowButtonState($user->id);
     @endphp
-
-    @if($isUserFollowing && $followStatus === 'accepted')
+    
+    @if($followButtonState === 'following')
         <flux:button wire:click="unfollow({{ $user->id }})">Unfollow</flux:button>
-    @elseif($isUserFollowing && $followStatus === 'pending')
+    @elseif($followButtonState === 'pending')
         <flux:button wire:click="unfollow({{ $user->id }})">Cancel Request</flux:button>
-    @elseif($isFollowingCurrentUser && !$isUserFollowing)
+    @elseif($followButtonState === 'follow_back')
         <flux:button wire:click="follow({{ $user->id }})">Follow Back</flux:button>
     @else
         <flux:button wire:click="follow({{ $user->id }})">Follow</flux:button>

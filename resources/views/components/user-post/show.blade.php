@@ -1,7 +1,9 @@
 <div class="flex flex-col gap-2">
-    @foreach($posts as $post)
+    @forelse($posts as $post)
         <x-user-post.card :$post />
-    @endforeach
+    @empty
+        <flux:text>No posts created.</flux:text>
+    @endforelse
 
     <x-user-post.likes-modal :likedUsers="$this->likedUsers" />
 </div>
