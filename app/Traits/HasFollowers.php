@@ -136,4 +136,36 @@ trait HasFollowers
             return 'follow';
         }
     }
+
+    protected function cacheFollowRelationships()
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        $currentUser = Auth::user();
+        $currentUser->setRelation('following', $currentUser->following()->get());
+        $currentUser->setRelation('followers', $currentUser->followers()->get());
+        
+        if ($this->user->id !== $currentUser->id) {
+            $this->user->setRelation('followers', $this->user->followers()->get());
+            $this->user->setRelation('following', $this->user->following()->get());
+        }
+    }
+
+    #[Computed]
+    public function mutualFollowers()
+    {
+        if (!Auth::check()) {
+            return collect(); 
+        }
+
+        $profileFollowers = $this->user->followers->pluck('id');
+        $authFollowers = Auth::user()->followers->pluck('id');
+        $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
+
+        $mutualFollowers = User::whereIn('id', $mutualFollowerIds)->get();
+
+        return $mutualFollowers;
+    }
 }

@@ -44,14 +44,14 @@
 
     <?php if (isset($component)) { $__componentOriginal2c0221d484a89ec064e3e897045d7950 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2c0221d484a89ec064e3e897045d7950 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-post.likes-modal','data' => ['likedUsers' => $this->likedUsers]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-post.likes-modal','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('user-post.likes-modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['likedUsers' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($this->likedUsers)]); ?>
+<?php $component->withAttributes([]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal2c0221d484a89ec064e3e897045d7950)): ?>

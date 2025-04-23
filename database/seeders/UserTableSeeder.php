@@ -23,7 +23,7 @@ class UserTableSeeder extends Seeder
             'password' => 'password',
         ]);
         $superAdmin->assignRole('Super Admin');
-
+    
         $awesomeAdmin = User::create([
             'name' => 'Rachael Johnson',
             'username' => 'rachael.johnson',
@@ -35,33 +35,52 @@ class UserTableSeeder extends Seeder
         ]);
         $awesomeAdmin->assignRole('Admin');
 
+        $adminPosts = Post::factory(2)->create(['user_id' => $awesomeAdmin->id]);
+        $superAdminPosts = Post::factory(2)->create(['user_id' => $superAdmin->id]);
+    
         User::factory(200)->create()->each(function (User $user) {
             $user->assignRole('User');
-        
-            // Create random posts
+    
             Post::factory(rand(0, 10))->create([
                 'user_id' => $user->id
             ])->each(function ($post) {
-                $users = User::inRandomOrder()->take(rand(1, 5))->get(); // Select random users to like the post
-            
+                $users = User::inRandomOrder()->take(rand(1, 5))->get(); 
+
                 foreach ($users as $likingUser) {
                     $likingUser->likedPosts()->attach($post->id);
                 }
             });
-        
-            // Get a random subset of users to follow
-            $randomUsersToFollow = User::where('id', '!=', $user->id) // Exclude self
-                                       ->inRandomOrder()
-                                       ->limit(rand(5, 20)) // Random number of follows
-                                       ->get();
-        
-            foreach ($randomUsersToFollow as $followingUser) {
-                $status = $followingUser->is_private ? 'pending' : 'accepted'; // Private users require approval
-                
-                $user->following()->syncWithoutDetaching([
-                    $followingUser->id => ['status' => $status]
-                ]);
+    
+            $potentialFollowers = User::where('id', '!=', $user->id)
+                                      ->inRandomOrder()
+                                      ->limit(rand(6, 20))
+                                      ->get();
+    
+            foreach ($potentialFollowers as $follower) {
+                $user->following()->syncWithoutDetaching([$follower->id => ['status' => 'accepted']]);
+                $follower->following()->syncWithoutDetaching([$user->id => ['status' => 'accepted']]);
             }
         });
+    
+        $mutualFollowers = User::inRandomOrder()->limit(6)->get();
+        
+        foreach ($mutualFollowers as $mutualUser) {
+            $superAdmin->following()->syncWithoutDetaching([$mutualUser->id => ['status' => 'accepted']]);
+            $mutualUser->following()->syncWithoutDetaching([$superAdmin->id => ['status' => 'accepted']]);
+    
+            $awesomeAdmin->following()->syncWithoutDetaching([$mutualUser->id => ['status' => 'accepted']]);
+            $mutualUser->following()->syncWithoutDetaching([$awesomeAdmin->id => ['status' => 'accepted']]);
+        }
+    
+        $likingUsers = User::inRandomOrder()->limit(rand(10, 50))->get();
+        
+        foreach ($likingUsers as $user) {
+            foreach ($adminPosts as $post) {
+                $user->likedPosts()->attach($post->id);
+            }
+            foreach ($superAdminPosts as $post) {
+                $user->likedPosts()->attach($post->id);
+            }
+        }
     }
 }

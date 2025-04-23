@@ -8,7 +8,6 @@ use App\Traits\HasFollowers;
 use App\Traits\WithBlockedUser;
 use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Computed;
 
 class UserProfile extends BaseComponent
 {
@@ -38,51 +37,7 @@ class UserProfile extends BaseComponent
         
         $this->initializeBlockStatus();
     }
-
-    protected function cacheFollowRelationships()
-    {
-        if (!Auth::check()) {
-            return;
-        }
-
-        $currentUser = Auth::user();
-
-        $currentUser->setRelation('following', 
-            $currentUser->following()->get()
-        );
-        
-        $currentUser->setRelation('followers', 
-            $currentUser->followers()->get()
-        );
-        
-        if ($this->user->id !== $currentUser->id) {
-            $this->user->setRelation('followers', 
-                $this->user->followers()->get()
-            );
-            
-            $this->user->setRelation('following', 
-                $this->user->following()->get()
-            );
-        }
-    }
-
-    #[Computed]
-    public function mutualFollowers()
-    {
-        if (!Auth::check()) {
-            return collect(); 
-        }
-
-        $profileFollowers = $this->user->followers->pluck('id');
-
-        $authFollowers = Auth::user()->followers->pluck('id');
-
-        $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
-
-        return User::whereIn('id', $mutualFollowerIds)->get();
-    }
-
-
+    
     public function showModal($type)
     {
         $this->modalType = $type;

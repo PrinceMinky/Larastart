@@ -29,7 +29,7 @@
 <?php endif; ?>
     
     <div class="flex flex-col gap-3 mt-4">
-        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $likedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->likedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <?php if (isset($component)) { $__componentOriginal604f762ebba642dec299b73e06b66b92 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal604f762ebba642dec299b73e06b66b92 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.modal-row','data' => ['user' => $user]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

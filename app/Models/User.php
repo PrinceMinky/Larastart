@@ -196,6 +196,11 @@ class User extends Authenticatable
         return $this->following->contains(Auth::id());
     }
 
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'post_like')->withTimestamps();
+    }
+
     public function likedPosts()
     {
         return $this->belongsToMany(Post::class, 'post_like')->withTimestamps();

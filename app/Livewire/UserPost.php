@@ -30,6 +30,8 @@ class UserPost extends BaseComponent
         if (Auth::check()) {
             Auth::user()->likedPostsCache = Auth::user()->likedPosts()->pluck('post_id')->toArray();
         }
+
+        $this->preloadFollowData();
     }
 
     #[Computed]

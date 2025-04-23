@@ -86,6 +86,10 @@
         "flux-pro": {
             "type": "composer",
             "url": "https://composer.fluxui.dev"
+        },
+        "larastart": {
+            "type": "vcs",
+            "url": "https://github.com/PrinceMinky/Larastart.git"
         }
     }
 }
