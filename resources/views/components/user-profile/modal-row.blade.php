@@ -1,3 +1,5 @@
+@props(['user', 'showButton' => true])
+
 <div class="flex items-center justify-between gap-2">
     <div class="flex gap-2">
         <flux:avatar :name="$user->name" color="auto" />
@@ -16,7 +18,9 @@
         </div>
     </div>
 
+    @if($showButton)
     <div>
         <x-user-profile.follow-button :user="$user" />
     </div>
+    @endif
 </div>

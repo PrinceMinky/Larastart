@@ -22,6 +22,7 @@ trait HasFollowers
         $status = $user->is_private ? 'pending' : 'accepted';
     
         Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
+        $this->cacheFollowRelationships();
     }
     
     public function unfollow($userId)
@@ -32,6 +33,7 @@ trait HasFollowers
         if ($this->getFollowing()->isEmpty()) {
             $this->resetAndCloseModal();
         }
+        $this->cacheFollowRelationships();
     }
 
     #[Computed]

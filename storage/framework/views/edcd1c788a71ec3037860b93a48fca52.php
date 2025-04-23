@@ -21,14 +21,14 @@
 <?php endif; ?>
     <?php if (isset($component)) { $__componentOriginala915114bb278465c6c931a814c02c682 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala915114bb278465c6c931a814c02c682 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.group','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.group','data' => ['class' => '**:ring-zinc-100 dark:**:ring-zinc-800']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::avatar.group'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
+<?php $component->withAttributes(['class' => '**:ring-zinc-100 dark:**:ring-zinc-800']); ?>
         <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->mutualFollowers->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mutualFollower): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>

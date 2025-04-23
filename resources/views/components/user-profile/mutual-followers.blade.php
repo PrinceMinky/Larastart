@@ -1,7 +1,7 @@
 @if(! auth()->user()->me($this->user->id) && $this->mutualFollowers->isNotEmpty())
 <div class="mt-4">
     <flux:heading>Mutual Followers</flux:heading>
-    <flux:avatar.group>
+    <flux:avatar.group class="**:ring-zinc-100 dark:**:ring-zinc-800">
         @foreach($this->mutualFollowers->take(3) as $mutualFollower)
             <flux:avatar :name="$mutualFollower->name" color="auto" :href="$mutualFollower->url()" />
         @endforeach
