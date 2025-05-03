@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProfile extends BaseComponent
 {
-    use WithModal, WithBlockedUser, HasFollowers;
+    use WithBlockedUser, HasFollowers;
 
     public User $user;
 
@@ -29,20 +29,9 @@ class UserProfile extends BaseComponent
             if ($this->isBlockedBy($this->user->id, Auth::id())) {
                 return redirect()->route('error.404'); 
             }
-            
-            if (Auth::id() == $this->user->id) {
-                $this->preloadFollowData();
-            }
         }
-        
-        $this->initializeBlockStatus();
-    }
-    
-    public function showModal($type)
-    {
-        $this->modalType = $type;
 
-        $this->resetAndShowModal('showModal');
+        $this->initializeBlockStatus();
     }
         
     public function render()

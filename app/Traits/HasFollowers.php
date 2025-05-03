@@ -2,18 +2,27 @@
 
 namespace App\Traits;
 
+use App\Traits\WithModal;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 
 trait HasFollowers
 {
+    use WithModal;
+
     public $followingIds = [];
     public $followerIds = [];
     public $followStatuses = [];
+    public $modalType = '';
+    public $search = '';
 
     public function follow($userId)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
         if (Auth::id() === $userId) {
             return;
         }
@@ -27,11 +36,21 @@ trait HasFollowers
     
     public function unfollow($userId)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (Auth::id() === $userId) {
+            return;
+        }
+
         $user = User::where('id', $userId)->select('id', 'is_private')->firstOrFail();
         Auth::user()->following()->detach($user->id);
         
         if ($this->getFollowing()->isEmpty()) {
-            $this->resetAndCloseModal();
+            if (method_exists($this, 'resetAndCloseModal')) {
+                $this->resetAndCloseModal();
+            }
         }
         $this->cacheFollowRelationships();
     }
@@ -50,18 +69,55 @@ trait HasFollowers
 
     public function getFollowers()
     {
-        return $this->user->followers->where('pivot.status', 'accepted');
+        $authUserId = Auth::id();
+    
+        $followers = $this->user->followers()
+        ->wherePivot('status', 'accepted')
+        ->orderByPivot('created_at', 'desc')
+        ->get(); 
+    
+        $followers = $followers->partition(fn ($user) => $user->id === Auth::id())->flatten();
+    
+        if (!empty($this->search)) {
+            $searchTerm = strtolower($this->search);
+            $followers = $followers->filter(fn ($user) => 
+                str_contains(strtolower($user->name), $searchTerm) ||
+                str_contains(strtolower($user->username), $searchTerm)
+            );
+        }
+    
+        return $followers->values();
     }
 
     public function getFollowing()
     {
-        return $this->user->following->where('pivot.status', 'accepted');
+        $authUserId = Auth::id();
+    
+        $following = $this->user->following()
+        ->wherePivot('status', 'accepted')
+        ->orderByPivot('created_at', 'desc')
+        ->get(); 
+    
+        $following = $following->partition(fn ($user) => $user->id === Auth::id())->flatten();
+    
+        if (!empty($this->search)) {
+            $searchTerm = strtolower($this->search);
+            $following = $following->filter(fn ($user) => 
+                str_contains(strtolower($user->name), $searchTerm) ||
+                str_contains(strtolower($user->username), $searchTerm)
+            );
+        }
+    
+        return $following->values();
     }
 
     protected function preloadFollowData()
     {
-        $this->followingIds = Auth::user()->following()->pluck('following_id')->toArray();
-        $this->followerIds = Auth::user()->followers()->pluck('follower_id')->toArray();
+        $authUser = Auth::user()->load(['followers:id', 'following:id']); 
+
+        $this->followingIds = $authUser->following->pluck('id')->toArray();
+        $this->followerIds = $authUser->followers->pluck('id')->toArray();
+        
         $this->followStatuses = Auth::user()->following()
             ->select('following_id', 'status')
             ->get()
@@ -71,51 +127,41 @@ trait HasFollowers
 
     public function isFollowing($userId)
     {
-        if (Auth::check() && Auth::id() == $this->user->id) {
-            return in_array($userId, $this->followingIds ?? []);
+        if (!Auth::check()) {
+            return false;
         }
         
-        static $followingIds = null;
-        
-        if ($followingIds === null && Auth::check()) {
-            $followingIds = Auth::user()->following()->pluck('following_id')->toArray();
+        if (!isset($this->followingIds) || empty($this->followingIds)) {
+            $this->preloadFollowData();
         }
         
-        return in_array($userId, $followingIds ?? []);
+        return in_array($userId, $this->followingIds ?? []);
     }
 
     public function getFollowStatus($userId)
     {
-        if (Auth::check() && Auth::id() == $this->user->id) {
-            return $this->followStatuses[$userId] ?? null;
+        if (!Auth::check()) {
+            return null;
         }
         
-        static $statuses = null;
-        
-        if ($statuses === null && Auth::check()) {
-            $statuses = Auth::user()->following()
-                ->select('following_id', 'status')
-                ->get()
-                ->pluck('status', 'following_id')
-                ->toArray();
+        if (!isset($this->followStatuses) || empty($this->followStatuses)) {
+            $this->preloadFollowData();
         }
         
-        return $statuses[$userId] ?? null;
+        return $this->followStatuses[$userId] ?? null;
     }
 
     public function isBeingFollowedBy($userId)
     {
-        if (Auth::check() && Auth::id() == $this->user->id) {
-            return in_array($userId, $this->followerIds ?? []);
+        if (!Auth::check()) {
+            return false;
         }
         
-        static $followerIds = null;
-        
-        if ($followerIds === null && Auth::check()) {
-            $followerIds = Auth::user()->followers()->pluck('follower_id')->toArray();
+        if (!isset($this->followerIds) || empty($this->followerIds)) {
+            $this->preloadFollowData();
         }
         
-        return in_array($userId, $followerIds ?? []);
+        return in_array($userId, $this->followerIds ?? []);
     }
 
     public function getFollowButtonState($userId)
@@ -149,16 +195,18 @@ trait HasFollowers
         $currentUser->setRelation('following', $currentUser->following()->get());
         $currentUser->setRelation('followers', $currentUser->followers()->get());
         
-        if ($this->user->id !== $currentUser->id) {
+        if (isset($this->user) && $this->user->id !== $currentUser->id) {
             $this->user->setRelation('followers', $this->user->followers()->get());
             $this->user->setRelation('following', $this->user->following()->get());
         }
+
+        $this->preloadFollowData();
     }
 
     #[Computed]
     public function mutualFollowers()
     {
-        if (!Auth::check()) {
+        if (!Auth::check() || !isset($this->user)) {
             return collect(); 
         }
 
@@ -169,5 +217,12 @@ trait HasFollowers
         $mutualFollowers = User::whereIn('id', $mutualFollowerIds)->get();
 
         return $mutualFollowers;
+    }
+    
+    public function showModal($type)
+    {
+        $this->modalType = $type;
+        $this->search = '';
+        $this->resetAndShowModal('showModal');
     }
 }

@@ -61,7 +61,7 @@
 <?php endif; ?>
     </div>
 
-    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->hasAccessToUser($this->user, 'view users')): ?>
+    <!--[if BLOCK]><![endif]--><?php if(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false): ?>
     <div class="flex flex-col gap-0">
         <div class="flex justify-between w-full">
             <?php if (isset($component)) { $__componentOriginal0638ebfbd490c7a414275d493e14cb4e = $component; } ?>

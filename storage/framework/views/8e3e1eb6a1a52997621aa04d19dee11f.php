@@ -25,7 +25,7 @@
         <!-- Right Pane (posts etc) -->
         <div class="w-full md:w-3/4">
             <!-- Show Posts -->
-            <!--[if BLOCK]><![endif]--><?php if(auth()->user()->hasAccessToUser($this->user)): ?>
+            <!--[if BLOCK]><![endif]--><?php if(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false): ?>
                 <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
@@ -42,6 +42,27 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
+            <?php elseif(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === true): ?>
+                <?php if (isset($component)) { $__componentOriginale42bb3b2fa6677ca35fe243b74094c7d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginale42bb3b2fa6677ca35fe243b74094c7d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.blocked','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('user-profile.blocked'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginale42bb3b2fa6677ca35fe243b74094c7d)): ?>
+<?php $attributes = $__attributesOriginale42bb3b2fa6677ca35fe243b74094c7d; ?>
+<?php unset($__attributesOriginale42bb3b2fa6677ca35fe243b74094c7d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale42bb3b2fa6677ca35fe243b74094c7d)): ?>
+<?php $component = $__componentOriginale42bb3b2fa6677ca35fe243b74094c7d; ?>
+<?php unset($__componentOriginale42bb3b2fa6677ca35fe243b74094c7d); ?>
+<?php endif; ?>
             <?php else: ?>
                 <?php if (isset($component)) { $__componentOriginal00ebbd91ce8537898aa962db3e8ab776 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal00ebbd91ce8537898aa962db3e8ab776 = $attributes; } ?>

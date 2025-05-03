@@ -1,4 +1,4 @@
-<!--[if BLOCK]><![endif]--><?php if(! auth()->user()->me($this->user->id) && $this->mutualFollowers->isNotEmpty()): ?>
+<!--[if BLOCK]><![endif]--><?php if(! auth()->user()->me($this->user->id) && $this->mutualFollowers->isNotEmpty() && Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false): ?>
 <div class="mt-4">
     <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>

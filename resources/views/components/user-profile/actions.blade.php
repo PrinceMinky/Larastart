@@ -2,7 +2,9 @@
     @if($this->user->is_me())
         <flux:button wire:navigate :href="route('settings.profile')" size="sm">Edit Profile</flux:button>
     @else
-        <x-user-profile.follow-button :user="$this->user" />
+        @if($this->isBlocked === false)
+            <x-user-profile.follow-button :user="$this->user" />
+        @endif
 
         <x-user-profile.block-button />
     @endif

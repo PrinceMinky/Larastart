@@ -21,7 +21,7 @@ test('a user can visit another user\'s profile and follow them', function () {
         ->call('follow', $user2->id);
 
     // Assert that the follow relationship exists
-    $this->assertDatabaseHas('followers', [
+    $this->assertDatabaseHas('follows', [
         'follower_id' => $user1->id,
         'following_id' => $user2->id,
     ]);
@@ -42,7 +42,7 @@ test('a user can request to follow a private profile and see "Cancel Request"', 
         ->call('follow', $user2->id);
 
     // Ensure follow request is pending in the database
-    $this->assertDatabaseHas('followers', [
+    $this->assertDatabaseHas('follows', [
         'follower_id' => $user1->id,
         'following_id' => $user2->id,
         'status' => 'pending', // Since the profile is private
@@ -67,7 +67,7 @@ test('a user cannot follow themselves', function () {
         ->call('follow', $user->id);
 
     // Assert that the follow relationship does NOT exist
-    $this->assertDatabaseMissing('followers', [
+    $this->assertDatabaseMissing('follows', [
         'follower_id' => $user->id,
         'following_id' => $user->id,
     ]);

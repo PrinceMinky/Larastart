@@ -1,4 +1,4 @@
-@if(! auth()->user()->me($this->user->id) && $this->mutualFollowers->isNotEmpty())
+@if(! auth()->user()->me($this->user->id) && $this->mutualFollowers->isNotEmpty() && Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false)
 <div class="mt-4">
     <flux:heading>Mutual Followers</flux:heading>
     <flux:avatar.group class="**:ring-zinc-100 dark:**:ring-zinc-800">

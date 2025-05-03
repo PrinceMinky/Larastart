@@ -82,5 +82,15 @@ class UserTableSeeder extends Seeder
                 $user->likedPosts()->attach($post->id);
             }
         }
+
+        
+        $followRequesters = User::where('id', '!=', $superAdmin->id)
+            ->inRandomOrder()
+            ->limit(rand(12, 25))
+            ->get();
+
+        foreach ($followRequesters as $requester) {
+            $requester->following()->syncWithoutDetaching([$superAdmin->id => ['status' => 'pending']]);
+        }
     }
 }

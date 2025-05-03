@@ -6,8 +6,10 @@
         <!-- Right Pane (posts etc) -->
         <div class="w-full md:w-3/4">
             <!-- Show Posts -->
-            @if(auth()->user()->hasAccessToUser($this->user))
+            @if(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false)
                 @livewire('user-post', ['userId' => $user->id])
+            @elseif(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === true)
+                <x-user-profile.blocked />
             @else
                 <x-user-profile.private />
             @endif

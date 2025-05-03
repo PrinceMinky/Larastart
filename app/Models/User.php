@@ -126,6 +126,14 @@ class User extends Authenticatable
             return $accessCache[$cacheKey];
         }
     
+        // Check if cache exists before attempting to retrieve it
+        if (!Cache::has($cacheKey)) {
+            return $user->followers()
+                ->where('follower_id', Auth::id())
+                ->wherePivot('status', 'accepted')
+                ->exists();
+        }
+    
         $accessCache[$cacheKey] = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
             return $user->followers()
                 ->where('follower_id', Auth::id())
@@ -139,14 +147,14 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id')
-            ->withPivot('status');
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+            ->withPivot('status')->withTimestamps();
     }
     
     public function following()
     {
-        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')
-            ->withPivot('status');
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+            ->withPivot('status')->withTimestamps();
     }
 
     public function isFollowing(User $user)
@@ -172,7 +180,7 @@ class User extends Authenticatable
 
     public function followRequests()
     {
-        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id')
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
             ->wherePivot('status', 'pending');
     }
 

@@ -1,3 +1,4 @@
+<!-- resources/views/components/user-follow-button.blade.php -->
 @props(['user'])
 
 @if(auth()->check() && auth()->user()->id !== $user->id)

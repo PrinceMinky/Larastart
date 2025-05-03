@@ -20,7 +20,8 @@
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
     <?php else: ?>
-        <?php if (isset($component)) { $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b = $component; } ?>
+        <!--[if BLOCK]><![endif]--><?php if($this->isBlocked === false): ?>
+            <?php if (isset($component)) { $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala83b57cdd6be5e0a881eb76b1b82e91b = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.user-profile.follow-button','data' => ['user' => $this->user]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('user-profile.follow-button'); ?>
@@ -40,6 +41,7 @@
 <?php $component = $__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b; ?>
 <?php unset($__componentOriginala83b57cdd6be5e0a881eb76b1b82e91b); ?>
 <?php endif; ?>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
         <?php if (isset($component)) { $__componentOriginal9f18c7d06c6ea73c5ddb250e47a2229a = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal9f18c7d06c6ea73c5ddb250e47a2229a = $attributes; } ?>

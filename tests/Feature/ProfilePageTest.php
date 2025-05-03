@@ -86,12 +86,12 @@ test('blocking a user unfollows them', function () {
         ->call('toggleBlock');
 
     // Assert: Check that follow relationships were removed
-    $this->assertDatabaseMissing('followers', [
+    $this->assertDatabaseMissing('follows', [
         'user_id' => $authUser->id,
         'following_id' => $blockedUser->id,
     ]);
 
-    $this->assertDatabaseMissing('followers', [
+    $this->assertDatabaseMissing('follows', [
         'user_id' => $blockedUser->id,
         'following_id' => $authUser->id,
     ]);
@@ -116,12 +116,12 @@ test('unblocking a user does not restore follow relationships', function () {
         ->call('toggleBlock');
 
     // Assert: Ensure follow relationships were not restored
-    $this->assertDatabaseMissing('followers', [
+    $this->assertDatabaseMissing('follows', [
         'user_id' => $authUser->id,
         'following_id' => $blockedUser->id,
     ]);
 
-    $this->assertDatabaseMissing('followers', [
+    $this->assertDatabaseMissing('follows', [
         'user_id' => $blockedUser->id,
         'following_id' => $authUser->id,
     ]);

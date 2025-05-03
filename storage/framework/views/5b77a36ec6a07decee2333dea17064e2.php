@@ -1,3 +1,4 @@
+<!-- resources/views/components/user-follow-button.blade.php -->
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];

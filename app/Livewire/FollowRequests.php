@@ -11,7 +11,7 @@ class FollowRequests extends BaseComponent
     #[Computed]
     public function requests()
     {
-        return Auth::user()->followers()->whereStatus('pending')->get();
+        return Auth::user()->followers()->whereStatus('pending')->orderByPivot('created_at', 'desc')->get();
     }
     
     public function accept($requestId)

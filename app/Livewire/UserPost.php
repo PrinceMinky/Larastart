@@ -21,6 +21,7 @@ class UserPost extends BaseComponent
     public $editingPostId = null;
     public $editingContent = '';
     public $likedUsers = [];
+    public $likesSearch = '';
     private $postsCache = null;
 
     public function mount()
@@ -30,8 +31,6 @@ class UserPost extends BaseComponent
         if (Auth::check()) {
             Auth::user()->likedPostsCache = Auth::user()->likedPosts()->pluck('post_id')->toArray();
         }
-
-        $this->preloadFollowData();
     }
 
     #[Computed]
@@ -162,19 +161,61 @@ class UserPost extends BaseComponent
     public function likedBy($postId)
     {
         $post = Post::findOrFail($postId);   
-
+        $authUserId = Auth::id();
+    
+        // Get likes with created_at timestamp and order by newest first
         $likedUsers = $post->likes()
-            ->with(['followers' => function($query) {
-                $query->where('follower_id', Auth::id());
+            ->with(['followers' => function($query) use ($authUserId) {
+                $query->where('follower_id', $authUserId);
             }])
+            ->orderBy('post_like.created_at', 'desc')
             ->get();
         
         Auth::user()->load(['following' => function($query) use ($likedUsers) {
             $query->whereIn('following_id', $likedUsers->pluck('id'));
         }]);
         
+        // Move authenticated user to the top if present in likes
+        $authUserIndex = $likedUsers->search(function($item) use ($authUserId) {
+            return $item->id === $authUserId;
+        });
+        
+        if ($authUserIndex !== false) {
+            $authUser = $likedUsers->pull($authUserIndex);
+            $likedUsers->prepend($authUser);
+        }
+        
         $this->likedUsers = $likedUsers;
+        $this->likesSearch = ''; // Reset search when opening modal
         $this->resetAndShowModal('show-likes');
+    }
+    
+    public function getFilteredLikedUsers()
+    {
+        if (empty($this->likesSearch)) {
+            return $this->likedUsers;
+        }
+        
+        $searchTerm = strtolower($this->likesSearch);
+        $authUserId = Auth::id();
+        
+        // Filter the users but maintain the ordering rules
+        $filteredUsers = collect($this->likedUsers)->filter(function ($user) use ($searchTerm) {
+            return str_contains(strtolower($user->name), $searchTerm) || 
+                   str_contains(strtolower($user->username), $searchTerm);
+        });
+        
+        // Ensure auth user stays at top if present in filtered results
+        $authUserIndex = $filteredUsers->search(function($item) use ($authUserId) {
+            return $item->id === $authUserId;
+        });
+        
+        if ($authUserIndex !== false && $authUserIndex > 0) {
+            $authUser = $filteredUsers->pull($authUserIndex);
+            $filteredUsers->prepend($authUser);
+        }
+        
+        return $filteredUsers;
     }
 
     public function render()
