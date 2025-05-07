@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('follow-requests', FollowRequests::class)->name('follow.requests');
+    Route::get('notifications', null)->name('notifications.index');
+    Route::get('notifications/{id}', null)->name('notifications.show');
 
     Route::get('users', UserSearch::class)->name('users.list');
     Route::get('profile/{username}', UserProfile::class)->name('profile.show');

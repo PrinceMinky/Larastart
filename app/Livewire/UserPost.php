@@ -7,6 +7,7 @@ use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
 use App\Models\Post;
 use App\Models\User;
+use App\Notifications\LikedPost;
 use App\Traits\HasFollowers;
 use App\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
@@ -141,18 +142,42 @@ class UserPost extends BaseComponent
     public function togglePostLike($postId)
     {
         $post = Post::findOrFail($postId);
+        $post->load('user');
+        
         $user = Auth::user();
     
         if ($user->hasLiked($post)) {
             $user->likedPosts()->detach($post->id);
+    
+            
+            // Remove the notification when unliking
+            if ($user->id !== $post->user_id) {
+                $notification = $post->user->notifications()
+                    ->whereJsonContains('data->user_id', $user->id)
+                    ->whereJsonContains('data->post_id', $post->id)
+                    ->whereJsonContains('data->action', '{name} liked your post.')
+                    ->first();
+        
+                if ($notification) {
+                    $notification->delete();
+                }
+
+    
+                $this->dispatch('refreshNotifications');
+            }
         } else {
             $user->likedPosts()->attach($post->id);
-            
-            broadcast(new PostLiked($post, $user))->toOthers();
+    
+            // Send notification only if the user is not liking their own post
+            if ($user->id !== $post->user_id) {
+                $post->user->notify(new LikedPost($user, $post));
+                $this->dispatch('refreshNotifications');
+            }
         }
-        
+    
+        // Clear caches
         $this->postsCache = null;
-        
+    
         if (isset($user->likedPostsCache)) {
             unset($user->likedPostsCache);
         }

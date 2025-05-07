@@ -6,13 +6,13 @@ namespace App\Models;
 
 use App\Enums\Country;
 use App\Traits\HasPosts;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -164,18 +164,6 @@ class User extends Authenticatable
         }
         
         return $this->following()->where('following_id', $user->id)->exists();
-    }
-    
-    public function follow(User $user)
-    {
-        if (!$this->isFollowing($user)) {
-            $this->following()->attach($user->id);
-        }
-    }
-
-    public function unfollow(User $user)
-    {
-        $this->following()->detach($user->id);
     }
 
     public function followRequests()

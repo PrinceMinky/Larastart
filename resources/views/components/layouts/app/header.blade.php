@@ -39,13 +39,7 @@
 
         @auth
         <flux:navbar class="-mb-px max-lg:hidden">
-            @if($followRequestCount > 0)
-            <flux:navbar.item badge="{{ $followRequestCount }}" :href="route('follow.requests')" :current="request()->routeIs('follow.requests')" wire:navigate>
-                {{ __('Follow Requests') }}
-            </flux:navbar.item>
-            
-            <flux:separator vertical />
-            @endif
+            @livewire('Notifications')
         </flux:navbar>
         @endauth
 

@@ -1,6 +1,6 @@
 <div>
     <!-- Post Form -->
-    @if(auth()->user()->me($this->userId))
+    @if(Auth::user()->me($this->userId))
     <flux:card size="sm" class="mb-4">
         <form wire:submit="post" class="flex flex-col justify-between gap-2" x-data="{ focused: false, status: '' }">
             <flux:textarea

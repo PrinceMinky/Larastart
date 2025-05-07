@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Notifications\AcceptedFollowRequest;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
@@ -11,32 +12,89 @@ class FollowRequests extends BaseComponent
     #[Computed]
     public function requests()
     {
-        return Auth::user()->followers()->whereStatus('pending')->orderByPivot('created_at', 'desc')->get();
+        return Auth::user()
+            ->followers()
+            ->whereStatus('pending')
+            ->orderByPivot('created_at', 'desc')
+            ->get();
     }
-    
+
     public function accept($requestId)
     {
-        $request = Auth::user()->followers()
-            ->wherePivot('follower_id', $requestId) 
-            ->wherePivot('status', 'pending')
-            ->first();
+        $user = Auth::user();
+        $request = $this->getPendingFollowRequest($user, $requestId);
+
+        if (! $request) return;
 
         $request->pivot->update(['status' => 'accepted']);
-    
+
+        $this->updateNotification($user, $requestId, [
+            'action' => '{name} is now following you.',
+            'url' => route('profile.show', ['username' => $request->username]),
+            'read_at' => null
+        ]);
+
+        $request->notify(new AcceptedFollowRequest($user));
+
         $this->toast([
             'text' => 'Follow request approved.',
-            'variant' => 'success'
+            'variant' => 'success',
         ]);
+
+        $this->dispatch('refreshNotifications');
     }
-    
+
     public function deny($requestId)
     {
-        Auth::user()->followers()->detach($requestId);
-    
+        $user = Auth::user();
+        $request = $this->getPendingFollowRequest($user, $requestId);
+
+        if (! $request) return;
+
+        $user->followers()->detach($requestId);
+
+        $this->deleteNotification($user, $requestId);
+
         $this->toast([
             'text' => 'Follow request denied.',
-            'variant' => 'danger'
+            'variant' => 'danger',
         ]);
+
+        $this->dispatch('refreshNotifications');
+    }
+
+    protected function getPendingFollowRequest($user, $requestId)
+    {
+        return $user->followers()
+            ->wherePivot('follower_id', $requestId)
+            ->wherePivot('status', 'pending')
+            ->first();
+    }
+
+    protected function updateNotification($user, $requestId, array $newData)
+    {
+        $notification = $user->notifications()
+            ->whereJsonContains('data->user_id', $requestId)
+            ->whereJsonContains('data->action', '{name} requested to follow you.')
+            ->first();
+
+        if ($notification) {
+            $notification->update([
+                'data' => array_merge($notification->data, $newData),
+            ]);
+        }
+    }
+
+    protected function deleteNotification($user, $requestId)
+    {
+        $notification = $user->notifications()
+            ->whereJsonContains('data->user_id', $requestId)
+            ->whereJsonContains('data->action', '{name} requested to follow you.')
+            ->first();
+
+        if ($notification) {
+            $notification->delete();
+        }
     }
 
     public function render()

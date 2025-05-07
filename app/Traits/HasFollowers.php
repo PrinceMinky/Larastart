@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Traits\WithModal;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 
@@ -16,13 +17,13 @@ trait HasFollowers
     public $followStatuses = [];
     public $modalType = '';
     public $search = '';
-
+    
     public function follow($userId)
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-
+    
         if (Auth::id() === $userId) {
             return;
         }
@@ -32,6 +33,8 @@ trait HasFollowers
     
         Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
         $this->cacheFollowRelationships();
+
+        $user->notify(new UserFollowed(Auth::user(), $status));
     }
     
     public function unfollow($userId)

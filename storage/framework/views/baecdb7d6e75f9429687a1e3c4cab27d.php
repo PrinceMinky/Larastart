@@ -1,6 +1,6 @@
 <div>
     <!-- Post Form -->
-    <!--[if BLOCK]><![endif]--><?php if(auth()->user()->me($this->userId)): ?>
+    <!--[if BLOCK]><![endif]--><?php if(Auth::user()->me($this->userId)): ?>
     <?php if (isset($component)) { $__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::card.index','data' => ['size' => 'sm','class' => 'mb-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

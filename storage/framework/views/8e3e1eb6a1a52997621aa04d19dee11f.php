@@ -24,7 +24,6 @@
 
         <!-- Right Pane (posts etc) -->
         <div class="w-full md:w-3/4">
-            <!-- Show Posts -->
             <!--[if BLOCK]><![endif]--><?php if(Auth::user()->hasAccessToUser($this->user) && $this->isBlocked === false): ?>
                 <?php
 $__split = function ($name, $params = []) {

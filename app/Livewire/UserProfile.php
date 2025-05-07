@@ -23,15 +23,7 @@ class UserProfile extends BaseComponent
             ->with(['posts'])
             ->firstOrFail();
         
-        if (Auth::check()) {
-            $this->cacheBlockStatusData();
-            
-            if ($this->isBlockedBy($this->user->id, Auth::id())) {
-                return redirect()->route('error.404'); 
-            }
-        }
-
-        $this->initializeBlockStatus();
+        $this->prepareUserAccess();
     }
         
     public function render()

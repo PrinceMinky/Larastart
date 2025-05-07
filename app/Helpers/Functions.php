@@ -45,3 +45,28 @@ if (!function_exists('format_post')) {
         ];
     }
 }
+
+if (!function_exists('replacePlaceholders')) {
+    function replacePlaceholders(string $text, array $data): string
+    {
+        preg_match_all('/{(\w+)}/', $text, $matches);
+
+        foreach ($matches[1] as $field) {
+            foreach ($data as $key => $value) {
+                if (is_array($value) && isset($value[$field])) {
+                    // e.g. $data['user']['username']
+                    $text = str_replace("{{$field}}", $value[$field], $text);
+                } elseif (is_object($value) && isset($value->{$field})) {
+                    // e.g. $data['user']->username
+                    $text = str_replace("{{$field}}", $value->{$field}, $text);
+                } elseif ($key === $field) {
+                    // direct scalar fields
+                    $text = str_replace("{{$field}}", $value, $text);
+                }
+            }
+        }
+
+        return $text;
+    }
+}
+
