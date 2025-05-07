@@ -5,6 +5,7 @@ A modern Laravel starter application featuring Livewire components with built-in
 ## Features
 
 - User authentication and profiles
+- User Notifications
 - Follow/unfollow system
 - User blocking functionality
 - Mutual followers detection
