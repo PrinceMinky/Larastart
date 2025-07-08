@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Notifications\LikedPost;
 use App\Models\Post;
 use App\Models\User;
 use App\Notifications\UserFollowed;
@@ -17,11 +18,11 @@ class UserTableSeeder extends Seeder
     public function run(): void
     {
         $superAdmin = User::create([
-            'name' => 'Michael King',
-            'username' => 'michael.king',
-            'email' => 'michael.king@larastart.com',
+            'name' => 'Super Admin',
+            'username' => 'super.admin',
+            'email' => 'super.admin@larastart.com',
             'date_of_birth' => '1988-03-09',
-            'country' => 'UKG',
+            'country' => 'GB',
             'email_verified_at' => now(),
             'password' => 'password',
             'is_private' => 1,
@@ -29,11 +30,11 @@ class UserTableSeeder extends Seeder
         $superAdmin->assignRole('Super Admin');
     
         $awesomeAdmin = User::create([
-            'name' => 'Rachael Johnson',
-            'username' => 'rachael.johnson',
-            'email' => 'rachael.johnson@larastart.com',
+            'name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@larastart.com',
             'date_of_birth' => '1988-10-25',
-            'country' => 'UKG',
+            'country' => 'GB',
             'email_verified_at' => now(),
             'password' => 'password',
         ]);
@@ -45,7 +46,8 @@ class UserTableSeeder extends Seeder
             $superAdminPosts = Post::factory(2)->create(['user_id' => $superAdmin->id]);
         
             User::factory(200)->create()->each(function (User $user) {
-                $user->assignRole('User');
+                $role = (mt_rand(1, 100) <= 10) ? 'Admin' : 'User';
+                $user->assignRole($role);
         
                 Post::factory(rand(0, 10))->create([
                     'user_id' => $user->id
@@ -83,13 +85,14 @@ class UserTableSeeder extends Seeder
             foreach ($likingUsers as $user) {
                 foreach ($adminPosts as $post) {
                     $user->likedPosts()->attach($post->id);
+                    $post->user->notify(new LikedPost($user, $post));
                 }
                 foreach ($superAdminPosts as $post) {
                     $user->likedPosts()->attach($post->id);
+                    $post->user->notify(new LikedPost($user, $post));
                 }
             }
-    
-            
+              
             $followRequesters = User::where('id', '!=', $superAdmin->id)
                 ->inRandomOrder()
                 ->limit(rand(12, 25))

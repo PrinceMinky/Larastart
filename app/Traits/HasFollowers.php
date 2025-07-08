@@ -2,230 +2,105 @@
 
 namespace App\Traits;
 
-use App\Traits\WithModal;
 use App\Models\User;
-use App\Notifications\UserFollowed;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Cache;
 
 trait HasFollowers
 {
-    use WithModal;
-
-    public $followingIds = [];
-    public $followerIds = [];
-    public $followStatuses = [];
-    public $modalType = '';
-    public $search = '';
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+            ->withPivot('status')->withTimestamps();
+    }
     
-    public function follow($userId)
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+            ->withPivot('status')->withTimestamps();
+    }
+
+    public function isFollowing(User $user)
+    {
+        if ($this->relationLoaded('following')) {
+            return $this->following->contains('id', $user->id);
+        }
+        
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    public function followRequests()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+            ->wherePivot('status', 'pending');
+    }
+
+    public function getMutualFollowersProperty()
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-    
-        if (Auth::id() === $userId) {
-            return;
-        }
-    
-        $user = User::where('id', $userId)->select('id', 'is_private')->firstOrFail();
-        $status = $user->is_private ? 'pending' : 'accepted';
-    
-        Auth::user()->following()->syncWithoutDetaching([$user->id => ['status' => $status]]);
-        $this->cacheFollowRelationships();
-
-        $user->notify(new UserFollowed(Auth::user(), $status));
-    }
-    
-    public function unfollow($userId)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        if (Auth::id() === $userId) {
-            return;
-        }
-
-        $user = User::where('id', $userId)->select('id', 'is_private')->firstOrFail();
-        Auth::user()->following()->detach($user->id);
-        
-        if ($this->getFollowing()->isEmpty()) {
-            if (method_exists($this, 'resetAndCloseModal')) {
-                $this->resetAndCloseModal();
-            }
-        }
-        $this->cacheFollowRelationships();
-    }
-
-    #[Computed]
-    public function followingCount()
-    {
-        return $this->user->following->where('pivot.status', 'accepted')->count();
-    }
-
-    #[Computed]
-    public function followerCount()
-    {
-        return $this->user->followers->where('pivot.status', 'accepted')->count();
-    }
-
-    public function getFollowers()
-    {
-        $authUserId = Auth::id();
-    
-        $followers = $this->user->followers()
-        ->wherePivot('status', 'accepted')
-        ->orderByPivot('created_at', 'desc')
-        ->get(); 
-    
-        $followers = $followers->partition(fn ($user) => $user->id === Auth::id())->flatten();
-    
-        if (!empty($this->search)) {
-            $searchTerm = strtolower($this->search);
-            $followers = $followers->filter(fn ($user) => 
-                str_contains(strtolower($user->name), $searchTerm) ||
-                str_contains(strtolower($user->username), $searchTerm)
-            );
-        }
-    
-        return $followers->values();
-    }
-
-    public function getFollowing()
-    {
-        $authUserId = Auth::id();
-    
-        $following = $this->user->following()
-        ->wherePivot('status', 'accepted')
-        ->orderByPivot('created_at', 'desc')
-        ->get(); 
-    
-        $following = $following->partition(fn ($user) => $user->id === Auth::id())->flatten();
-    
-        if (!empty($this->search)) {
-            $searchTerm = strtolower($this->search);
-            $following = $following->filter(fn ($user) => 
-                str_contains(strtolower($user->name), $searchTerm) ||
-                str_contains(strtolower($user->username), $searchTerm)
-            );
-        }
-    
-        return $following->values();
-    }
-
-    protected function preloadFollowData()
-    {
-        $authUser = Auth::user()->load(['followers:id', 'following:id']); 
-
-        $this->followingIds = $authUser->following->pluck('id')->toArray();
-        $this->followerIds = $authUser->followers->pluck('id')->toArray();
-        
-        $this->followStatuses = Auth::user()->following()
-            ->select('following_id', 'status')
-            ->get()
-            ->pluck('status', 'following_id')
-            ->toArray();
-    }
-
-    public function isFollowing($userId)
-    {
-        if (!Auth::check()) {
-            return false;
-        }
-        
-        if (!isset($this->followingIds) || empty($this->followingIds)) {
-            $this->preloadFollowData();
-        }
-        
-        return in_array($userId, $this->followingIds ?? []);
-    }
-
-    public function getFollowStatus($userId)
-    {
-        if (!Auth::check()) {
-            return null;
-        }
-        
-        if (!isset($this->followStatuses) || empty($this->followStatuses)) {
-            $this->preloadFollowData();
-        }
-        
-        return $this->followStatuses[$userId] ?? null;
-    }
-
-    public function isBeingFollowedBy($userId)
-    {
-        if (!Auth::check()) {
-            return false;
-        }
-        
-        if (!isset($this->followerIds) || empty($this->followerIds)) {
-            $this->preloadFollowData();
-        }
-        
-        return in_array($userId, $this->followerIds ?? []);
-    }
-
-    public function getFollowButtonState($userId)
-    {
-        if (!Auth::check() || Auth::id() === $userId) {
-            return null;
-        }
-        
-        $isFollowing = $this->isFollowing($userId);
-        $followStatus = $this->getFollowStatus($userId);
-        $isBeingFollowedBy = $this->isBeingFollowedBy($userId);
-        
-        if ($isFollowing && $followStatus === 'accepted') {
-            return 'following';
-        } elseif ($isFollowing && $followStatus === 'pending') {
-            return 'pending';
-        } elseif ($isBeingFollowedBy && !$isFollowing) {
-            return 'follow_back';
-        } else {
-            return 'follow';
-        }
-    }
-
-    protected function cacheFollowRelationships()
-    {
-        if (!Auth::check()) {
-            return;
-        }
-
-        $currentUser = Auth::user();
-        $currentUser->setRelation('following', $currentUser->following()->get());
-        $currentUser->setRelation('followers', $currentUser->followers()->get());
-        
-        if (isset($this->user) && $this->user->id !== $currentUser->id) {
-            $this->user->setRelation('followers', $this->user->followers()->get());
-            $this->user->setRelation('following', $this->user->following()->get());
-        }
-
-        $this->preloadFollowData();
-    }
-
-    #[Computed]
-    public function mutualFollowers()
-    {
-        if (!Auth::check() || !isset($this->user)) {
             return collect(); 
         }
 
         $profileFollowers = $this->user->followers->pluck('id');
+
         $authFollowers = Auth::user()->followers->pluck('id');
+
         $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
 
-        $mutualFollowers = User::whereIn('id', $mutualFollowerIds)->get();
-
-        return $mutualFollowers;
+        return User::whereIn('id', $mutualFollowerIds)->get();
     }
-    
-    public function showModal($type)
+
+    public function followsMe()
     {
-        $this->modalType = $type;
-        $this->search = '';
-        $this->resetAndShowModal('showModal');
+        return $this->following->contains(Auth::id());
+    }
+
+    /**
+     * Determine if authenticated user is the selected user or has a specific permission.
+     * If permission is null, bypass the check.
+     */
+    public function hasAccessToUser($user, $permissions = null)
+    {
+        static $accessCache = [];
+    
+        if ($permissions !== null) {
+            if (is_array($permissions)) {
+                foreach ($permissions as $permission) {
+                    if (Auth::user()->can($permission)) {
+                        return true;
+                    }
+                }
+            } elseif (Auth::user()->can($permissions)) {
+                return true;
+            }
+        }
+    
+        if ($this->me($user->id) || !$user->is_private) {
+            return true;
+        }
+    
+        $cacheKey = 'access_' . Auth::id() . '_' . $user->id;
+    
+        if (array_key_exists($cacheKey, $accessCache)) {
+            return $accessCache[$cacheKey];
+        }
+    
+        // Check if cache exists before attempting to retrieve it
+        if (!Cache::has($cacheKey)) {
+            return $user->followers()
+                ->where('follower_id', Auth::id())
+                ->wherePivot('status', 'accepted')
+                ->exists();
+        }
+    
+        $accessCache[$cacheKey] = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
+            return $user->followers()
+                ->where('follower_id', Auth::id())
+                ->wherePivot('status', 'accepted')
+                ->limit(1)
+                ->exists();
+        });
+    
+        return $accessCache[$cacheKey];
     }
 }

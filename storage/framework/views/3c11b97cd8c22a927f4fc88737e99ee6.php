@@ -23,13 +23,13 @@
         <?php if(auth()->user()->hasLiked($post)): ?>
             you
             <!--[if BLOCK]><![endif]--><?php if($post->likes_count > 1): ?>
-                <span wire:click="likedBy(<?php echo e($post->id); ?>)" class="cursor-pointer">
+                <span wire:click="showLikes(<?php echo e($post->id); ?>)" class="cursor-pointer">
                     and <?php echo e($post->likes_count - 1); ?> <?php echo e(Str::plural('other', $post->likes_count - 1)); ?>
 
                 </span>
             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
         <?php else: ?>
-            <span wire:click="likedBy(<?php echo e($post->id); ?>)" class="cursor-pointer">
+            <span wire:click="showLikes(<?php echo e($post->id); ?>)" class="cursor-pointer">
                 <?php echo e($post->likes_count); ?> <?php echo e(Str::plural('other', $post->likes_count)); ?>
 
             </span>

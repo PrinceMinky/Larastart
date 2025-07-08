@@ -48,10 +48,4 @@
             <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
     @endif
-
-    @if(env('APP_DEBUG') === true)
-        <flux:button wire:click="loginById(1)">Login as: Super Admin</flux:button>
-    
-        <flux:button wire:click="loginById(2)">Login as: Awesome Admin</flux:button>
-    @endif
 </div>

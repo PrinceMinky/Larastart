@@ -4,18 +4,14 @@ namespace App\Livewire;
 
 use App\Models\User;
 use App\Livewire\BaseComponent;
-use App\Traits\HasFollowers;
-use App\Traits\WithBlockedUser;
-use App\Traits\WithModal;
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Traits\Blockable;
+use App\Livewire\Traits\HasFollowers;
 
 class UserProfile extends BaseComponent
 {
-    use WithBlockedUser, HasFollowers;
+    use Blockable, HasFollowers;
 
     public User $user;
-
-    public $modalType = '';
     
     public function mount($username)
     {

@@ -1,61 +1,58 @@
-<div>
-    <flux:dropdown position="bottom" align="end">
-        <flux:navbar.item :badge="$unreadCount" badge-color="green">
-                <flux:icon.bell />
-        </flux:navbar.item>
+<section>
+    <x-page-heading>
+        <x-slot name="heading">Notifications</x-slot>
+        <x-slot name="subheading">An overview of your notifications</x-slot>
+    </x-page-heading>
 
-        <flux:navmenu class="w-110 max-h-96 overflow-y-auto">
-            <div class="flex justify-between items-center p-2">
-                <flux:heading>Notifications</flux:heading>
-
-                @if($unreadCount > 0)
-                <flux:dropdown position="bottom" align="end">
-                    <flux:button square icon="cog" variant="subtle" size="sm" />
-
-                    <flux:menu>
-                        <flux:menu.item wire:click="markAllAsRead">Mark as read</flux:menu.item>
-                    </flux:menu>
-                </flux:dropdown>
+    <div class="mt-4 flex flex-col gap-2">
+        @if(count($processedNotifications) > 0)
+            <div class="mb-4 flex justify-end items-center">                
+                @if(Auth::user()->unreadNotifications->count() > 0)
+                    <flux:button variant="primary" size="sm" wire:click="markAllAsRead">
+                        Mark All as Read
+                    </flux:button>
                 @endif
             </div>
             
-            @forelse($processedNotifications as $notification)
-                <flux:navmenu.item 
-                    href="{{ $notification['url'] }}"
-                    wire:click="markAsRead('{{ $notification['id'] }}')"
-                    wire:navigate
-                    class="relative"
-                    :key="$notification['id']"
-                >
-                    
-                <div class=" flex items-center space-x-3">
-                    <flux:avatar :name="$notification['user']['name']" color="auto" size="sm" />
-                    <div class="flex flex-col gap-0">
-                        <flux:text>{{ replacePlaceholders($notification['data']['action'], [$notification['data'], 'user' => $notification['user']]) }}</flux:text>
-                        <flux:text class="text-xs">{{ ($notification['timeAgo'] === "0 seconds ago") ? 'Just Now' : $notification['timeAgo'] }}</flux:text>
+            @foreach ($processedNotifications as $notification)
+                <flux:card 
+                    :key="$notification['id']" 
+                    class="relative {{ !$notification['isRead'] ? 'border-l-4 border-l-primary-500' : '' }}"
+                    >
+                    <div class="flex items-center space-x-3">
+                        <flux:avatar :name="$notification['user']->name" color="auto" size="sm" />
+
+                        <div class="flex flex-col gap-0"
+                            href="{{ $notification['url'] }}"
+                            wire:click="markAsRead('{{ $notification['id'] }}')"
+                            wire:navigate
+                        >
+                            <flux:text class="cursor-pointer">{{ replacePlaceholders($notification['data']['description'], [$notification['data'], 'user' => $notification['user']]) }}</flux:text>
+                            <flux:text variant="muted" class="cursor-pointer text-xs">{{ $notification['timeAgo'] }}</flux:text>
+                        </div>
+                        
+                        <div class="ml-auto flex items-center space-x-2">
+                            @if(!$notification['isRead'])
+                                <flux:button variant="ghost" size="xs" wire:click="markAsRead('{{ $notification['id'] }}')" icon="check" tooltip="Mark as read" inset="top bottom" square class="cursor-pointer" />
+                            @endif
+
+                            <flux:button variant="ghost" size="xs" wire:click="deleteNotification('{{ $notification['id'] }}')" icon="x-circle" tooltip="Delete Notification" inset="top bottom" square class="cursor-pointer" />
+                        </div>
                     </div>
-                </div>
-
-                @if(! $notification['isRead'])
-                <div class="absolute right-0">
-                    <span class="flex w-2 h-2 me-2 bg-red-500 rounded-full"></span>
-                </div>
-                @endif
-                </flux:navmenu.item>
-            @empty
-                <div class="px-4 py-6 text-center">
-                    <flux:icon.inbox class="mx-auto" />
-                    <flux:text class="mt-2">No notifications yet</flux:text>
-                </div>          
-            @endforelse
+                </flux:card>
+            @endforeach
             
-            @if(count($processedNotifications) >= $notificationLimit && !$showAllNotifications)
-                <flux:navmenu.separator />
-
-                <div class="text-center p-2 cursor-pointer" wire:click="toggleShowAll">
-                    <flux:text>View all notifications</flux:text>
+            <x-infinite-scroll-trigger
+                :has-more="$hasMoreNotifications"
+                handle="loadMoreNotifications"
+                text="Loading notifications."
+            />
+        @else
+            <flux:card>
+                <div class="py-4 text-center">
+                    <flux:text variant="muted">No notifications yet</flux:text>
                 </div>
-            @endif
-        </flux:navmenu>
-    </flux:dropdown>
-</div>
+            </flux:card>
+        @endif
+    </div>
+</section>

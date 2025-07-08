@@ -39,7 +39,7 @@
 
         @auth
         <flux:navbar class="-mb-px max-lg:hidden">
-            @livewire('Notifications')
+            @livewire('NotificationsDropdown')
         </flux:navbar>
         @endauth
 

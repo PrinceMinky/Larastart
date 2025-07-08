@@ -23,9 +23,10 @@ class AcceptedFollowRequest extends Notification
     {
         return [
             'user_id' => $this->following->id,
+
             'icon' => 'user',
-            'action' => '{name} has accepted your follow request.',
-            'url' => route('profile.show', ['username' => $this->following->username]),
+            'description' => '{name} has accepted your follow request.',
+            'user_profile_url' => route('profile.show', ['username' => $this->following->username]),
         ];
     }
 }

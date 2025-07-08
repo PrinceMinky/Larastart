@@ -16,6 +16,10 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+    
+                    @can(['view kanban boards'])
+                        <flux:navlist.item icon="clipboard-document-list" :href="route('admin.kanban_list')" :current="request()->routeIs('admin.kanban_list') || request()->routeIs('admin.kanban_board')" wire:navigate>{{ __('Kanban Boards') }}</flux:navlist.item>
+                    @endcan
                 </flux:navlist.group>
 
                 @canany(['view users', 'view roles', 'view permissions'])

@@ -5,5 +5,5 @@
         <flux:text>No posts created.</flux:text>
     @endforelse
 
-    <x-user-post.likes-modal />
+    <x-likes.modal />
 </div>

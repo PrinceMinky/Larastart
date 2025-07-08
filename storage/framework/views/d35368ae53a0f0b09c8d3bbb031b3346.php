@@ -229,7 +229,7 @@
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('Notifications');
+[$__name, $__params] = $__split('NotificationsDropdown');
 
 $__html = app('livewire')->mount($__name, $__params, 'lw-1204508470-0', $__slots ?? [], get_defined_vars());
 

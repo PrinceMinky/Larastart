@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleAndPermissionTableSeeder::class,
             UserTableSeeder::class,
+            KanbanTableSeeder::class
         ]);
     }
 }

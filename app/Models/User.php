@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Enums\Country;
+use App\Traits\Blockable;
+use App\Traits\HasComments;
+use App\Traits\HasFollowers;
+use App\Traits\HasLikes;
 use App\Traits\HasPosts;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasPosts, HasRoles, Notifiable;
+    use HasFactory, Blockable, HasComments, HasFollowers, HasLikes, HasPosts, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
+        'email_verified_at',
         'date_of_birth',
         'country',
         'profile_picture',
@@ -96,134 +99,8 @@ class User extends Authenticatable
         return Auth::user()->id === $this->id;
     }
 
-    /**
-     * Determine if authenticated user is the selected user or has a specific permission.
-     * If permission is null, bypass the check.
-     */
-    public function hasAccessToUser($user, $permissions = null)
+    public function kanbanBoards()
     {
-        static $accessCache = [];
-    
-        if ($permissions !== null) {
-            if (is_array($permissions)) {
-                foreach ($permissions as $permission) {
-                    if (Auth::user()->can($permission)) {
-                        return true;
-                    }
-                }
-            } elseif (Auth::user()->can($permissions)) {
-                return true;
-            }
-        }
-    
-        if ($this->me($user->id) || !$user->is_private) {
-            return true;
-        }
-    
-        $cacheKey = 'access_' . Auth::id() . '_' . $user->id;
-    
-        if (array_key_exists($cacheKey, $accessCache)) {
-            return $accessCache[$cacheKey];
-        }
-    
-        // Check if cache exists before attempting to retrieve it
-        if (!Cache::has($cacheKey)) {
-            return $user->followers()
-                ->where('follower_id', Auth::id())
-                ->wherePivot('status', 'accepted')
-                ->exists();
-        }
-    
-        $accessCache[$cacheKey] = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
-            return $user->followers()
-                ->where('follower_id', Auth::id())
-                ->wherePivot('status', 'accepted')
-                ->limit(1)
-                ->exists();
-        });
-    
-        return $accessCache[$cacheKey];
-    }
-
-    public function followers()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
-            ->withPivot('status')->withTimestamps();
-    }
-    
-    public function following()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
-            ->withPivot('status')->withTimestamps();
-    }
-
-    public function isFollowing(User $user)
-    {
-        if ($this->relationLoaded('following')) {
-            return $this->following->contains('id', $user->id);
-        }
-        
-        return $this->following()->where('following_id', $user->id)->exists();
-    }
-
-    public function followRequests()
-    {
-        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
-            ->wherePivot('status', 'pending');
-    }
-
-    public function getMutualFollowersProperty()
-    {
-        if (!Auth::check()) {
-            return collect(); 
-        }
-
-        $profileFollowers = $this->user->followers->pluck('id');
-
-        $authFollowers = Auth::user()->followers->pluck('id');
-
-        $mutualFollowerIds = $profileFollowers->intersect($authFollowers);
-
-        return User::whereIn('id', $mutualFollowerIds)->get();
-    }
-
-    public function followsMe()
-    {
-        return $this->following->contains(Auth::id());
-    }
-
-    public function likes()
-    {
-        return $this->belongsToMany(User::class, 'post_like')->withTimestamps();
-    }
-
-    public function likedPosts()
-    {
-        return $this->belongsToMany(Post::class, 'post_like')->withTimestamps();
-    }
-
-    public function hasLiked($post)
-    {
-        $postId = $post instanceof \Illuminate\Database\Eloquent\Model ? $post->id : $post;
-        
-        if ($post instanceof \Illuminate\Database\Eloquent\Model && $post->relationLoaded('likes')) {
-            return $post->likes->contains('id', $this->id);
-        }
-        
-        if (!isset($this->likedPostsCache)) {
-            $this->likedPostsCache = $this->likedPosts()->pluck('post_id')->toArray();
-        }
-        
-        return in_array($postId, $this->likedPostsCache);
-    }
-
-    public function blockedUsers()
-    {
-        return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id');
-    }
-
-    public function blockedByUsers()
-    {
-        return $this->belongsToMany(User::class, 'blocked_users', 'blocked_user_id', 'user_id');
+        return $this->belongsToMany(KanbanBoard::class, 'kanban_board_user')->withTimestamps();
     }
 }

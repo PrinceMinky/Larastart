@@ -1,4 +1,4 @@
-<flux:modal name="showModal" class="md:w-96">
+<flux:modal name="follow-modal" class="w-full">
     <div class="flex flex-col gap-2">
         <flux:heading size="lg">{{ $this->modalType === 'following' ? 'Following' : 'Followers' }}</flux:heading>
 

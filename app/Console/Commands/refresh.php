@@ -7,14 +7,20 @@ use Illuminate\Support\Facades\Process;
 
 class Refresh extends Command
 {
-    protected $signature = 'app:refresh-db';
-    protected $description = 'Optimize cache and refresh database with seeds';
+    protected $signature = 'app:refresh-db {--seed : Run database seeding}';
+    protected $description = 'Optimize cache and refresh database, optionally with seeding';
 
     public function handle()
     {
         $this->call('optimize:clear');
 
-        $this->call('migrate:refresh', ['--seed' => true, '--force' => true]);
+        $options = ['--force' => true];
+
+        if ($this->option('seed')) {
+            $options['--seed'] = true;
+        }
+
+        $this->call('migrate:refresh', $options);
 
         $this->info('Database and cache refreshed successfully!');
 

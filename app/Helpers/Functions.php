@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+
 if(! function_exists('first_letter'))
 {
     function first_letter($word)
@@ -49,7 +52,15 @@ if (!function_exists('format_post')) {
 if (!function_exists('replacePlaceholders')) {
     function replacePlaceholders(string $text, array $data): string
     {
+        if (empty($text) || empty($data)) {
+            return $text;
+        }
+
         preg_match_all('/{(\w+)}/', $text, $matches);
+
+        if (empty($matches[1])) {
+            return $text;
+        }
 
         foreach ($matches[1] as $field) {
             foreach ($data as $key => $value) {
@@ -70,3 +81,59 @@ if (!function_exists('replacePlaceholders')) {
     }
 }
 
+if (!function_exists('formatNotificationText')) {
+    function formatNotificationText(string $text, array $data): array
+    {
+        // First get the raw text with placeholders replaced
+        $rawText = replacePlaceholders($text, $data);
+        
+        // For HTML formatting, we'll handle special cases
+        $htmlText = $rawText;
+        
+        // Special case for user names, replace with links
+        if (isset($data['user']) && isset($data['user']->username) && isset($data['user']->name)) {
+            $userProfileUrl = route('profile.show', ['username' => $data['user']->username]);
+            $userName = $data['user']->name;
+            
+            // Replace the name with a link to user profile
+            $htmlText = str_replace(
+                $userName, 
+                '<a href="' . $userProfileUrl . '" class="text-primary-600 hover:underline">' . $userName . '</a>', 
+                $htmlText
+            );
+        }
+        
+        return [
+            'raw' => $rawText,
+            'html' => $htmlText
+        ];
+    }
+}
+
+if (!function_exists('carbon_parse')) {
+    /**
+     * Return a Carbon instance or null for a date/time string or object.
+     *
+     * @param \DateTimeInterface|string|null $value
+     * @return Carbon|null
+     */
+    function carbon_parse($value): ?Carbon
+    {
+        if (blank($value)) {
+            return null;
+        }
+
+        try {
+            return Carbon::make($value);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+}
+
+if (!function_exists('str_plural')) {
+    function str_plural($value, $count)
+    {
+        return Str::plural($value, $count);
+    }
+}

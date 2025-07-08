@@ -53,26 +53,6 @@ class Login extends Component
     }
 
     /**
-     * Login by id
-     */
-    public function loginById($id): void
-    {
-        if (env('APP_DEBUG') !== true) {
-            abort(403);
-        }
-
-        $user = User::find($id);
-        Auth::login($user, true);
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-    }
-
-    /**
      * Ensure the authentication request is not rate limited.
      */
     protected function ensureIsNotRateLimited(): void

@@ -19,6 +19,8 @@
         "lightningcss-linux-x64-gnu": "^1.29.1"
     },
     "devDependencies": {
+        "@alpinejs/sort": "^3.14.9",
+        "alpinejs": "^3.14.9",
         "pusher-js": "^8.4.0"
     }
 }

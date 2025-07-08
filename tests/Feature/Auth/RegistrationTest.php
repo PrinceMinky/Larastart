@@ -23,7 +23,7 @@ test('new users can register', function () {
         ->set('password', 'password')
         ->set('username', 'username')
         ->set('date_of_birth', '1988-09-03 00:00:00')
-        ->set('country', 'USA')
+        ->set('country', 'US')
         ->set('password_confirmation', 'password')
         ->call('register');
 

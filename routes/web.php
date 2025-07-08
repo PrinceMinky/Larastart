@@ -1,12 +1,18 @@
 <?php
 
 use App\Livewire\UserSearch;
+
+use App\Livewire\Admin\KanbanBoards\Index as KanbanBoardsList;
+use App\Livewire\Admin\KanbanBoards\Show as KanbanBoardShow;
+use App\Livewire\Admin\KanbanBoards\Card as KanbanBoardCard;
+
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\UserManagement\Permissions;
 use App\Livewire\Admin\UserManagement\Roles;
 use App\Livewire\Admin\UserManagement\UserList;
 use App\Livewire\Dashboard;
 use App\Livewire\FollowRequests;
+use App\Livewire\Notifications;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Privacy;
@@ -23,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('follow-requests', FollowRequests::class)->name('follow.requests');
-    Route::get('notifications', null)->name('notifications.index');
+    Route::get('notifications', Notifications::class)->name('notifications.index');
     Route::get('notifications/{id}', null)->name('notifications.show');
 
     Route::get('users', UserSearch::class)->name('users.list');
@@ -37,6 +43,10 @@ Route::middleware(['auth'])->group(function () {
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', AdminDashboard::class)->name('dashboard')->can('view admin dashboard');
+    
+        Route::get('kanban-boards', KanbanBoardsList::class)->name('kanban_list')->can('view kanban boards');
+        Route::get('kanban-board/{id}', KanbanBoardShow::class)->name('kanban_board')->can('view kanban boards');
+        Route::get('kanban-board/{board_id}/{column_id}/{card_id}', KanbanBoardCard::class)->name('kanban_board_card')->can('view kanban boards');
 
         // User Management
         Route::get('user-management', UserList::class)->name('user.index')->can('view users');

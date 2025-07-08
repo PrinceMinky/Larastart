@@ -17,5 +17,21 @@
         </x-slot>
     </x-page-heading>
 
-    @livewire('user-post')
+    <div class="flex flex-between gap-2">
+        <div class="w-3/4">
+            @livewire('user-post')
+        </div>
+
+        <div class="w-1/3">
+            <flux:card>
+                <flux:navlist>
+                    @if($user->is_private)
+                    <flux:navlist.item :href="route('follow.requests')" icon="users" :badge="$user->followers_count">Follow Requests</flux:navlist.item>
+                    @endif 
+                    
+                    <flux:navlist.item :href="route('notifications.index')" icon="bell" :badge="$user->notifications->where('read_at',null)->count()">Notifications</flux:navlist.item>
+                </flux:navlist>
+            </flux:card>
+        </div>
+    </div>
 </section>

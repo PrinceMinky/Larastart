@@ -1,4 +1,4 @@
-<div class="flex gap-2 items-center" x-show="$wire.selectedUserIds.length > 0">
+<div class="flex gap-2 items-center" x-cloak x-show="$wire.selectedUserIds.length > 0">
     @can('delete users')
     <flux:text>
         <span x-text="$wire.selectedUserIds.length"></span> selected

@@ -2,33 +2,27 @@
 
 namespace App\Livewire;
 
-use App\Events\PostLiked;
 use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
 use App\Models\Post;
-use App\Models\User;
-use App\Notifications\LikedPost;
-use App\Traits\HasFollowers;
-use App\Traits\WithModal;
+use App\Livewire\Traits\HasLikes;
+use App\Livewire\Traits\WithModal;
 use Illuminate\Support\Facades\Auth;
 
 class UserPost extends BaseComponent
 {
-    use WithModal, HasFollowers;
+    use WithModal, HasLikes;
 
-    public User $user;
+    protected string $likeModelClass = Post::class;
+
     public $status = '';
     public $userId = null;
     public $editingPostId = null;
     public $editingContent = '';
-    public $likedUsers = [];
-    public $likesSearch = '';
     private $postsCache = null;
 
     public function mount()
-    {
-        $this->user = Auth::user();
-        
+    {   
         if (Auth::check()) {
             Auth::user()->likedPostsCache = Auth::user()->likedPosts()->pluck('post_id')->toArray();
         }
@@ -137,110 +131,6 @@ class UserPost extends BaseComponent
             'text' => 'Status deleted!',
             'variant' => 'danger'
         ]);
-    }
-
-    public function togglePostLike($postId)
-    {
-        $post = Post::findOrFail($postId);
-        $post->load('user');
-        
-        $user = Auth::user();
-    
-        if ($user->hasLiked($post)) {
-            $user->likedPosts()->detach($post->id);
-    
-            
-            // Remove the notification when unliking
-            if ($user->id !== $post->user_id) {
-                $notification = $post->user->notifications()
-                    ->whereJsonContains('data->user_id', $user->id)
-                    ->whereJsonContains('data->post_id', $post->id)
-                    ->whereJsonContains('data->action', '{name} liked your post.')
-                    ->first();
-        
-                if ($notification) {
-                    $notification->delete();
-                }
-
-    
-                $this->dispatch('refreshNotifications');
-            }
-        } else {
-            $user->likedPosts()->attach($post->id);
-    
-            // Send notification only if the user is not liking their own post
-            if ($user->id !== $post->user_id) {
-                $post->user->notify(new LikedPost($user, $post));
-                $this->dispatch('refreshNotifications');
-            }
-        }
-    
-        // Clear caches
-        $this->postsCache = null;
-    
-        if (isset($user->likedPostsCache)) {
-            unset($user->likedPostsCache);
-        }
-    }
-
-    public function likedBy($postId)
-    {
-        $post = Post::findOrFail($postId);   
-        $authUserId = Auth::id();
-    
-        // Get likes with created_at timestamp and order by newest first
-        $likedUsers = $post->likes()
-            ->with(['followers' => function($query) use ($authUserId) {
-                $query->where('follower_id', $authUserId);
-            }])
-            ->orderBy('post_like.created_at', 'desc')
-            ->get();
-        
-        Auth::user()->load(['following' => function($query) use ($likedUsers) {
-            $query->whereIn('following_id', $likedUsers->pluck('id'));
-        }]);
-        
-        // Move authenticated user to the top if present in likes
-        $authUserIndex = $likedUsers->search(function($item) use ($authUserId) {
-            return $item->id === $authUserId;
-        });
-        
-        if ($authUserIndex !== false) {
-            $authUser = $likedUsers->pull($authUserIndex);
-            $likedUsers->prepend($authUser);
-        }
-        
-        $this->likedUsers = $likedUsers;
-        $this->likesSearch = ''; // Reset search when opening modal
-        $this->resetAndShowModal('show-likes');
-    }
-    
-    public function getFilteredLikedUsers()
-    {
-        if (empty($this->likesSearch)) {
-            return $this->likedUsers;
-        }
-        
-        $searchTerm = strtolower($this->likesSearch);
-        $authUserId = Auth::id();
-        
-        // Filter the users but maintain the ordering rules
-        $filteredUsers = collect($this->likedUsers)->filter(function ($user) use ($searchTerm) {
-            return str_contains(strtolower($user->name), $searchTerm) || 
-                   str_contains(strtolower($user->username), $searchTerm);
-        });
-        
-        // Ensure auth user stays at top if present in filtered results
-        $authUserIndex = $filteredUsers->search(function($item) use ($authUserId) {
-            return $item->id === $authUserId;
-        });
-        
-        if ($authUserIndex !== false && $authUserIndex > 0) {
-            $authUser = $filteredUsers->pull($authUserIndex);
-            $filteredUsers->prepend($authUser);
-        }
-        
-        return $filteredUsers;
     }
 
     public function render()

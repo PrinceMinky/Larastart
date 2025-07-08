@@ -29,8 +29,8 @@ class LikedPost extends Notification
             'post_id' => $this->post->id,
 
             'icon' => 'hand-thumb-up',
-            'action' => '{name} liked your post.',
-            'url' => route('profile.show', ['username' => $this->user->username]),
+            'description' => '{name} liked your post.',
+            'user_profile_url' => route('profile.show', ['username' => $this->user->username]),
         ];
     }
 }

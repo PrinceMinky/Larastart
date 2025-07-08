@@ -31,6 +31,14 @@
             placeholder="email@example.com"
         />
 
+        @if ($this->getNeedsVerifiedEmailProperty())
+            <flux:checkbox
+                wire:model="hasVerifiedEmail"
+                value="1"
+                label="Verified"
+            />
+        @endif
+
         <!-- Date of Birth -->
         <flux:date-picker
             wire:model="date_of_birth"

@@ -20,7 +20,11 @@ class RoleAndPermissionTableSeeder extends Seeder
 
             'view users', 'create users', 'edit users', 'delete users', 'export users','impersonate users',
             'view roles', 'create roles', 'edit roles', 'delete roles', 'export roles',
-            'view permissions', 'create permissions', 'edit permissions', 'delete permissions', 'export permissions'
+            'view permissions', 'create permissions', 'edit permissions', 'delete permissions', 'export permissions',
+
+            'view kanban boards', 'create kanban boards', 'edit kanban boards', 'delete kanban boards', 'manage kanban users',
+            'create kanban columns', 'edit kanban columns', 'delete kanban columns',
+            'create kanban cards', 'edit kanban cards', 'delete kanban cards',
         ];
 
         // Create permissions if they don't exist
@@ -42,6 +46,10 @@ class RoleAndPermissionTableSeeder extends Seeder
                     'view users', 'create users', 'edit users',
                     'view roles', 
                     'view permissions',
+
+                    'view kanban boards', 'create kanban boards', 'edit kanban boards',
+                    'create kanban columns', 'edit kanban columns',
+                    'create kanban cards', 'edit kanban cards',
                 ]);
             }
         }

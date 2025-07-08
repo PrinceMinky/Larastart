@@ -25,11 +25,14 @@ class UserFollowed extends Notification
     {
         return [
             'user_id' => $this->follower->id,
+
             'icon' => 'user',
-            'action' => $this->status === 'pending' 
+            'description' => $this->status === 'pending' 
                 ? '{name} requested to follow you.' 
                 : '{name} followed you.',
-            'url' => $this->status === 'pending' 
+            'user_profile_url' => route('profile.show', ['username' => $this->follower->username]),
+            
+            'action_url' => $this->status === 'pending' 
                 ? route('follow.requests') 
                 : route('profile.show', ['username' => $this->follower->username]),
         ];

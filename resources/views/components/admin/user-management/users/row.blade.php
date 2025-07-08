@@ -27,7 +27,19 @@
         </div>
     </flux:table.cell>
 
-    <flux:table.cell class="whitespace-nowrap">{{ $user->email }}</flux:table.cell>
+    <flux:table.cell class="whitespace-nowrap">
+        {{ $user->email }}
+
+        @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! $user->hasVerifiedEmail())
+            <flux:badge icon="x-mark" size="sm" color="red" inset="top bottom">
+                Unverified
+            </flux:badge>
+        @elseif ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && $user->hasVerifiedEmail())
+            <flux:badge icon="check" size="sm" color="green" inset="top bottom">
+                Verified
+            </flux:badge>
+        @endif
+    </flux:table.cell>
 
     <flux:table.cell class="whitespace-nowrap">{{ $user->country->label() }}</flux:table.cell>
 

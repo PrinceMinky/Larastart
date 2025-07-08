@@ -1,0 +1,1 @@
+<flux:text>You have no requests</flux:text>

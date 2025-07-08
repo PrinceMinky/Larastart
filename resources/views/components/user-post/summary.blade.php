@@ -5,12 +5,12 @@
         @if(auth()->user()->hasLiked($post))
             you
             @if($post->likes_count > 1)
-                <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
+                <span wire:click="showLikes({{ $post->id }})" class="cursor-pointer">
                     and {{ $post->likes_count - 1 }} {{ Str::plural('other', $post->likes_count - 1) }}
                 </span>
             @endif
         @else
-            <span wire:click="likedBy({{ $post->id }})" class="cursor-pointer">
+            <span wire:click="showLikes({{ $post->id }})" class="cursor-pointer">
                 {{ $post->likes_count }} {{ Str::plural('other', $post->likes_count) }}
             </span>
         @endif

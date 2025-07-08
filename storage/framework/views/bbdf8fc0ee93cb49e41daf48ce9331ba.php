@@ -38,7 +38,7 @@ unset($__defined_vars); ?>
     $classes = Flux::classes()
         ->add('inline-flex items-center')
         ->add('text-sm font-medium')
-        ->add('text-zinc-800 dark:text-white')
+        ->add('[:where(&)]:text-zinc-800 [:where(&)]:dark:text-white')
         ;
 ?>
 
@@ -47,7 +47,7 @@ unset($__defined_vars); ?>
 
 
     <?php if (is_string($badge)): ?>
-        <span class="ms-1.5 text-zinc-800/70 text-xs bg-zinc-800/5 px-1.5 py-1 rounded-[4px] dark:bg-white/10 dark:text-zinc-300" aria-hidden="true">
+        <span class="ms-1.5 text-zinc-800/70 text-xs bg-zinc-800/5 px-1.5 py-1 -my-1 rounded-[4px] dark:bg-white/10 dark:text-zinc-300" aria-hidden="true">
             <?php echo e($badge); ?>
 
         </span>
@@ -59,7 +59,7 @@ unset($__defined_vars); ?>
     <?php endif; ?>
 
     <?php if ($aside): ?>
-        <span class="ms-1.5 text-zinc-800/70 text-xs bg-zinc-800/5 px-1.5 py-1 rounded-[4px] dark:bg-white/10 dark:text-zinc-300" aria-hidden="true">
+        <span class="ms-1.5 text-zinc-800/70 text-xs bg-zinc-800/5 px-1.5 py-1 -my-1 rounded-[4px] dark:bg-white/10 dark:text-zinc-300" aria-hidden="true">
             <?php echo e($aside); ?>
 
         </span>

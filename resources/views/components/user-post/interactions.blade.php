@@ -1,6 +1,6 @@
 <div class="flex justify-end gap-2">
     <flux:button
-        wire:click="togglePostLike({{ $post->id }})"
+        wire:click="like({{ $post->id }})"
         class="text-sm cursor-pointer"
         size="sm"
         icon="hand-thumb-up"

@@ -3,9 +3,9 @@
 namespace App\Livewire\Admin\UserManagement;
 
 use App\Livewire\BaseComponent;
-use App\Traits\Searchable;
-use App\Traits\Sortable;
-use App\Traits\WithModal;
+use App\Livewire\Traits\Searchable;
+use App\Livewire\Traits\Sortable;
+use App\Livewire\Traits\WithModal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
@@ -66,21 +66,21 @@ class Roles extends BaseComponent
     {
         ($id) ? $this->loadRoleData($id) : $this->reset();
 
-        $this->resetAndShowModal('show-role-form');
+        $this->showModal('show-role-form');
     }
 
     public function showConfirmDeleteForm($id = null): void
     {
         $this->loadRoleData($id);
 
-        $this->resetAndShowModal('delete-role-form');
+        $this->showModal('delete-role-form');
     }
 
     public function showPermissionsModal($id = null): void
     {
         ($id) ? $this->loadRoleData($id) : $this->reset();
 
-        $this->resetAndShowModal('show-permissions-modal');
+        $this->showModal('show-permissions-modal');
     }
 
     public function save(): void
@@ -104,7 +104,7 @@ class Roles extends BaseComponent
             'variant' => 'success',
         ]);
 
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     public function update(): void
@@ -122,7 +122,7 @@ class Roles extends BaseComponent
             'variant' => 'success',
         ]);
 
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     public function delete(): void
@@ -138,7 +138,7 @@ class Roles extends BaseComponent
             'variant' => 'danger',
         ]);
 
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     public function deleteSelected(): void
@@ -154,7 +154,7 @@ class Roles extends BaseComponent
         ]);
 
         $this->reset('selectedRoleIds');
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     private function syncPermissions($role, $permissions): void

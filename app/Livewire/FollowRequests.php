@@ -6,6 +6,7 @@ use App\Notifications\AcceptedFollowRequest;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use App\Livewire\BaseComponent;
+use App\Notifications\UserFollowed;
 
 class FollowRequests extends BaseComponent
 {
@@ -28,12 +29,9 @@ class FollowRequests extends BaseComponent
 
         $request->pivot->update(['status' => 'accepted']);
 
-        $this->updateNotification($user, $requestId, [
-            'action' => '{name} is now following you.',
-            'url' => route('profile.show', ['username' => $request->username]),
-            'read_at' => null
-        ]);
+        $this->deleteNotification($user, $request->id);
 
+        $user->notify(new UserFollowed($request, 'accepted'));
         $request->notify(new AcceptedFollowRequest($user));
 
         $this->toast([

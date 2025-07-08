@@ -3,9 +3,9 @@
 namespace App\Livewire\Admin\UserManagement;
 
 use App\Livewire\BaseComponent;
-use App\Traits\Searchable;
-use App\Traits\Sortable;
-use App\Traits\WithModal;
+use App\Livewire\Traits\Searchable;
+use App\Livewire\Traits\Sortable;
+use App\Livewire\Traits\WithModal;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -67,13 +67,13 @@ class Permissions extends BaseComponent
     {
         ($id) ? $this->loadPermissionData($id) : $this->reset();
 
-        $this->resetAndShowModal('show-permission-form');
+        $this->showModal('show-permission-form');
     }
 
     public function showConfirmDeleteForm($id): void
     {
         $this->loadPermissionData($id);
-        $this->resetAndShowModal('delete-permission-form');
+        $this->showModal('delete-permission-form');
     }
 
     public function save(): void
@@ -229,7 +229,7 @@ class Permissions extends BaseComponent
             'variant' => 'success',
         ]);
 
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     private function createPermissions(): array
@@ -292,7 +292,7 @@ class Permissions extends BaseComponent
             'variant' => 'success',
         ]);
 
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     public function delete(): void
@@ -308,7 +308,7 @@ class Permissions extends BaseComponent
         ]);
 
         $this->reset('selectedPermissionIds');
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     public function deleteSelected(): void
@@ -324,7 +324,7 @@ class Permissions extends BaseComponent
         ]);
 
         $this->reset('selectedPermissionIds');
-        $this->resetAndCloseModal();
+        $this->closeModal();
     }
 
     private function loadPermissionData($id): void
