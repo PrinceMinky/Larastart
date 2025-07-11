@@ -43,6 +43,7 @@ class UserList extends BaseComponent
     public array $selectedUserIds = [];
     protected ?Collection $cachedRoles = null;
     protected ?LengthAwarePaginator $cachedUsers = null;
+    public int $faker = 1000;
 
     public array $filters = [];
 
@@ -438,45 +439,55 @@ class UserList extends BaseComponent
 
     public function factory()
     {
+        set_time_limit(0);
+
         $this->authorize('create users');
 
         $faker = FakerFactory::create();
+        $fakerUnique = $faker->unique();
 
         $roles = Role::where('name', '!=', 'Super Admin')->pluck('name')->toArray();
         $countries = collect(Country::cases())->map(fn($c) => $c->value)->toArray();
 
-        for ($i = 0; $i < 100; $i++) {
-            $name = $faker->name;
-            $username = $faker->unique()->userName();
-            $email = $faker->unique()->safeEmail;
-            $dateOfBirth = $faker->dateTimeBetween('-60 years', '-13 years')->format('Y-m-d');
-            $country = $faker->randomElement($countries);
-            $isPrivate = $faker->boolean(20); // 20% chance private
-            $password = bcrypt('password'); // default password for testing
+        for ($i = 0; $i < $this->faker; $i++) {
+            try {
+                $name = $faker->name;
+                $username = $fakerUnique->userName();
+                $email = $fakerUnique->safeEmail();
+                $dateOfBirth = $faker->dateTimeBetween('-60 years', '-13 years')->format('Y-m-d');
+                $country = $faker->randomElement($countries);
+                $isPrivate = $faker->boolean(20);
+                $password = bcrypt('password');
 
-            $user = User::create([
-                'name' => $name,
-                'username' => $username,
-                'email' => $email,
-                'date_of_birth' => $dateOfBirth,
-                'country' => $country,
-                'is_private' => $isPrivate,
-                'password' => $password,
-                // Mark email verified randomly for variety
-                'email_verified_at' => $faker->boolean(75) ? now() : null,
-            ]);
+                $user = User::create([
+                    'name' => $name,
+                    'username' => $username,
+                    'email' => $email,
+                    'date_of_birth' => $dateOfBirth,
+                    'country' => $country,
+                    'is_private' => $isPrivate,
+                    'password' => $password,
+                    'email_verified_at' => $faker->boolean(75) ? now() : null,
+                ]);
 
-            // Assign 2-3 random roles
-            $assignedRoles = $faker->randomElements($roles, rand(1, 2));
-            $user->syncRoles($assignedRoles);
+                $assignedRoles = $faker->randomElements($roles, rand(1, 2));
+                $user->syncRoles($assignedRoles);
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($e->getCode() == '23000') {
+                    // Duplicate entry - just continue and skip
+                    continue;
+                }
+                throw $e;
+            }
         }
 
         $this->toast([
             'heading' => 'Factory Complete',
-            'text' => '100 fake users have been created.',
+            'text' => $this->faker . ' fake users have been created.',
             'variant' => 'success',
         ]);
     }
+
 
     public function render(): View
     {

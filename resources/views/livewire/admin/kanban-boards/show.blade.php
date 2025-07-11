@@ -22,7 +22,7 @@
             
             <x-drag-scroll-container>
                 <x-sort class="flex gap-4" handle="updateColumnPosition" permissions="edit kanban columns">
-                    @foreach ($this->columns() as $column)
+                    @foreach ($board->columns as $column)
                         <x-admin.kanban-board.column :$column />
                     @endforeach
                 </x-sort>
@@ -38,21 +38,19 @@
             <flux:table>
                 <flux:table.rows>
                     <flux:table.row>
-                        <flux:table.cell>
-                            <div class="flex items-center gap-2 sm:gap-4">
-                                <flux:avatar :name="$this->currentBoard->owner->name" color="auto" />
+                        <flux:table.cell class="flex items-center gap-2 sm:gap-4">
+                            <flux:avatar :name="$this->currentBoard->owner->name" color="auto" />
 
-                                <div class="flex flex-col">
-                                    <flux:heading>
-                                        <flux:link class="!no-underline" :href="route('profile.show', ['username' => $this->currentBoard->owner->username])">
-                                            {{ $this->currentBoard->owner->name }}
-                                        </flux:link>
-                                        @if (auth()->id() === $this->currentBoard->owner->id)
-                                            <flux:badge size="sm" color="blue" class="ml-1 max-sm:hidden">You</flux:badge>
-                                        @endif
-                                    </flux:heading>
-                                    <flux:text class="max-sm:hidden">{{ $this->currentBoard->owner->email }}</flux:text>
-                                </div>
+                            <div class="flex flex-col">
+                                <flux:heading>
+                                    <flux:link class="!no-underline" :href="route('profile.show', ['username' => $this->currentBoard->owner->username])">
+                                        {{ $this->currentBoard->owner->name }}
+                                    </flux:link>
+                                    @if ($this->currentBoard->owner->is_me())
+                                        <flux:badge size="sm" color="blue" class="ml-1 max-sm:hidden">You</flux:badge>
+                                    @endif
+                                </flux:heading>
+                                <flux:text class="max-sm:hidden">{{ $this->currentBoard->owner->email }}</flux:text>
                             </div>
                         </flux:table.cell>
                     </flux:table.row>
@@ -107,13 +105,12 @@
             </flux:table>
         </div>
     </div>
-
     <!-- Column Modal -->
     <x-admin.kanban-board.column-modal />
-
+    
     <!-- Card Modal -->
-    <x-admin.kanban-board.card-modal />
-
+    <x-admin.kanban-board.card-modal  />
+    
     <!-- Invite Users Modal  -->
     <x-admin.kanban-board.associate-users-modal />
     

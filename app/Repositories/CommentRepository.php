@@ -23,6 +23,11 @@ class CommentRepository
         return Comment::with(['likedByUsers', 'user'])->find($id);
     }
 
+    public function findModelById(string $modelClass, int|string $id): ?Model
+    {
+        return $modelClass::find($id);
+    }
+
     public function create(array $data): Comment
     {
         return Comment::create($data);

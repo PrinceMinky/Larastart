@@ -26,10 +26,9 @@
         
         @can('delete kanban boards')
         <div class="flex gap-2">
-            <div class="flex gap-2 items-center" x-cloak x-show="$wire.selectedUserIds.length > 0">
-                @can('delete users')
+            <div class="flex gap-2 items-center" x-cloak x-show="$wire.selectedBoardIds.length > 0">
                 <flux:text>
-                    <span x-text="$wire.selectedUserIds.length"></span> selected
+                    <span x-text="$wire.selectedBoardIds.length"></span> selected
                 </flux:text>
 
                 <flux:separator vertical class="my-2" />
@@ -39,7 +38,6 @@
                 </form>
 
                 <flux:separator vertical class="my-2" />
-                @endcan
             </div>
         </div>
         @endcan
@@ -104,7 +102,7 @@
                 <flux:table.row :key="$board->id">
                     @can('delete kanban boards')
                     <flux:table.cell>
-                        <flux:checkbox wire:model="selectedUserIds" value="{{ $board->id }}" />
+                        <flux:checkbox wire:model="selectedBoardIds" value="{{ $board->id }}" />
                     </flux:table.cell>
                     @endcan
 
@@ -175,12 +173,12 @@
     <!-- Add/Edit Form -->
     @canany(['create kanban boards','edit kanban boards'])
     <flux:modal name="board-form" class="w-full">
-        <flux:heading>{{ !$this->boardId ? "Add Board" : "Edit Board" }}</flux:heading>
+        <flux:heading>{{ !$this->form->boardId ? "Add Board" : "Edit Board" }}</flux:heading>
 
         <form wire:submit="save" class="my-6 w-full space-y-6">
             <!-- Title -->
             <flux:input 
-                wire:model="title"
+                wire:model="form.title"
                 :label="__('Title')"
                 type="text"
                 required
@@ -188,15 +186,15 @@
             />
 
             <!-- Template (on creation only) -->
-            @if(!$this->boardId)
-                <flux:select wire:model.live="selectedTemplate" :label="__('Template (optional)')" :nullable="true">
+            @if(!$this->form->boardId)
+                <flux:select wire:model.live="form.selectedTemplate" :label="__('Template (optional)')" :nullable="true">
                     <flux:select.option value="">{{ __('-- Select a Template --') }}</flux:select.option>
                     @foreach (\App\Enums\KanbanTemplates::cases() as $template)
                         <flux:select.option value="{{ $template->value }}">{{ __($template->label()) }}</flux:select.option>
                     @endforeach
                 </flux:select>
 
-                @if($this->selectedTemplate && $this->columnsPreview)
+                @if($this->form->selectedTemplate && $this->columnsPreview)
                     <flux:card size="sm">
                         <flux:heading class="font-semibold">{{ __('Columns that will be created:') }}</flux:heading>
 
@@ -210,13 +208,13 @@
             <flux:separator text="Badge Management" />
 
             <!-- Add Badge Controls -->
-            <flux:autocomplete wire:model="badgeTitle" label="Badge Title" placeholder="Select or type badge title...">
+            <flux:autocomplete wire:model="form.badgeTitle" label="Badge Title" placeholder="Select or type badge title...">
                 @foreach(\App\Enums\KanbanBadgeNames::options() as $title)
                     <flux:autocomplete.item>{{ $title }}</flux:autocomplete.item>
                 @endforeach
             </flux:autocomplete>
 
-            <flux:select wire:model="badgeColor" label="Badge Color" placeholder="Select color..."> 
+            <flux:select wire:model="form.badgeColor" label="Badge Color" placeholder="Select color..."> 
                 @foreach(\App\Enums\FluxColor::options() as $color)
                     <flux:select.option :value="$color">{{ ucfirst($color) }}</flux:select.option>
                 @endforeach
@@ -226,7 +224,7 @@
 
             <!-- Preview Existing Badges -->
             <div class="flex gap-2 flex-wrap">
-                @foreach ($this->badges as $index => $badge)
+                @foreach ($this->form->badges as $index => $badge)
                     <flux:badge :color="$badge['color']">
                         {{ $badge['title'] }}
                         <flux:badge.close wire:click="removeBadge({{ $index }})" />

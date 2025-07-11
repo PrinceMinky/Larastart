@@ -2,7 +2,6 @@
 
 namespace App\Actions\Comments;
 
-use App\Events\Comments\CommentUpdated;
 use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Illuminate\Support\Facades\Gate;
@@ -15,13 +14,9 @@ class UpdateCommentAction
 
     public function execute(Comment $comment, string $body): Comment
     {
-        Gate::authorize('update', $comment);
-
-        $originalBody = $comment->body;
+        Gate::authorize('update comments', $comment);
 
         tap($comment)->update(['body' => $body]);
-
-        event(new CommentUpdated($comment, $originalBody));
 
         return $comment;
     }

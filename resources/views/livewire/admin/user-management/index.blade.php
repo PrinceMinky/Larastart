@@ -10,7 +10,7 @@
                 <flux:button wire:click="showForm" variant="primary">Add User</flux:button>
 
                 @if (app()->environment('local'))
-                    <flux:button wire:click="factory" variant="primary" color="teal">Factory: 100 users</flux:button>
+                    <flux:button wire:click="factory" variant="primary" color="teal">Factory: {{ $this->faker }} users</flux:button>
                 @endif
             </div>
             @endcan

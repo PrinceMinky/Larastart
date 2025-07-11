@@ -60,7 +60,7 @@ $classes = Flux::classes()
     ->add('relative flex justify-between gap-3 flex-1 p-4')
     ->add('rounded-lg shadow-xs')
     ->add('bg-white dark:bg-white/10 dark:hover:bg-white/15 dark:data-checked:bg-white/15')
-    ->add('after:absolute after:-inset-px after:rounded-lg *:relative')
+    ->add('after:absolute after:-inset-px after:rounded-lg')
     ->add('border border-zinc-800/15 dark:border-white/10')
     ->add([
         '[--haze:color-mix(in_oklab,_var(--color-accent-content),_transparent_97.5%)]',

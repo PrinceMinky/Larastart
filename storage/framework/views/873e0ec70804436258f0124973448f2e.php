@@ -46,7 +46,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['wire:click' => 'factory','variant' => 'primary','color' => 'teal']); ?>Factory: 100 users <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['wire:click' => 'factory','variant' => 'primary','color' => 'teal']); ?>Factory: <?php echo e($this->faker); ?> users <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>

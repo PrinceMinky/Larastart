@@ -2,7 +2,6 @@
 
 namespace App\Actions\Comments;
 
-use App\Events\Comments\CommentCreated;
 use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +21,6 @@ class CreateCommentAction
             'user_id' => Auth::id(),
             'body' => $body,
         ]);
-
-        event(new CommentCreated($comment));
 
         return $comment;
     }

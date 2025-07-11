@@ -21,7 +21,7 @@
 
             <!-- Comments -->
             <flux:card size="sm" class="mt-2">
-                <livewire:comments :model="$card" :indentReplies="true" :useFullName="true" />
+                <livewire:comments :model="$card" />
             </flux:card>
         </div>
 

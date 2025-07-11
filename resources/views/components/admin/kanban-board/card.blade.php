@@ -1,7 +1,7 @@
 @props(['sortable' => false, 'actions' => false, 'card'])
 
 @php
-    $baseClasses = 'bg-white rounded-lg shadow-xs border border-zinc-200 dark:border-white/10 dark:bg-zinc-800 p-3 space-y-2 relative';
+    $baseClasses = 'bg-white rounded-lg border border-zinc-200 dark:border-white/10 dark:bg-zinc-800 p-3 space-y-2 relative';
     $sortableClasses = $baseClasses . ' hover:shadow-md transition-shadow cursor-pointer';
     $wrapperClasses = $sortable ? $sortableClasses : $baseClasses;
 @endphp
@@ -34,18 +34,11 @@
 
         @if($card->due_at || $card->assigned_user_id && $card->user)
         <div class="mt-5 flex flex-col gap-0 ">
-            @if ($card->due_at)
-                @php
-                    $dueDate = carbon_parse($card->due_at);
-                    $now = now();
-                    $isDueSoon = $dueDate->isFuture() && $dueDate->diffInHours($now) <= 24;
-                    $isPastDue = $dueDate->isPast();
-                    $badgeColor = $isPastDue ? 'red' : ($isDueSoon ? 'yellow' : 'default');
-                @endphp
+            @if ($card->due_status)
                 <flux:text>
                     <span class="font-semibold">Due: </span>
-                    <flux:badge size="sm" color="{{ $badgeColor }}">
-                        {{ $dueDate->diffForHumans() }}
+                    <flux:badge size="sm" color="{{ $card->due_status['color'] }}">
+                        {{ $card->due_status['text'] }}
                     </flux:badge>
                 </flux:text>
             @endif
@@ -68,7 +61,7 @@
                     <flux:button size="sm" icon="ellipsis-horizontal" square />
                     <flux:navmenu>
                         @can('edit kanban cards')
-                            <flux:navmenu.item icon="pencil" wire:click="showCardForm({{ $card->id }})">Edit Card</flux:navmenu.item>
+                            <flux:navmenu.item icon="pencil" wire:click="showEditCardForm({{ $card->id }})">Edit Card</flux:navmenu.item>
                         @endcan
 
                         @can('delete kanban cards')

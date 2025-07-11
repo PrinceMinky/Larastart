@@ -2,9 +2,9 @@
 
 use App\Livewire\UserSearch;
 
-use App\Livewire\Admin\KanbanBoards\Index as KanbanBoardsList;
-use App\Livewire\Admin\KanbanBoards\Show as KanbanBoardShow;
-use App\Livewire\Admin\KanbanBoards\Card as KanbanBoardCard;
+use App\Livewire\Admin\Kanban\Index as KanbanBoardsList;
+use App\Livewire\Admin\Kanban\Show as KanbanBoardShow;
+use App\Livewire\Admin\Kanban\Card as KanbanBoardCard;
 
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\UserManagement\Permissions;
@@ -46,8 +46,8 @@ Route::middleware(['auth'])->group(function () {
     
         Route::get('kanban-boards', KanbanBoardsList::class)->name('kanban_list')->can('view kanban boards');
         Route::get('kanban-board/{id}', KanbanBoardShow::class)->name('kanban_board')->can('view kanban boards');
-        Route::get('kanban-board/{board_id}/{column_id}/{card_id}', KanbanBoardCard::class)->name('kanban_board_card')->can('view kanban boards');
-
+        Route::get('kanban-board/{boardId}/{columnId}/{cardId}', KanbanBoardCard::class)->name('kanban_board_card')->can('view kanban boards');
+        
         // User Management
         Route::get('user-management', UserList::class)->name('user.index')->can('view users');
         Route::get('user-management/roles', Roles::class)->name('user.role')->can('view roles');

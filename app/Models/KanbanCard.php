@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KanbanCard extends Model
 {
@@ -29,5 +30,26 @@ class KanbanCard extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'model', 'model_class', 'model_id');
+    }
+
+    public function getDueStatusAttribute(): ?array
+    {
+        if (!$this->due_at) {
+            return null;
+        }
+
+        $dueDate = Carbon::parse($this->due_at);
+        $now = now();
+
+        $isDueSoon = $dueDate->isFuture() && $dueDate->diffInHours($now) <= 24;
+        $isPastDue = $dueDate->isPast();
+
+        $badgeColor = $isPastDue ? 'red' : ($isDueSoon ? 'yellow' : 'default');
+
+        return [
+            'color' => $badgeColor,
+            'text' => $dueDate->diffForHumans(),
+            'raw' => $dueDate,
+        ];
     }
 }

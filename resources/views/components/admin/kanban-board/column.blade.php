@@ -27,7 +27,7 @@
 
         <div class="px-2 py-2">
             @can('create kanban cards')
-            <flux:button wire:click="showCardForm({{ $column['id'] }})"
+            <flux:button wire:click="showCreateCardForm({{ $column['id'] }})"
                         variant="subtle"
                         icon="plus"
                         size="sm"

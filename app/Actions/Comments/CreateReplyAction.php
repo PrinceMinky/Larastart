@@ -2,7 +2,6 @@
 
 namespace App\Actions\Comments;
 
-use App\Events\Comments\ReplyPosted;
 use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use App\Services\CommentTreeService;
@@ -27,8 +26,6 @@ class CreateReplyAction
             'body' => $body,
             'parent_id' => $parentId,
         ]);
-
-        event(new ReplyPosted($reply, $parentComment));
 
         return $reply;
     }

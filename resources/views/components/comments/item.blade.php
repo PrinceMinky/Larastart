@@ -1,9 +1,6 @@
 @props(['comment', 'level' => 0])
 
-<div 
-    class="relative flex gap-4" 
-    style="{{ $this->indentReplies ? 'margin-left: ' . ($level * 20) . 'px;' : '' }}">
-
+<div class="relative flex gap-4">
     <!-- Avatar -->
     <flux:avatar
         :name="($this->useFullName) ? $comment->user->name : $comment->user->username"
@@ -27,7 +24,7 @@
                     </flux:heading>
                     @if ($comment->user->is_moderator)
                         <flux:badge color="lime" size="sm" icon="check-badge" inset="top bottom">Moderator</flux:badge>
-                    @endif
+                    @endif {{-- Coming Soon --}}
                 </div>
                 <flux:text class="text-sm">{{ $comment->created_at->diffForHumans() }}</flux:text>
             </div>
@@ -43,54 +40,14 @@
                 <flux:error name="updateCommentForm.body" />
 
                 <div class="mt-3 flex gap-2 justify-end">
-                    <flux:button size="sm" wire:click="cancelEditing" variant="ghost">Cancel</flux:button>
                     <flux:button size="sm" wire:click="saveEdit">Save</flux:button>
                 </div>
             </div>
         @else
             <flux:text variant="strong">{{ $comment->body }}</flux:text>
 
-            <!-- Interactions -->
-            <div class="flex items-center gap-2 mt-2">
-                <div class="flex items-center gap-2">
-                    @php
-                        $userLiked = $comment->is_liked_by_current_user;
-                    @endphp
-
-                    <flux:icon.hand-thumb-up
-                        :variant="$userLiked ? 'solid' : 'outline'"
-                        class="size-4 cursor-pointer text-{{ $userLiked ? 'blue-500' : 'zinc-400' }} [&_path]:stroke-[2.25]"
-                        wire:click="like({{ $comment->id }})"
-                    />
-
-                    <flux:text
-                        class="text-sm tabular-nums cursor-pointer"
-                        wire:click="showLikes({{ $comment->id }})"
-                    >
-                        {{ $this->getLikeText($comment, $comment->likedByUsers->count()) }}
-                    </flux:text>
-                </div>
-
-                @if ($this->canEdit($comment) || $this->canDelete($comment))
-                    <flux:dropdown position="bottom" align="end" class="absolute top-2 right-2">
-                        <flux:button variant="ghost" icon="ellipsis-horizontal" square size="sm" />
-
-                        <flux:menu>
-                            @if ($this->canEdit($comment))
-                                <flux:menu.item wire:click="startEditing({{ $comment->id }})">Edit</flux:menu.item>
-                            @endif
-
-                            @if ($this->canDelete($comment))
-                                <flux:menu.item variant="danger" wire:click="deleteComment({{ $comment->id }})">Delete</flux:menu.item>
-                            @endif
-                        </flux:menu>
-                    </flux:dropdown>
-                @endif
-            </div>
-
-            <!-- Reply toggle and box -->      
+            {{-- Alpine root wrapper for both buttons and textarea --}}
             <div
-                class="mt-2"
                 x-data="{
                     showReply: false,
                     username: '',
@@ -109,7 +66,6 @@
                     },
                     close() {
                         this.showReply = false;
-                        // No network request - just hide the UI
                     }
                 }"
                 x-init="
@@ -122,19 +78,45 @@
                     });
                 "
             >
-                <flux:button
-                    inset="left"
-                    size="sm"
-                    variant="ghost"
-                    @click="open"
-                >
-                    Reply
-                </flux:button>
+                {{-- Buttons side by side --}}
+                <div class="flex items-center gap-4 mt-2">
+                    @php
+                        $userLiked = $comment->is_liked_by_current_user;
+                    @endphp
 
-                <div 
-                    x-show="showReply" 
-                    x-transition 
-                    x-cloak 
+                    <div class="flex items-center gap-0 cursor-pointer">
+                        <flux:button
+                            inset="left"
+                            size="sm"
+                            :variant="$userLiked ? 'ghost':'subtle' "
+                            icon="hand-thumb-up"
+                            icon:variant="micro"
+                            wire:click="like({{ $comment->id }})"
+                        />
+
+                        <flux:text
+                            class="text-sm tabular-nums ml-2"
+                            wire:click="showLikes({{ $comment->id }})"
+                        >
+                            {{ $this->getLikeText($comment, $comment->likedByUsers->count()) }}
+                        </flux:text>
+                    </div>
+
+                    <flux:button
+                        inset="left"
+                        size="sm"
+                        variant="subtle"
+                        @click="open"
+                        icon="chat-bubble-left"
+                        icon:variant="micro"
+                    />
+                </div>
+
+                {{-- Textarea below buttons, full width --}}
+                <div
+                    x-show="showReply"
+                    x-transition
+                    x-cloak
                     class="mt-2 space-y-2"
                     x-on:click.outside="close()"
                 >
@@ -151,13 +133,6 @@
                     <div class="flex justify-end gap-2">
                         <flux:button
                             size="sm"
-                            variant="ghost"
-                            @click="close"
-                        >
-                            Cancel
-                        </flux:button>
-                        <flux:button
-                            size="sm"
                             wire:click="postReply({{ $comment->id }})"
                         >
                             Post Reply
@@ -165,15 +140,46 @@
                     </div>
                 </div>
             </div>
+
+            @if ($this->canEdit($comment) || $this->canDelete($comment))
+                <flux:dropdown position="bottom" align="end" class="absolute top-2 right-2">
+                    <flux:button variant="ghost" icon="ellipsis-horizontal" square size="sm" />
+
+                    <flux:menu>
+                        @if ($this->canEdit($comment))
+                            <flux:menu.item wire:click="startEditing({{ $comment->id }})">Edit</flux:menu.item>
+                        @endif
+
+                        @if ($this->canDelete($comment))
+                            <flux:menu.item variant="danger" wire:click="deleteComment({{ $comment->id }})">Delete</flux:menu.item>
+                        @endif
+                    </flux:menu>
+                </flux:dropdown>
+            @endif
         @endif
 
         <!-- Recursive children -->
         @if ($comment->children->count())
             @if($level === 0)
-            <div x-data="{ open: false }">
+            <div 
+                x-data="{ open: false }"
+                x-init="
+                    window.addEventListener('reply-posted', event => {
+                        if (event.detail.commentId === {{ $comment->id }}) {
+                            open = true;
+                        }
+                    });
+                "
+            >
+                @php
+                    $descendantsCount = $comment->children->sum(function($child) {
+                        return 1 + $this->countDescendants($child);
+                    });
+                @endphp
+
                 <flux:button size="sm" inset="left right" variant="subtle" x-on:click="open = ! open" x-show="!open">
-                    {{ $comment->children->count() }}
-                    {{ str_plural('Comment', $comment->children->count()) }}
+                    {{ $descendantsCount }}
+                    {{ Str::plural('Comment', $descendantsCount) }}
                 </flux:button>
 
                 <div x-show="open" x-cloak class="flex flex-col gap-2">
@@ -183,7 +189,10 @@
                 </div>
             </div>
             @else
-                <div class="flex flex-col gap-2">
+                <div 
+                    class="flex flex-col gap-2" 
+                    style="{{ !$this->indentReplies ? 'margin-left: -50px;' : '' }}"
+                >
                     @foreach ($comment->children as $child)
                         <x-comments.item :comment="$child" :level="$level + 1" />
                     @endforeach
