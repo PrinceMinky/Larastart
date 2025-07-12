@@ -100,7 +100,10 @@ class Show extends BaseComponent
     public function mount(string $slug)
     {
         $this->slug = $slug;
-        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($slug, ['owner', 'users','columns.cards.column','columns.cards.user']);
+        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($slug, 
+            ['owner', 'users', 'columns.cards.column.board', 'columns.cards.user']
+        );
+        
         $this->boardId = $this->currentBoard->id;
         $this->authorizeView();
 
@@ -142,13 +145,14 @@ class Show extends BaseComponent
     public function showColumnForm(?int $id = null): void
     {
         $this->columnForm->resetForm();
-
+        
         if ($id) {
-            $column = $this->columnRepository->find($id);
+            $column = $this->columnRepository->findWith($id, ['cards']);
             if ($column) {
                 $this->columnForm->loadData($column);
             }
         }
+
         $this->showModal('column-form');
     }
 
@@ -229,9 +233,11 @@ class Show extends BaseComponent
 
     public function deleteCard(): void
     {
-        $card = $this->deleteCardAction->handle($this->cardForm->id);
+        $card = KanbanCard::findOrFail($this->cardForm->id);
 
         event(new CardDeleted($card));
+
+        $this->deleteCardAction->handle($card);
 
         $this->closeModal('delete-card-form');
         $this->cardForm->resetForm();
@@ -292,9 +298,11 @@ class Show extends BaseComponent
 
     public function deleteColumn(): void
     {
-        $column = $this->deleteColumnAction->handle($this->columnForm->id);
-        
+        $column = KanbanColumn::findOrFail($this->columnForm->id);
+
         event(new ColumnDeleted($column));
+        
+        $this->deleteColumnAction->handle($column);
 
         $this->closeModal('delete-column-form');
         $this->columnForm->resetForm();
@@ -458,7 +466,10 @@ class Show extends BaseComponent
     {
         $columns = KanbanColumn::with([
             'cards' => function ($query) {
-                $query->orderBy('position')->with(['user','column']);
+                $query->orderBy('position')->with([
+                    'user',
+                    'column.board', // ✅ this fixes the lazy loading error
+                ]);
             }
         ])
         ->where('board_id', $this->boardId)
@@ -488,7 +499,7 @@ class Show extends BaseComponent
     {
         return view('livewire.admin.kanban-boards.show', [
             'board' => $this->currentBoard,
-            'columns' => $this->currentBoard->columns ?? collect(),
+            'columns' => $this->columns ?? collect(),
         ]);
     }
 }

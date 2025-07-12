@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Events\PrivacyUpdated;
 use App\Livewire\BaseComponent;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +27,8 @@ class Privacy extends BaseComponent
         if (!$this->privacy) { 
             Auth::user()->followers()->update(['status' => 'accepted']);
         }
+
+        event(new PrivacyUpdated(Auth::user()));
 
         $this->toast([
             'heading' => 'Privacy updated',

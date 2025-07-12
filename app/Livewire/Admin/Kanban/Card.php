@@ -3,12 +3,12 @@
 namespace App\Livewire\Admin\Kanban;
 
 use App\Models\KanbanCard;
-use App\Models\KanbanColumn;
-use App\Models\KanbanBoard;
 use Livewire\Attributes\Title;
 use App\Livewire\BaseComponent;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Collection;
+use App\Events\Kanban\UserAssigned;
+use App\Events\Kanban\UserUnassigned;
 use App\Repositories\Kanban\CardRepository;
 use App\Repositories\Kanban\BoardRepository;
 use App\Actions\Kanban\AssignUserToCardAction;
@@ -27,9 +27,6 @@ class Card extends BaseComponent
     public int $cardId;
 
     public KanbanCard $card;
-    public KanbanColumn $column;
-    public KanbanBoard $board;
-
     public Collection $boardUsers;
 
     protected BoardRepository $boardRepository;
@@ -54,12 +51,12 @@ class Card extends BaseComponent
         $this->boardSlug = $boardSlug;
         $this->columnSlug = $columnSlug;
 
-        // Load card with user and relations except owner separately
+        // Load card with all necessary relations
         $relations = [
             'user',
             'column',
-            'column.board',
-            'column.board.users',
+            'board',
+            'board.users',
         ];
 
         // Find card by board slug, column slug, and card slug with validation
@@ -69,17 +66,15 @@ class Card extends BaseComponent
             $cardId,
             $relations
         );
-        
-        $this->column = $this->card->column;
-        $this->board = $this->column->board;
 
         // Set the IDs for backward compatibility
         $this->cardId = $this->card->id;
-        $this->columnId = $this->column->id;
-        $this->boardId = $this->board->id;
+        $this->columnId = $this->card->column->id;
+        $this->boardId = $this->card->board->id;
 
         // Load combined users + owner once and cache on board
-        $this->board = $this->boardRepository->loadUsersWithOwner($this->board);
+        $board = $this->boardRepository->loadUsersWithOwner($this->card->board);
+        $this->card->setRelation('board', $board);
 
         $this->prepareBoardUsers();
     }
@@ -87,7 +82,7 @@ class Card extends BaseComponent
     protected function prepareBoardUsers(): void
     {
         // Use the cached combined users + owner collection
-        $this->boardUsers = $this->board->getRelation('usersWithOwner') ?? collect();
+        $this->boardUsers = $this->card->board->getRelation('usersWithOwner') ?? collect();
     }
 
     public function assignUser(int $userId): void
@@ -97,16 +92,17 @@ class Card extends BaseComponent
         $relations = [
             'user',
             'column',
-            'column.board',
-            'column.board.users',
+            'board',
+            'board.users',
         ];
 
         $this->card = $this->cardRepository->refresh($this->card, $relations);
-        $this->column = $this->card->column;
-        $this->board = $this->column->board;
 
         // Reload combined users + owner collection without re-querying owner twice
-        $this->board = $this->boardRepository->loadUsersWithOwner($this->board);
+        $board = $this->boardRepository->loadUsersWithOwner($this->card->board);
+        $this->card->setRelation('board', $board);
+
+        event(new UserAssigned($this->card));
 
         $this->prepareBoardUsers();
 
@@ -124,16 +120,16 @@ class Card extends BaseComponent
         $relations = [
             'user',
             'column',
-            'column.board',
-            'column.board.users',
+            'board',
+            'board.users',
         ];
 
         $this->card = $this->cardRepository->refresh($this->card, $relations);
-        $this->column = $this->card->column;
-        $this->board = $this->column->board;
 
-        // Reload combined users + owner collection without re-querying owner twice
-        $this->board = $this->boardRepository->loadUsersWithOwner($this->board);
+        event(new UserUnassigned($this->card));
+
+        $board = $this->boardRepository->loadUsersWithOwner($this->card->board);
+        $this->card->setRelation('board', $board);
 
         $this->prepareBoardUsers();
 

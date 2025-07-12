@@ -3,14 +3,19 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use App\Models\Comment;
 use App\Models\User;
+use App\Models\Comment;
 use App\Models\KanbanCard;
 use App\Models\KanbanBoard;
-use App\Models\KanbanColumn;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Models\KanbanColumn;
 use Illuminate\Database\Seeder;
+use App\Events\Kanban\CardCreated;
+use App\Events\Kanban\BoardCreated;
+use App\Events\Kanban\ColumnCreated;
+use Illuminate\Support\Facades\Auth;
+use App\Events\Comments\CommentCreated;
 
 class KanbanTableSeeder extends Seeder
 {
@@ -303,6 +308,9 @@ class KanbanTableSeeder extends Seeder
             'owner_id' => 1,
         ]);
 
+        Auth::loginUsingId(1);
+        event(new BoardCreated($board));
+
         // Get all admin user IDs except the owner
         $adminUserIds = User::role('Admin')
             ->where('id', '!=', $board->owner_id)
@@ -330,6 +338,8 @@ class KanbanTableSeeder extends Seeder
                 'board_id' => $board->id,
             ]);
 
+            event(new ColumnCreated($column));
+
             foreach ($columnData['cards'] as $cardIndex => $cardData) {
                 foreach ($cardData['badges'] as $badge) {
                     $badgeKey = $badge['title'] . '-' . $badge['color'];
@@ -346,14 +356,20 @@ class KanbanTableSeeder extends Seeder
                     'assigned_user_id' => (rand(0, 1) === 1 && !empty($boardUserIds)) ? Arr::random($boardUserIds) : null,
                 ]);
 
+                event(new CardCreated($card));
+
                 // Add random comments
                 $numComments = rand(1, 5);
                 for ($i = 0; $i < $numComments; $i++) {
                     $commentUserId = Arr::random($boardUserIds);
+                    Auth::loginUsingId($commentUserId);
+
                     $comment = $card->comments()->create([
                         'user_id' => $commentUserId,
                         'body' => fake()->sentence(rand(6, 12)),
                     ]);
+
+                    event(new CommentCreated($comment));
 
                     // Randomly like this comment by some users
                     $numLikes = rand(0, count($boardUserIds));

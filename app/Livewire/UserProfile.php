@@ -16,7 +16,6 @@ class UserProfile extends BaseComponent
     public function mount($username)
     {
         $this->user = User::whereUsername($username)
-            ->with(['posts'])
             ->firstOrFail();
         
         $this->prepareUserAccess();

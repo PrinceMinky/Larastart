@@ -12,9 +12,14 @@ class Dashboard extends BaseComponent
 
     public function mount()
     {
-        $this->user = Auth::user()->loadCount(['followers' => function ($query) {
-            $query->where('status', 'pending');
-        }]);
+        $this->getPendingFollowersCount();
+    }
+
+    public function getPendingFollowersCount()
+    {
+        $this->user = Auth::user()->loadCount([
+            'followers' => fn ($q) => $q->where('status', 'pending')
+        ]);
     }
 
     public function render()

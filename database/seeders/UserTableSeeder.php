@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Events\UserCreated;
 use App\Notifications\LikedPost;
 use App\Models\Post;
 use App\Models\User;
@@ -28,9 +29,11 @@ class UserTableSeeder extends Seeder
             'is_private' => 1,
         ]);
         $superAdmin->assignRole('Super Admin');
+
+        event(new UserCreated($superAdmin));
     
         $awesomeAdmin = User::create([
-            'name' => 'Admin',
+            'name' => 'Awesome Admin',
             'username' => 'admin',
             'email' => 'admin@larastart.com',
             'date_of_birth' => '1988-10-25',
@@ -40,25 +43,16 @@ class UserTableSeeder extends Seeder
         ]);
         $awesomeAdmin->assignRole('Admin');
 
+        event(new UserCreated($awesomeAdmin));
+
         if(! $this->simpleSeed)
         {
-            $adminPosts = Post::factory(2)->create(['user_id' => $awesomeAdmin->id]);
-            $superAdminPosts = Post::factory(2)->create(['user_id' => $superAdmin->id]);
-        
             User::factory(200)->create()->each(function (User $user) {
                 $role = (mt_rand(1, 100) <= 10) ? 'Admin' : 'User';
                 $user->assignRole($role);
-        
-                Post::factory(rand(0, 10))->create([
-                    'user_id' => $user->id
-                ])->each(function ($post) {
-                    $users = User::inRandomOrder()->take(rand(1, 5))->get(); 
-    
-                    foreach ($users as $likingUser) {
-                        $likingUser->likedPosts()->attach($post->id);
-                    }
-                });
-        
+
+                event(new UserCreated($user));
+                
                 $potentialFollowers = User::where('id', '!=', $user->id)
                                           ->inRandomOrder()
                                           ->limit(rand(6, 20))
@@ -78,19 +72,6 @@ class UserTableSeeder extends Seeder
         
                 $awesomeAdmin->following()->syncWithoutDetaching([$mutualUser->id => ['status' => 'accepted']]);
                 $mutualUser->following()->syncWithoutDetaching([$awesomeAdmin->id => ['status' => 'accepted']]);
-            }
-        
-            $likingUsers = User::inRandomOrder()->limit(rand(10, 50))->get();
-            
-            foreach ($likingUsers as $user) {
-                foreach ($adminPosts as $post) {
-                    $user->likedPosts()->attach($post->id);
-                    $post->user->notify(new LikedPost($user, $post));
-                }
-                foreach ($superAdminPosts as $post) {
-                    $user->likedPosts()->attach($post->id);
-                    $post->user->notify(new LikedPost($user, $post));
-                }
             }
               
             $followRequesters = User::where('id', '!=', $superAdmin->id)

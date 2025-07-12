@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use App\Events\PasswordSent;
+use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -21,6 +23,9 @@ class ForgotPassword extends Component
         ]);
 
         Password::sendResetLink($this->only('email'));
+
+        $user = User::where('email', $this->email)->first();
+        event(new PasswordSent($user));
 
         session()->flash('status', __('A reset link will be sent if the account exists.'));
     }

@@ -10,14 +10,13 @@ class DeleteColumnAction
     /**
      * Delete a KanbanColumn by ID.
      *
-     * @param int $columnId
-     * @return KanbanColumn
+     * @param KanbanColumn
+     * @return bool
      */
-    public function handle(int $columnId): bool
+    public function handle(KanbanColumn $column): bool
     {
         Gate::authorize('delete kanban columns');
 
-        $column = KanbanColumn::findOrFail($columnId);
         return $column->delete();
     }
 }

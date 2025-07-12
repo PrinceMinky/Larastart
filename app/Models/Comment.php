@@ -7,14 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $fillable = [
-        'model_class',
-        'parent_id',
-        'model_id',
-        'user_id',
-        'body',
-    ];
-
     public function parent()
     {
         return $this->belongsTo(Comment::class, 'parent_id');

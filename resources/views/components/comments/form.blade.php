@@ -1,7 +1,7 @@
 <flux:textarea
     wire:model.defer="storeCommentForm.body"
     class="w-full border rounded p-2"
-    placeholder="Write a comment..."
+    placeholder="{{ $this->placeholder }}"
 />
 <flux:error name="storeCommentForm.body" />
 

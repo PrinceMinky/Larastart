@@ -2,8 +2,9 @@
 
 namespace App\Livewire\Settings;
 
-use App\Livewire\Actions\Logout;
+use App\Events\UserDeleted;
 use App\Livewire\BaseComponent;
+use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
 
 class DeleteUserForm extends BaseComponent
@@ -18,6 +19,8 @@ class DeleteUserForm extends BaseComponent
         $this->validate([
             'password' => ['required', 'string', 'current_password'],
         ]);
+
+        event(new UserDeleted(Auth::user()));
 
         tap(Auth::user(), $logout(...))->delete();
 

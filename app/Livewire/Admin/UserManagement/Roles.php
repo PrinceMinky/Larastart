@@ -50,16 +50,25 @@ class Roles extends BaseComponent
         }
         
         $query = Role::query();
-        $query->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query);
+        $query->with('permissions');
+
+        $this->applySorting($query);
         $this->applySearch($query);
     
         return $cachedRoles = $query->paginate(25); 
     }
 
     #[Computed]
+    /**
+     * Return permissions as a Collection, cached as array internally.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function permissions(): Collection
     {
-        return Permission::all();
+        $array = $this->getCachedList('permissions', fn() => Permission::all()->toArray());
+
+        return collect($array);
     }
 
     public function showForm($id = null): void

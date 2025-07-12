@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class KanbanBoard extends Model
 {
     use HasFactory;
-    
-    protected $fillable = ['title', 'slug','badges'];
 
     protected $casts = [
         'badges' => 'array',
@@ -23,6 +21,24 @@ class KanbanBoard extends Model
                 $board->owner_id = Auth::id();
             }
         });
+    }
+    
+    /**
+     * Creates a URL attribute
+     */
+    public function getUrlAttribute()
+    {
+        return route('admin.kanban_board', [
+            'slug' => $this->slug ?? null
+        ]);
+    }
+
+    /**
+     * Creates a Display Name attribute used for links
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->title;
     }
 
     public function owner()

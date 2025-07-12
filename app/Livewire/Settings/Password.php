@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Settings;
 
+use App\Events\PasswordUpdated;
 use App\Livewire\BaseComponent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class Password extends BaseComponent
 {
@@ -37,6 +38,8 @@ class Password extends BaseComponent
         ]);
 
         $this->reset('current_password', 'password', 'password_confirmation');
+
+        event(new PasswordUpdated(Auth::user()));
 
         $this->toast([
             'heading' => 'Password updated',

@@ -22,7 +22,7 @@
             
             <x-drag-scroll-container>
                 <x-sort class="flex gap-4" handle="updateColumnPosition" permissions="edit kanban columns">
-                    @foreach ($board->columns as $column)
+                    @foreach ($columns as $column)
                         <x-admin.kanban-board.column :$column />
                     @endforeach
                 </x-sort>

@@ -1,4 +1,4 @@
-<section>
+<section class="flex flex-col gap-2">
     <!-- Display heading -->
     <x-page-heading>
         <x-slot name="heading">{{ __('Dashboard') }}</x-slot>
@@ -17,9 +17,13 @@
         </x-slot>
     </x-page-heading>
 
+    @if(request('verified'))
+        <flux:callout variant="success" icon="check-circle" heading="Your email has been verified successfully." />
+    @endif
+
     <div class="flex flex-between gap-2">
         <div class="w-3/4">
-            @livewire('user-post')
+            <!-- Coming soon -->
         </div>
 
         <div class="w-1/3">

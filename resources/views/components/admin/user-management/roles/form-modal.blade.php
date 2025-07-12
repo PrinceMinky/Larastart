@@ -24,14 +24,16 @@
             $singlePermissions = [];
 
             foreach ($this->permissions as $permission) {
-                $permissionParts = explode(' ', $permission->name);
-                $permissionAction = $permissionParts[0] ?? '';
-                $permissionResource = implode(' ', array_slice($permissionParts, 1)) ?? '';
+                // Access name property, adjust if $permission is array
+                $permissionName = is_array($permission) ? $permission['name'] : $permission->name;
 
-                if (in_array($permissionAction, ['create', 'edit', 'view', 'delete','export']) && !empty($permissionResource)) {
-                    $resourceGroups[$permissionResource][] = $permission->name;
+                $permissionAction = Str::before($permissionName, ' ');
+                $permissionResource = Str::after($permissionName, ' ');
+
+                if (in_array($permissionAction, ['create', 'edit', 'view', 'delete', 'export']) && !empty($permissionResource)) {
+                    $resourceGroups[$permissionResource][] = $permissionName;
                 } else {
-                    $singlePermissions[] = $permission->name;
+                    $singlePermissions[] = $permissionName;
                 }
             }
         @endphp

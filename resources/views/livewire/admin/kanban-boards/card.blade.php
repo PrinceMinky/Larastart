@@ -11,8 +11,8 @@
             <!-- Breadcrumbs -->
             <flux:breadcrumbs class="mb-3">
                 <flux:breadcrumbs.item :href="route('admin.kanban_list')">Kanban Boards</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item :href="route('admin.kanban_board', $column->board->slug)">{{ $column->board->title }}</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item :href="route('admin.kanban_board', $column->slug)">{{ $column->title }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('admin.kanban_board', $card->board->slug)">{{ $card->board->title }}</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('admin.kanban_board', $card->column->slug)">{{ $card->column->title }}</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $card->title }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
 

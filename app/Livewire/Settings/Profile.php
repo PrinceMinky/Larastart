@@ -2,18 +2,16 @@
 
 namespace App\Livewire\Settings;
 
-use App\Enums\Country;
-use App\Livewire\BaseComponent;
 use App\Models\User;
+use App\Enums\Country;
+use App\Events\ProfileUpdated;
+use App\Livewire\BaseComponent;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rule;
-use Livewire\WithFileUploads;
 
 class Profile extends BaseComponent
 {
-    use WithFileUploads;
-
     public string $name = '';
 
     public string $username = '';
@@ -68,6 +66,8 @@ class Profile extends BaseComponent
         }
 
         $user->save();
+
+        event(new ProfileUpdated($user));
 
         $this->toast([
             'heading' => 'Profile updated',

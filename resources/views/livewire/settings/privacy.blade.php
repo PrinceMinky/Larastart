@@ -6,5 +6,7 @@
             <!-- Privacy -->
             <flux:switch wire:model.live="privacy" label="Make profile private" align="left" />
         </form>
+
+        <livewire:blocked-user-list />
     </x-settings.layout>
 </section>

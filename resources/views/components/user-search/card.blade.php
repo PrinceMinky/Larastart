@@ -18,12 +18,7 @@
 
     <div>
         <!-- Stats Section Below the Card -->
-        <div class="flex gap-4 text-sm text-gray-600 mt-2">
-            <flux:text size="sm" variant="subtle" class="flex flex-col items-start">
-                Posts
-                <flux:badge size="sm">{{ $user->posts->count() }}</flux:badge>
-            </flux:text>
-            
+        <div class="flex gap-4 text-sm text-gray-600 mt-2">            
             <flux:text size="sm" variant="subtle" class="flex flex-col items-start">
                 Following
                 <flux:badge size="sm">{{ $user->following->where('pivot.status', 'accepted')->count() }}</flux:badge>

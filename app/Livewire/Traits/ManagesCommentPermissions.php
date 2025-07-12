@@ -19,7 +19,6 @@ trait ManagesCommentPermissions
 
     public function canReply(Comment $comment): bool
     {
-        // You could create a policy method like `reply` if needed
         return Auth::check();
     }
 

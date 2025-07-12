@@ -33,4 +33,14 @@ return [
     |
     */
     'max_indent_level' => 2,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Placeholder
+    |--------------------------------------------------------------------------
+    |
+    | Displays a placeholder in the comment box.
+    |
+    */
+    'placeholder' => "Write a comment...",
 ];

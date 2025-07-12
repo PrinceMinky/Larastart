@@ -18,25 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Blockable, HasComments, HasFollowers, HasLikes, HasPosts, HasRoles, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'email_verified_at',
-        'date_of_birth',
-        'country',
-        'profile_picture',
-        'password',
-        'is_private',
-    ];
+    use HasFactory, HasPosts, Blockable, HasComments, HasFollowers, HasLikes, HasRoles, Notifiable;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -84,6 +66,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Creates a URL attribute
+     */
+    public function getUrlAttribute()
+    {
+        return route('profile.show', ['username' => $this->username]);
+    }
+
+    /**
+     * Creates a Display Name attribute used for links
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->name;
+    }
+
+    /**
      * Determine if authenticated user is selected user
      */
     public function me($givenId)
@@ -97,6 +95,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function is_me()
     {   
         return Auth::user()->id === $this->id;
+    }
+
+    /**
+     * Determines if user is a moderator
+     */
+    public function getIsModeratorAttribute()
+    {
+        return $this->hasRole("Moderator");
     }
 
     public function kanbanBoards()

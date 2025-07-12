@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Enums\Country;
+use App\Events\UserCreated;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Carbon;
@@ -50,6 +51,7 @@ class Register extends Component
         $validated['date_of_birth'] = Carbon::parse($validated['date_of_birth']);
 
         event(new Registered(($user = User::create($validated))));
+        event(new UserCreated($user));
 
         $this->assignRole($user);
 

@@ -4,7 +4,7 @@
     'actions' => null,
 ])
 
-<div class="relative mb-6 w-full">
+<div class="relative mb-4 w-full">
     <div class="flex">
         <div class="flex-1/2">
             <flux:heading size="xl" level="1">{{ $heading }}</flux:heading>
@@ -16,5 +16,5 @@
         </div>
     </div>
      
-    <flux:separator variant="subtle" class="mt-6" />
+    <flux:separator variant="subtle" class="mt-4" />
 </div>

@@ -96,6 +96,13 @@ class Comments extends BaseComponent
     public int $maxChildren = 2;
 
     /**
+     * Placeholder for textareas
+     *
+     * @var int
+     */
+    public ?string $placeholder;
+
+    /**
      * The comment ID currently being edited.
      *
      * @var int|null
@@ -108,6 +115,13 @@ class Comments extends BaseComponent
      * @var array<int, string>
      */
     public array $replyBodies = [];
+
+    /**
+     * Variant
+     *
+     * @var int|string
+     */
+    public null|string $variant = null;
 
     /**
      * Flags indicating whether user is replying to a comment.
@@ -142,15 +156,16 @@ class Comments extends BaseComponent
         $this->deleteCommentAction = app(DeleteCommentAction::class);
     }
 
-    public function mount(Model $model, $ownerId = null): void
+    public function mount(Model $model, $ownerId = null, $indentReplies = null, $useFullName = null, $maxChildren = null, $placeholder = null): void
     {
         $this->modelInstance = $model;
         $this->modelClass = get_class($model);
         $this->modelId = $model->id;
         $this->ownerId = $ownerId;
-        $this->indentReplies = Config::get('comments.indentations', false);
-        $this->useFullName = Config::get('comments.full_name', false);
-        $this->maxChildren = Config::get('comments.max_indent_level', 2);
+        $this->indentReplies = (isset($indentReplies)) ? $indentReplies : Config::get('comments.indentations', false);
+        $this->useFullName = (isset($useFullName)) ? $useFullName : Config::get('comments.full_name', false);
+        $this->maxChildren = (isset($maxChildren)) ? $maxChildren : Config::get('comments.max_indent_level', 2);
+        $this->placeholder = (isset($placeholder)) ? $placeholder : Config::get('comments.placeholder', false);
     }
 
     public function getCommentsProperty(): Collection
@@ -252,13 +267,15 @@ class Comments extends BaseComponent
             return;
         }
 
+        $originalBody = $comment->body;
+
         $comment = $this->updateCommentAction->execute($comment, $this->updateCommentForm->body);
 
         $this->reset(['editingId']);
         $this->updateCommentForm->reset();
         $this->invalidateCache();
 
-        event(new CommentUpdated($comment, $comment->body));
+        event(new CommentUpdated($comment, $originalBody));
 
         $this->toast([
             'variant' => 'success',
@@ -274,11 +291,10 @@ class Comments extends BaseComponent
             return;
         }
 
-        // Fire event before deletion
         event(new CommentDeleted($comment));
-
+        
         $this->deleteCommentAction->execute($comment);
-
+        
         $this->invalidateCache();
 
         $this->toast([

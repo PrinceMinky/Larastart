@@ -8,7 +8,10 @@ trait Searchable
 
     public function updatedSearch()
     {
-        $this->resetPage();
+        if(method_exists($this, 'resetPage'))
+        {
+            $this->resetPage();
+        }
     }
 
     public function applySearch($query, array $searchableFields = ['name'])

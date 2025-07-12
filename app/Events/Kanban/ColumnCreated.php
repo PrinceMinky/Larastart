@@ -2,35 +2,21 @@
 
 namespace App\Events\Kanban;
 
-use Illuminate\Broadcasting\Channel;
+use App\Models\KanbanColumn;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class ColumnCreated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    public function __construct(
+        public KanbanColumn $model
+    ) {}
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function activityProperties(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            'column_id'  => $this->model->id
         ];
     }
 }

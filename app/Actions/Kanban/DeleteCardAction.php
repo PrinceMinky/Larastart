@@ -10,14 +10,13 @@ class DeleteCardAction
     /**
      * Delete a KanbanCard by ID.
      *
-     * @param int $cardId
-     * @return void
+     * @param KanbanCard $card
+     * @return bool
      */
-    public function handle(int $cardId): bool
+    public function handle(KanbanCard $card): bool
     {
         Gate::authorize('delete kanban cards');
 
-        $card = KanbanCard::findOrFail($cardId);
         return $card->delete();
     }
 }

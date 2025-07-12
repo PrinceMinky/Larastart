@@ -24,7 +24,7 @@
                     </flux:heading>
                     @if ($comment->user->is_moderator)
                         <flux:badge color="lime" size="sm" icon="check-badge" inset="top bottom">Moderator</flux:badge>
-                    @endif {{-- Coming Soon --}}
+                    @endif
                 </div>
                 <flux:text class="text-sm">{{ $comment->created_at->diffForHumans() }}</flux:text>
             </div>

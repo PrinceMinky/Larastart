@@ -2,35 +2,24 @@
 
 namespace App\Events\Kanban;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Models\User;
+use App\Models\KanbanCard;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
 class UserAssigned
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    public function __construct(
+        public KanbanCard $model,
+    ) {}
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function activityProperties(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            'card_id'  => $this->model->id,
+            'assigned_user' => $this->model->user->id,
+            'assigned_user_name' => $this->model->user->name,
         ];
     }
 }

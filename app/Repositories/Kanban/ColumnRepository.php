@@ -19,9 +19,10 @@ class ColumnRepository
     /**
      * Find a KanbanColumn by ID with specified relations loaded.
      *
+     * @param int $id
      * @param array<int,string> $relations
      */
-    public function findWith(array $relations, int $id): KanbanColumn
+    public function findWith(int $id, array $relations): KanbanColumn
     {
         return KanbanColumn::with($relations)->findOrFail($id);
     }
