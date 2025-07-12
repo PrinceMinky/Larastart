@@ -252,13 +252,15 @@ class Comments extends BaseComponent
             return;
         }
 
+        $originalBody = $comment->body;
+
         $comment = $this->updateCommentAction->execute($comment, $this->updateCommentForm->body);
 
         $this->reset(['editingId']);
         $this->updateCommentForm->reset();
         $this->invalidateCache();
 
-        event(new CommentUpdated($comment, $comment->body));
+        event(new CommentUpdated($comment, $originalBody));
 
         $this->toast([
             'variant' => 'success',
@@ -274,11 +276,10 @@ class Comments extends BaseComponent
             return;
         }
 
-        // Fire event before deletion
         event(new CommentDeleted($comment));
-
+        
         $this->deleteCommentAction->execute($comment);
-
+        
         $this->invalidateCache();
 
         $this->toast([

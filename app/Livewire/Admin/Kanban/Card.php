@@ -3,12 +3,14 @@
 namespace App\Livewire\Admin\Kanban;
 
 use App\Models\KanbanCard;
-use App\Models\KanbanColumn;
 use App\Models\KanbanBoard;
+use App\Models\KanbanColumn;
 use Livewire\Attributes\Title;
 use App\Livewire\BaseComponent;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Collection;
+use App\Events\Kanban\UserAssigned;
+use App\Events\Kanban\UserUnassigned;
 use App\Repositories\Kanban\CardRepository;
 use App\Repositories\Kanban\BoardRepository;
 use App\Actions\Kanban\AssignUserToCardAction;
@@ -108,6 +110,8 @@ class Card extends BaseComponent
         // Reload combined users + owner collection without re-querying owner twice
         $this->board = $this->boardRepository->loadUsersWithOwner($this->board);
 
+        event(new UserAssigned($this->card));
+
         $this->prepareBoardUsers();
 
         $this->toast([
@@ -131,6 +135,8 @@ class Card extends BaseComponent
         $this->card = $this->cardRepository->refresh($this->card, $relations);
         $this->column = $this->card->column;
         $this->board = $this->column->board;
+
+        event(new UserUnassigned($this->card));
 
         // Reload combined users + owner collection without re-querying owner twice
         $this->board = $this->boardRepository->loadUsersWithOwner($this->board);

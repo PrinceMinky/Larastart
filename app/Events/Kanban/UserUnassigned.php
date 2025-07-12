@@ -3,20 +3,20 @@
 namespace App\Events\Kanban;
 
 use App\Models\KanbanCard;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
-class CardCreated
+class UserUnassigned
 {
     public function __construct(
-        public KanbanCard $model
+        public KanbanCard $model,
     ) {}
 
     public function activityProperties(): array
     {
         return [
-            'card'  => $this->model->withoutRelations()
+            'card_id'  => $this->model->id,
         ];
     }
 }

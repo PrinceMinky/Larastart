@@ -12,6 +12,14 @@ class CommentDeleted
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public Comment $comment
+        public Comment $model
     ) {}
+
+    public function activityProperties(): array
+    {
+        return [
+            'comment_id'  => $this->model->id,
+            'user_id'  => $this->model->user_id,
+        ];
+    }
 }
