@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
     
         Route::get('kanban-boards', KanbanBoardsList::class)->name('kanban_list')->can('view kanban boards');
         Route::get('kanban-board/{slug}', KanbanBoardShow::class)->name('kanban_board')->can('view kanban boards');
-        Route::get('kanban-board/{boardSlug}/{columnSlug}/{cardId}', KanbanBoardCard::class)->name('kanban_board_card')->can('view kanban boards');
+        Route::get('kanban-board/{boardSlug}/{columnSlug}/{cardId}', KanbanBoardCard::class)->name('kanban_card')->can('view kanban boards');
         
         // User Management
         Route::get('user-management', UserList::class)->name('user.index')->can('view users');
