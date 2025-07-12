@@ -608,6 +608,7 @@
 <?php endif; ?>
         </div>
     </div>
+    
     <!-- Column Modal -->
     <?php if (isset($component)) { $__componentOriginal68a49638da0d4b109720b4e4a6c719bf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal68a49638da0d4b109720b4e4a6c719bf = $attributes; } ?>

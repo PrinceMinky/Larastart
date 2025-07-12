@@ -23,6 +23,7 @@ test('creates a new kanban board', function () {
 
     Livewire::test(KanbanBoardsList::class)
         ->set('form.title', 'My New Board')
+        ->set('form.slug', 'my-new-board')
         ->set('form.badges', [
             ['title' => 'Urgent', 'color' => 'red'],
             ['title' => 'Review', 'color' => 'blue'],
@@ -40,12 +41,14 @@ test('edits an existing kanban board', function () {
 
     $board = KanbanBoard::factory()->create([
         'title' => 'Old Title',
+        'slug' => 'old-title',
         'badges' => [['title' => 'OldBadge', 'color' => 'gray']],
     ]);
 
     Livewire::test(KanbanBoardsList::class)
         ->set('form.boardId', $board->id)
         ->set('form.title', 'Updated Title')
+        ->set('form.slug', 'updated-title')
         ->set('form.badges', [['title' => 'NewBadge', 'color' => 'green']])
         ->call('save', $board->id)
         ->assertHasNoErrors();
@@ -95,7 +98,7 @@ test('board title shows locked tooltip when user cannot view board', function ()
 
     Livewire::test(KanbanBoardsList::class)
         ->set('form.boardId', $board->id)
-        ->assertDontSeeHtml('href="' . route('admin.kanban_board', ['id' => $board->id]) . '"')
+        ->assertDontSeeHtml('href="' . route('admin.kanban_board', $board->slug) . '"')
         ->assertSeeHtml('You are not authorised to view this board.')
         ->assertSee($board->title);
 });
@@ -106,7 +109,7 @@ test('board title shows link when user can view board', function () {
 
     Livewire::test(KanbanBoardsList::class)
         ->set('form.boardId', $board->id)
-        ->assertSeeHtml('href="' . route('admin.kanban_board', ['id' => $board->id]) . '"')
+        ->assertSeeHtml('href="' . route('admin.kanban_board', $board->slug) . '"')
         ->assertSee($board->title)
         ->assertDontSee('You are not authorised to view this board.');
 });
@@ -115,7 +118,7 @@ test('board owner can view kanban board', function () {
     $user = $this->actAsAdmin(['view kanban boards']);
     $board = KanbanBoard::factory()->create(['owner_id' => $user->id]);
 
-    $response = $this->get(route('admin.kanban_board', ['id' => $board->id]));
+    $response = $this->get(route('admin.kanban_board', $board->slug));
 
     $response->assertStatus(200);
     $response->assertSee($board->title);
@@ -127,7 +130,7 @@ test('authorised team member can view kanban board', function () {
 
     $board->users()->attach($user);
 
-    $response = $this->get(route('admin.kanban_board', ['id' => $board->id]));
+    $response = $this->get(route('admin.kanban_board', $board->slug));
 
     $response->assertStatus(200);
     $response->assertSee($board->title);
@@ -137,7 +140,7 @@ test('user with permission to view boards but not owner or team member cannot vi
     $user = $this->actAsAdmin(['view kanban boards']);
     $board = KanbanBoard::factory()->create();
 
-    $response = $this->get(route('admin.kanban_board', ['id' => $board->id]));
+    $response = $this->get(route('admin.kanban_board', $board->slug));
 
     $response->assertForbidden();
 });
@@ -146,10 +149,12 @@ test('authorised user can create a column', function () {
     $user = $this->actAsAdmin(['create kanban columns']);
     $board = KanbanBoard::factory()->create(['owner_id' => $user->id]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    $component = Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('columnForm.title', 'To Do')
-        ->call('saveColumn')
-        ->assertHasNoErrors();
+        ->set('columnForm.slug', 'to-do')
+        ->call('saveColumn');
+            
+    $component->assertHasNoErrors();
 
     $this->assertDatabaseHas('kanban_columns', [
         'title' => 'To Do',
@@ -162,9 +167,10 @@ test('authorised user can edit a column', function () {
     $board = KanbanBoard::factory()->create(['owner_id' => $user->id]);
     $column = KanbanColumn::factory()->create(['board_id' => $board->id]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    $component = Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('columnForm.id', $column->id)
         ->set('columnForm.title', 'Updated Column Title')
+        ->set('columnForm.slug', 'updated-column-title')
         ->call('saveColumn')
         ->assertHasNoErrors();
 
@@ -179,7 +185,7 @@ test('authorised user can delete a column', function () {
     $board = KanbanBoard::factory()->create(['owner_id' => $user->id]);
     $column = KanbanColumn::factory()->create(['board_id' => $board->id]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    $component = Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('columnForm.id', $column->id)
         ->call('deleteColumn')
         ->assertHasNoErrors();
@@ -197,7 +203,7 @@ test('authorised user can reorder columns', function () {
     $column2 = KanbanColumn::factory()->create(['board_id' => $board->id, 'position' => 1]);
     $column3 = KanbanColumn::factory()->create(['board_id' => $board->id, 'position' => 2]);
 
-    $component = Livewire::test(KanbanBoardShow::class, ['id' => $board->id]);
+    $component = Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug]);
 
     // Move column1 (currently at position 0) to position 2 (last position)
     $component->call('updateColumnPosition', $column1->id, 2)->assertHasNoErrors();
@@ -239,7 +245,7 @@ test('column position updates handle edge cases correctly', function () {
     $column2 = KanbanColumn::factory()->create(['board_id' => $board->id, 'position' => 1]);
     $column3 = KanbanColumn::factory()->create(['board_id' => $board->id, 'position' => 2]);
 
-    $component = Livewire::test(KanbanBoardShow::class, ['id' => $board->id]);
+    $component = Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug]);
 
     // Test moving to same position (should not change anything)
     $component->call('updateColumnPosition', $column2->id, 1)->assertHasNoErrors();
@@ -269,7 +275,7 @@ test('authorised user can create a card', function () {
     $board = KanbanBoard::factory()->create(['owner_id' => $user->id]);
     $column = KanbanColumn::factory()->create(['board_id' => $board->id]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('cardForm.column_id', $column->id)
         ->set('cardForm.title', 'New Task')
         ->set('cardForm.description', 'Task description')
@@ -293,7 +299,7 @@ test('authorised user can edit a card', function () {
         'description' => 'Old description',
     ]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('cardForm.id', $card->id)
         ->set('cardForm.title', 'Updated Title')
         ->set('cardForm.description', 'Updated description')
@@ -315,7 +321,7 @@ test('authorised user can delete a card', function () {
     $column = KanbanColumn::factory()->create(['board_id' => $board->id]);
     $card = KanbanCard::factory()->create(['column_id' => $column->id]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('cardForm.id', $card->id)
         ->call('deleteCard')
         ->assertHasNoErrors();
@@ -334,7 +340,7 @@ test('authorised user can reorder a card within the same column', function () {
     $card3 = KanbanCard::factory()->create(['column_id' => $column->id, 'position' => 2]);
 
     // Move card1 (position 0) to position 2 (last position)
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('updateCardPosition', $card1->id, 2, $column->id)
         ->assertHasNoErrors();
 
@@ -362,7 +368,7 @@ test('authorised user can move a card to the same position within the same colum
     $card2 = KanbanCard::factory()->create(['column_id' => $column->id, 'position' => 1]);
 
     // Move card2 to its current position (should not change anything)
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('updateCardPosition', $card2->id, 1, $column->id)
         ->assertHasNoErrors();
 
@@ -386,7 +392,7 @@ test('authorised user can move a card to another column', function () {
     $card4 = KanbanCard::factory()->create(['column_id' => $column2->id, 'position' => 1]);
 
     // Move card2 from column1 to column2 at position 1
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('updateCardPosition', $card2->id, 1, $column2->id)
         ->assertHasNoErrors();
 
@@ -420,7 +426,7 @@ test('authorised user can move a card to an empty column', function () {
     $card2 = KanbanCard::factory()->create(['column_id' => $column1->id, 'position' => 1]);
 
     // Move card1 to empty column2
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('updateCardPosition', $card1->id, 0, $column2->id)
         ->assertHasNoErrors();
 
@@ -442,7 +448,7 @@ test('unauthorised user cannot reorder cards', function () {
     $column = KanbanColumn::factory()->create(['board_id' => $board->id]);
     $card = KanbanCard::factory()->create(['column_id' => $column->id, 'position' => 0]);
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('updateCardPosition', $card->id, 1, $column->id)
         ->assertForbidden();
 });
@@ -453,7 +459,7 @@ test('authorised user can associate users to the board', function () {
 
     $usersToAssociate = User::factory()->count(3)->create();
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->set('selectedUserIds', $usersToAssociate->pluck('id')->toArray())
         ->call('associateUsers')
         ->assertHasNoErrors();
@@ -473,7 +479,7 @@ test('authorised user can remove a user from the board', function () {
 
     $this->assertTrue($board->users->contains($user));
 
-    Livewire::test(KanbanBoardShow::class, ['id' => $board->id])
+    Livewire::test(KanbanBoardShow::class, ['slug' => $board->slug])
         ->call('removeUser', $user->id)
         ->assertHasNoErrors();
 

@@ -115,7 +115,7 @@
                                 </span>
                             </flux:tooltip>
                         @else
-                            <flux:link :href="route('admin.kanban_board', ['id' => $board->id])" variant="subtle">
+                            <flux:link :href="route('admin.kanban_board', $board->slug)" variant="subtle">
                                 {{ $board->title }}
                             </flux:link>
                         @endif
@@ -184,7 +184,7 @@
                 required
                 :placeholder="__('Title')"
             />
-
+            
             <!-- Template (on creation only) -->
             @if(!$this->form->boardId)
                 <flux:select wire:model.live="form.selectedTemplate" :label="__('Template (optional)')" :nullable="true">

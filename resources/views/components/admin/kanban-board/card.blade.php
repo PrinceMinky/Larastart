@@ -23,7 +23,7 @@
     <div class="flex flex-col gap-0">
         <flux:link
             variant="subtle"
-            :href="route('admin.kanban_board_card', [ $card->column->board_id, $card->column->id, $card->id, ])"
+                
         >
             <flux:heading>{{ $card->title }}</flux:heading>
         </flux:link>
@@ -61,7 +61,7 @@
                     <flux:button size="sm" icon="ellipsis-horizontal" square />
                     <flux:navmenu>
                         @can('edit kanban cards')
-                            <flux:navmenu.item icon="pencil" wire:click="showEditCardForm({{ $card->id }})">Edit Card</flux:navmenu.item>
+                            <flux:navmenu.item icon="pencil" wire:click="showCardForm({{ $card->id }})">Edit Card</flux:navmenu.item>
                         @endcan
 
                         @can('delete kanban cards')

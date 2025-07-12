@@ -3,18 +3,20 @@
 namespace App\Livewire\Forms\Kanban;
 
 use Livewire\Form;
+use Illuminate\Validation\Rule;
 
 class ColumnForm extends Form
 {
     public ?int $id = null;
     public int $board_id;
     public string $title = '';
+    public string $slug = '';
     public int $position = 0;
 
     public function rules(): array
     {
         return [
-            'title' => ['required', 'min:3']
+            'title' => ['required', 'min:3'],
         ];
     }
 

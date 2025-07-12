@@ -41,6 +41,7 @@ class Show extends BaseComponent
     use WithModal;
 
     public int $boardId;
+    public string $slug;
     public ?Board $currentBoard = null;
 
     public CardForm $cardForm;
@@ -96,10 +97,11 @@ class Show extends BaseComponent
         $this->updateColumnPositionAction = $updateColumnPositionAction;
     }
 
-    public function mount(int $id)
+    public function mount(string $slug)
     {
-        $this->boardId = $id;
-        $this->currentBoard = $this->boardRepository->findOrFailWithRelations($id, ['owner', 'users']);
+        $this->slug = $slug;
+        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($slug, ['owner', 'users','columns.cards.column','columns.cards.user']);
+        $this->boardId = $this->currentBoard->id;
         $this->authorizeView();
 
         $permission = Permission::where('name', 'view kanban boards')->first();

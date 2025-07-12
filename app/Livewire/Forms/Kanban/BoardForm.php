@@ -5,11 +5,13 @@ namespace App\Livewire\Forms\Kanban;
 use Livewire\Form;
 use App\Models\KanbanBoard;
 use App\Enums\KanbanTemplates;
+use Illuminate\Validation\Rule;
 
 class BoardForm extends Form
 {
     public ?int $boardId = null;
     public string $title = '';
+    public string $slug = '';
     public ?string $selectedTemplate = null;
     public array $badges = [];
     public ?string $badgeTitle = null;
@@ -27,7 +29,7 @@ class BoardForm extends Form
 
     public function resetForm(): void
     {
-        $this->reset(['boardId', 'title', 'selectedTemplate', 'badges', 'badgeTitle', 'badgeColor']);
+        $this->reset(['boardId', 'title', 'slug', 'selectedTemplate', 'badges', 'badgeTitle', 'badgeColor']);
     }
 
     public function load(int $id): void
@@ -36,6 +38,7 @@ class BoardForm extends Form
 
         $this->boardId = $board->id;
         $this->title = $board->title;
+        $this->slug = $board->slug;
         $this->badges = $board->badges ?? [];
     }
 

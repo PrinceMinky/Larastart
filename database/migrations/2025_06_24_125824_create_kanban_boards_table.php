@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('owner_id')->constrained('users');
             $table->string('title');
+            $table->string('slug')->unique();
             $table->json('badges')->nullable();
             $table->timestamps();
         });

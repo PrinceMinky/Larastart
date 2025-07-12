@@ -9,7 +9,7 @@ class KanbanColumn extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title', 'position', 'board_id'];
+    protected $fillable = ['title', 'slug', 'position', 'board_id'];
 
     public function board()
     {

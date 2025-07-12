@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\KanbanColumn;
 use App\Models\KanbanBoard;
+use Illuminate\Support\Str;
+use App\Models\KanbanColumn;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class KanbanColumnFactory extends Factory
 {
@@ -15,6 +16,7 @@ class KanbanColumnFactory extends Factory
         return [
             'board_id' => KanbanBoard::factory(),
             'title' => $this->faker->sentence(3),
+            'slug' => Str::slug($this->faker->words(3, true)),
             'position' => $this->faker->numberBetween(1, 10),
         ];
     }

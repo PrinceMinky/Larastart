@@ -18,6 +18,10 @@ use App\Actions\Kanban\RemoveUserFromCardAction;
 #[Layout('components.layouts.admin')]
 class Card extends BaseComponent
 {
+    public string $boardSlug;
+    public string $columnSlug;
+    public string $cardSlug;
+
     public int $boardId;
     public int $columnId;
     public int $cardId;
@@ -45,11 +49,10 @@ class Card extends BaseComponent
         $this->removeUserFromCardAction = $removeUserFromCardAction;
     }
 
-    public function mount(int $boardId, int $columnId, int $cardId): void
+    public function mount(string $boardSlug, string $columnSlug, string $cardId): void
     {
-        $this->boardId = $boardId;
-        $this->columnId = $columnId;
-        $this->cardId = $cardId;
+        $this->boardSlug = $boardSlug;
+        $this->columnSlug = $columnSlug;
 
         // Load card with user and relations except owner separately
         $relations = [
@@ -59,9 +62,21 @@ class Card extends BaseComponent
             'column.board.users',
         ];
 
-        $this->card = $this->cardRepository->findWith($relations, $cardId);
+        // Find card by board slug, column slug, and card slug with validation
+        $this->card = $this->cardRepository->findByBoardColumnCardIdentifiers(
+            $boardSlug,
+            $columnSlug, 
+            $cardId,
+            $relations
+        );
+        
         $this->column = $this->card->column;
         $this->board = $this->column->board;
+
+        // Set the IDs for backward compatibility
+        $this->cardId = $this->card->id;
+        $this->columnId = $this->column->id;
+        $this->boardId = $this->board->id;
 
         // Load combined users + owner once and cache on board
         $this->board = $this->boardRepository->loadUsersWithOwner($this->board);

@@ -9,6 +9,7 @@ use App\Models\KanbanCard;
 use App\Models\KanbanBoard;
 use App\Models\KanbanColumn;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class KanbanTableSeeder extends Seeder
@@ -20,6 +21,7 @@ class KanbanTableSeeder extends Seeder
             [
                 [
                     'title' => 'Backlog',
+                    'slug' => 'backlog',
                     'cards' => [
                         [
                             'title' => 'User Reports Slow Load Times on Profile Page',
@@ -53,6 +55,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'Planned',
+                    'slug' => 'planned',
                     'cards' => [
                         [
                             'title' => 'Update Privacy Policy in App',
@@ -91,6 +94,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'In Progress',
+                    'slug' => 'in-progress',
                     'cards' => [
                         [
                             'title' => 'Responsive Improvements on Mobile',
@@ -123,6 +127,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'In review',
+                    'slug' => 'in-review',
                     'cards' => [
                         [
                             'title' => 'Resolve Issue with Double-Click on Buttons',
@@ -150,6 +155,7 @@ class KanbanTableSeeder extends Seeder
             [
                 [
                     'title' => 'Ideas',
+                    'slug' => 'ideas',
                     'cards' => [
                         [
                             'title' => 'Launch Summer Social Media Campaign',
@@ -171,6 +177,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'Planning',
+                    'slug' => 'planning',
                     'cards' => [
                         [
                             'title' => 'Schedule Influencer Collaborations',
@@ -187,6 +194,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'Execution',
+                    'slug' => 'execution',
                     'cards' => [
                         [
                             'title' => 'Deploy Ads on Facebook and Instagram',
@@ -203,6 +211,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'Analysis',
+                    'slug' => 'analysis',
                     'cards' => [
                         [
                             'title' => 'Analyze Social Media Engagement',
@@ -225,6 +234,7 @@ class KanbanTableSeeder extends Seeder
             [
                 [
                     'title' => 'New Tickets',
+                    'slug' => 'new-tickets',
                     'cards' => [
                         [
                             'title' => 'Resolve Broken Image Links in Product Gallery',
@@ -247,6 +257,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'In Review',
+                    'slug' => 'in-review',
                     'cards' => [
                         [
                             'title' => 'Crash on Large File Upload',
@@ -263,6 +274,7 @@ class KanbanTableSeeder extends Seeder
                 ],
                 [
                     'title' => 'Resolved',
+                    'slug' => 'resolved',
                     'cards' => [
                         [
                             'title' => 'Fix Permissions Issue in Admin Panel',
@@ -287,6 +299,7 @@ class KanbanTableSeeder extends Seeder
 
         $board = KanbanBoard::create([
             'title' => $boardTitle,
+            'slug' => Str::slug($boardTitle),
             'owner_id' => 1,
         ]);
 
@@ -312,6 +325,7 @@ class KanbanTableSeeder extends Seeder
         foreach ($columns as $colIndex => $columnData) {
             $column = KanbanColumn::create([
                 'title' => $columnData['title'],
+                'slug' => Str::slug($columnData['title']), 
                 'position' => $colIndex,
                 'board_id' => $board->id,
             ]);

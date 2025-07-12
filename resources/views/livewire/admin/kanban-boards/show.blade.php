@@ -105,6 +105,7 @@
             </flux:table>
         </div>
     </div>
+    
     <!-- Column Modal -->
     <x-admin.kanban-board.column-modal />
     

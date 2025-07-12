@@ -10,7 +10,7 @@ class KanbanBoard extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title','badges'];
+    protected $fillable = ['title', 'slug','badges'];
 
     protected $casts = [
         'badges' => 'array',
@@ -37,6 +37,6 @@ class KanbanBoard extends Model
 
     public function columns()
     {
-        return $this->hasMany(KanbanColumn::class, 'board_id');
+        return $this->hasMany(KanbanColumn::class, 'board_id')->orderBy('position');
     }
 }

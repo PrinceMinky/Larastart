@@ -18,6 +18,34 @@ class BoardRepository
     }
 
     /**
+     * Find a KanbanBoard by its slug.
+     */
+    public function findBySlug(string $slug): KanbanBoard
+    {
+        return KanbanBoard::where('slug', $slug)->firstOrFail();
+    }
+
+    /**
+     * Find a KanbanBoard by slug or ID.
+     */
+    public function findBySlugOrId(string $identifier): KanbanBoard
+    {
+        // Try to find by slug first
+        $board = KanbanBoard::where('slug', $identifier)->first();
+        
+        // If not found and identifier is numeric, try by ID
+        if (!$board && is_numeric($identifier)) {
+            $board = KanbanBoard::find((int) $identifier);
+        }
+        
+        if (!$board) {
+            abort(404, 'Board not found');
+        }
+        
+        return $board;
+    }
+
+    /**
      * Find a KanbanBoard by ID with specified relations loaded.
      *
      * @param array<int,string> $relations
@@ -25,6 +53,38 @@ class BoardRepository
     public function findWith(array $relations, int $id): KanbanBoard
     {
         return KanbanBoard::with($relations)->findOrFail($id);
+    }
+
+    /**
+     * Find a KanbanBoard by slug with specified relations loaded.
+     *
+     * @param array<int,string> $relations
+     */
+    public function findBySlugWith(array $relations, string $slug): KanbanBoard
+    {
+        return KanbanBoard::with($relations)->where('slug', $slug)->firstOrFail();
+    }
+
+    /**
+     * Find a KanbanBoard by slug or ID with specified relations loaded.
+     *
+     * @param array<int,string> $relations
+     */
+    public function findBySlugOrIdWith(array $relations, string $identifier): KanbanBoard
+    {
+        // Try to find by slug first
+        $board = KanbanBoard::with($relations)->where('slug', $identifier)->first();
+        
+        // If not found and identifier is numeric, try by ID
+        if (!$board && is_numeric($identifier)) {
+            $board = KanbanBoard::with($relations)->find((int) $identifier);
+        }
+        
+        if (!$board) {
+            abort(404, 'Board not found');
+        }
+        
+        return $board;
     }
 
     /**
@@ -37,6 +97,30 @@ class BoardRepository
     public function findOrFailWithRelations(int $id, array $relations): KanbanBoard
     {
         return $this->findWith($relations, $id);
+    }
+
+    /**
+     * Find a KanbanBoard by slug with specified relations loaded.
+     *
+     * @param string $slug
+     * @param array<int,string> $relations
+     * @return KanbanBoard
+     */
+    public function findBySlugWithRelations(string $slug, array $relations): KanbanBoard
+    {
+        return $this->findBySlugWith($relations, $slug);
+    }
+
+    /**
+     * Find a KanbanBoard by slug or ID with specified relations loaded.
+     *
+     * @param string $identifier
+     * @param array<int,string> $relations
+     * @return KanbanBoard
+     */
+    public function findBySlugOrIdWithRelations(string $identifier, array $relations): KanbanBoard
+    {
+        return $this->findBySlugOrIdWith($relations, $identifier);
     }
 
     /**

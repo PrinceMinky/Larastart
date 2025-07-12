@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('board_id')->constrained('kanban_boards')->onDelete('cascade');
             $table->string('title');
+            $table->string('slug');
             $table->integer('position')->default(0);
             $table->timestamps();
+
+            // Composite unique index: slug must be unique per board_id
+            $table->unique(['board_id', 'slug']);
         });
     }
 
