@@ -23,7 +23,7 @@
 
     <div class="flex flex-between gap-2">
         <div class="w-3/4">
-            <!-- Coming soon -->
+            <livewire:user-post />
         </div>
 
         <div class="w-1/3">
