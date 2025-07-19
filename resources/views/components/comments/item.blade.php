@@ -3,10 +3,10 @@
 <div class="relative flex gap-4">
     <!-- Avatar -->
     <flux:avatar
-        :name="($this->useFullName) ? $comment->user->name : $comment->user->username"
+        :name="$comment->user ? (($this->useFullName) ? $comment->user->name : $comment->user->username) : 'Unknown User'"
         color="auto"
         size="sm"
-        :href="route('profile.show', ['username' => $comment->user->username])"
+        :href="$comment->user ? route('profile.show', ['username' => $comment->user->username]) : '#'"
     />
 
     <!-- Comment Body -->
@@ -15,14 +15,18 @@
             <div class="flex flex-col gap-0.5 sm:gap-2 sm:flex-row sm:items-center">
                 <div class="flex items-center gap-2">
                     <flux:heading>
-                        <flux:link 
-                            variant="subtle"
-                            :href="route('profile.show', ['username' => $comment->user->username])"
-                            :external="true">
-                            {{ ($this->useFullName) ? $comment->user->name : $comment->user->username ?? 'Unknown User' }}
-                        </flux:link>
+                        @if($comment->user)
+                            <flux:link 
+                                variant="subtle"
+                                :href="route('profile.show', ['username' => $comment->user->username])"
+                                :external="true">
+                                {{ ($this->useFullName) ? $comment->user->name : $comment->user->username }}
+                            </flux:link>
+                        @else
+                            <span class="text-gray-500">Unknown User</span>
+                        @endif
                     </flux:heading>
-                    @if ($comment->user->is_moderator)
+                    @if ($comment->user && $comment->user->is_moderator)
                         <flux:badge color="lime" size="sm" icon="check-badge" inset="top bottom">Moderator</flux:badge>
                     @endif
                 </div>
@@ -44,7 +48,7 @@
                 </div>
             </div>
         @else
-            <flux:text variant="strong">{{ $comment->body }}</flux:text>
+            <flux:text variant="strong">{{ filter_badwords($comment->body) }}</flux:text>
 
             {{-- Alpine root wrapper for both buttons and textarea --}}
             <div
@@ -69,7 +73,7 @@
                     }
                 }"
                 x-init="
-                    username = {{ json_encode('@' . $comment->user->username) }};
+                    username = {{ json_encode($comment->user ? ('@' . $comment->user->username) : '@unknown') }};
 
                     Livewire.on('reply-posted', event => {
                         if (event.commentId === {{ $comment->id }}) {

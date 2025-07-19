@@ -46,6 +46,13 @@ class CardRepository
         return $card;
     }
 
+    public function getByColumnIdsWithRelations(array $columnIds, array $relations = [])
+    {
+        return KanbanCard::with($relations)
+            ->whereIn('column_id', $columnIds)
+            ->get();
+    }
+
     /**
      * Find a KanbanCard by ID with optional eager loaded relations.
      *

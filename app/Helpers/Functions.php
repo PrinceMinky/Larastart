@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\BadwordFilterService;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 
@@ -135,5 +136,12 @@ if (!function_exists('str_plural')) {
     function str_plural($value, $count)
     {
         return Str::plural($value, $count);
+    }
+}
+
+if(!function_exists('filter_badwords')) {
+    function filter_badwords($text)
+    {
+        return new BadwordFilterService()->filter($text);
     }
 }

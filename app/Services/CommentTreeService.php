@@ -32,7 +32,9 @@ class CommentTreeService
 
         $this->initializeChildrenCollections($comments);
         $rootComments = $this->buildTree($comments);
-        $this->attachUsersToComments($rootComments, $comments);
+        
+        // Remove this line - users are already attached via eager loading
+        // $this->attachUsersToComments($rootComments, $comments);
 
         return $rootComments;
     }
@@ -111,42 +113,31 @@ class CommentTreeService
 
     /**
      * Attach user models to comments and recursively to children.
-     *
+     * 
+     * @deprecated This method is no longer needed since users are eager loaded
      * @param SupportCollection<Comment> $rootComments
      * @param Collection<Comment> $comments
      * @return void
      */
     private function attachUsersToComments(SupportCollection $rootComments, Collection $comments): void
     {
-        $users = $this->commentRepository->getUsersForComments($comments);
-        
-        if ($users->isEmpty()) {
-            return;
-        }
-
-        $rootComments->each(fn(Comment $comment) => $this->assignUsersRecursively($comment, $users));
+        // This method is no longer needed since we're eager loading users with roles
+        // in the repository's getBaseQuery method
+        return;
     }
 
     /**
      * Recursively assigns user models to comments and their children.
-     *
+     * 
+     * @deprecated This method is no longer needed since users are eager loaded
      * @param Comment $comment
      * @param SupportCollection<int, \App\Models\User> $users Keyed by user ID
      * @return void
      */
     private function assignUsersRecursively(Comment $comment, SupportCollection $users): void
     {
-        if ($comment->user_id !== null && $users->has($comment->user_id)) {
-            $comment->setRelation('user', $users->get($comment->user_id));
-        }
-
-        if ($comment->relationLoaded('likedByUsers')) {
-            $likedUsers = $comment->likedByUsers->map(fn($user) => $users->get($user->id) ?? $user);
-            $comment->setRelation('likedByUsers', $likedUsers);
-        }
-
-        if ($comment->relationLoaded('children')) {
-            $comment->children->each(fn(Comment $child) => $this->assignUsersRecursively($child, $users));
-        }
+        // This method is no longer needed since we're eager loading users with roles
+        // in the repository's getBaseQuery method
+        return;
     }
 }

@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Helpers\Notify;
 use Livewire\Component;
-use Illuminate\Support\Collection;
 
 class BaseComponent extends Component
 {

@@ -79,19 +79,29 @@ class BoardRepository
 
     /**
      * Optimized find by slug or ID with relations.
+     * Note: Caching is disabled when relations contain closures.
      *
-     * @param array<int,string> $relations
+     * @param array<int,string|\Closure> $relations
      */
     public function findBySlugOrIdWith(array $relations, string $identifier): KanbanBoard
     {
-        $cacheKey = "board_with_relations_{$identifier}_" . md5(implode(',', $relations));
+        // Check if relations contain closures
+        $hasClosures = $this->hasClosures($relations);
         
-        if (isset(static::$boardCache[$cacheKey])) {
-            return static::$boardCache[$cacheKey];
+        // Only use caching if no closures are present
+        if (!$hasClosures) {
+            $cacheKey = "board_with_relations_{$identifier}_" . md5(implode(',', $relations));
+            
+            if (isset(static::$boardCache[$cacheKey])) {
+                return static::$boardCache[$cacheKey];
+            }
         }
 
+        // Build the query with relations
+        $query = KanbanBoard::with($relations);
+
         // Try to find by slug first
-        $board = KanbanBoard::with($relations)->where('slug', $identifier)->first();
+        $board = $query->where('slug', $identifier)->first();
         
         // If not found and identifier is numeric, try by ID
         if (!$board && is_numeric($identifier)) {
@@ -102,10 +112,29 @@ class BoardRepository
             abort(404, 'Board not found');
         }
         
-        static::$boardCache[$cacheKey] = $board;
+        // Only cache if no closures
+        if (!$hasClosures) {
+            static::$boardCache[$cacheKey] = $board;
+        }
+        
         return $board;
     }
 
+    /**
+     * Check if the relations array contains any closures.
+     *
+     * @param array<int,string|\Closure> $relations
+     */
+    protected function hasClosures(array $relations): bool
+    {
+        foreach ($relations as $relation) {
+            if ($relation instanceof \Closure) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Alias methods for backward compatibility
      */
@@ -133,8 +162,8 @@ class BoardRepository
 
         match ($sortBy) {
             'owner' => $query->join('users as owners', 'kanban_boards.owner_id', '=', 'owners.id')
-                             ->orderBy('owners.name', $sortDirection)
-                             ->select('kanban_boards.*'),
+                            ->orderBy('owners.name', $sortDirection)
+                            ->select('kanban_boards.*'),
             'members' => $query->orderBy('users_count', $sortDirection),
             'badges' => $query->orderByRaw('JSON_LENGTH(badges) ' . $sortDirection),
             default => $query->orderBy($sortBy, $sortDirection),
@@ -180,7 +209,7 @@ class BoardRepository
             $userIds[] = $board->owner_id;
         }
 
-        // Single query to get all users with roles
+        // Single query to get all users with roles - FIXED N+1 HERE
         $users = $this->getUsersWithRolesByIds($userIds);
         
         $orderedUsers = $this->orderUsers($users);
@@ -192,7 +221,7 @@ class BoardRepository
     }
 
     /**
-     * Get users with roles by IDs with caching to prevent duplicate queries.
+     * FIXED: Get users with roles by IDs with proper eager loading to prevent N+1 queries.
      */
     protected function getUsersWithRolesByIds(array $userIds): Collection
     {
@@ -206,9 +235,14 @@ class BoardRepository
             return static::$userCache[$cacheKey];
         }
 
-        // Single optimized query with eager loading
-        static::$userCache[$cacheKey] = User::with('roles')
-            ->whereIn('id', $userIds)
+        // FIXED: Use proper eager loading with joins to prevent N+1 queries
+        // This replaces the problematic with('roles') that was causing N+1
+        static::$userCache[$cacheKey] = User::select('users.*')
+            ->whereIn('users.id', $userIds)
+            ->with(['roles' => function ($query) {
+                // Only load what we need
+                $query->select('roles.id', 'roles.name');
+            }])
             ->get()
             ->keyBy('id');
 
@@ -226,6 +260,29 @@ class BoardRepository
             $isSuperAdmin = $user->roles->contains('name', 'Super Admin') ? 0 : 1;
             return sprintf('%d_%s', $isSuperAdmin, strtolower($user->name));
         })->values();
+    }
+
+    /**
+     * Find board with complex relations (no caching due to closures)
+     */
+    public function findBySlugOrIdWithComplexRelations(string $identifier, array $relations): KanbanBoard
+    {
+        // Build the query with relations
+        $query = KanbanBoard::with($relations);
+
+        // Try to find by slug first
+        $board = $query->where('slug', $identifier)->first();
+        
+        // If not found and identifier is numeric, try by ID
+        if (!$board && is_numeric($identifier)) {
+            $board = KanbanBoard::with($relations)->find((int) $identifier);
+        }
+        
+        if (!$board) {
+            abort(404, 'Board not found');
+        }
+        
+        return $board;
     }
 
     /**

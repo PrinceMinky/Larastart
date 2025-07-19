@@ -31,6 +31,10 @@
                     <flux:navlist.item icon="shield-exclamation" :href="route('admin.user.permission')" :current="request()->routeIs('admin.user.permission')" wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
                 </flux:navlist.group>
                 @endcanany
+
+                <flux:navlist.group :heading="__('Miscellaneous')" :expandable="true" :expanded="request()->routeIs('admin.misc.*')">
+                    <flux:navlist.item icon="no-symbol" :href="route('admin.misc.badwords')" :current="request()->routeIs('admin.misc.badwords')" wire:navigate>{{ __('Badwords') }}</flux:navlist.item>
+                </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
@@ -71,6 +75,16 @@
                     </form>
                 </flux:menu>
             </flux:dropdown>
+
+            <flux:button 
+                x-data 
+                x-on:click="$flux.dark = ! $flux.dark" 
+                aria-label="Toggle dark mode"
+            >
+                <flux:icon.sun x-show="!$flux.dark" />
+                <flux:icon.moon x-show="$flux.dark" />
+                <span x-text="$flux.dark ? 'Dark Mode' : 'Light Mode'"></span>
+            </flux:button>
         </flux:sidebar>
 
         <!-- Mobile User Menu -->

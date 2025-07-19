@@ -43,6 +43,7 @@ class Show extends BaseComponent
     public int $boardId;
     public string $slug;
     public ?Board $currentBoard = null;
+    public ?string $selectedColumn = null;
 
     public CardForm $cardForm;
     public ColumnForm $columnForm;
@@ -51,6 +52,8 @@ class Show extends BaseComponent
     public array $selectedUserIds = [];
     public $eligibleUsers = [];
 
+    // Cache the columns data to prevent repeated queries
+    protected $cachedColumns = null;
     protected ?array $columnOptionsCache = null;
 
     protected BoardRepository $boardRepository;
@@ -97,14 +100,12 @@ class Show extends BaseComponent
         $this->updateColumnPositionAction = $updateColumnPositionAction;
     }
 
-    public function mount(string $slug)
+    public function mount(string $slug, ?string $selectedColumn = null)
     {
         $this->slug = $slug;
-        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($slug, 
-            ['owner', 'users', 'columns.cards.column.board', 'columns.cards.user']
-        );
-        
-        $this->boardId = $this->currentBoard->id;
+        $this->selectedColumn = $selectedColumn;
+
+        $this->loadBoard();
         $this->authorizeView();
 
         $permission = Permission::where('name', 'view kanban boards')->first();
@@ -118,6 +119,76 @@ class Show extends BaseComponent
                 ->get();
         }
     }
+
+    /**
+     * Load or reload the board with all necessary relationships
+     */
+    protected function loadBoard(): void
+    {
+        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($this->slug, [
+            'owner', 
+            'users', 
+            'columns' => function ($query) {
+                $query->with(['cards' => function ($cardQuery) {
+                    $cardQuery->with(['user', 'column'])->orderBy('position');
+                }])->orderBy('position');
+            }
+        ]);
+
+        $this->boardId = $this->currentBoard->id;
+
+        foreach ($this->currentBoard->columns as $column) {
+            foreach ($column->cards as $card) {
+                $card->setRelation('column', $column);
+
+                // De-duplicate user relation using board->users
+                if ($card->relationLoaded('user')) {
+                    $sharedUser = $this->currentBoard->users->firstWhere('id', $card->user->id);
+                    if ($sharedUser) {
+                        $card->setRelation('user', $sharedUser);
+                    }
+                }
+            }
+        }
+
+        $this->columnOptionsCache = null;
+        $this->cachedColumns = null;
+    }
+
+    /**
+     * Refresh the current board data from database
+     */
+    protected function refreshBoard(): void
+    {
+        // Clear any cached data first
+        $this->columnOptionsCache = null;
+        $this->cachedColumns = null;
+        
+        // Reload the board
+        $this->currentBoard = $this->boardRepository->findBySlugOrIdWithRelations($this->slug, [
+            'owner', 
+            'users', 
+            'columns' => function ($query) {
+                $query->with(['cards' => function ($cardQuery) {
+                    $cardQuery->with(['user', 'column'])->orderBy('position');
+                }])->orderBy('position');
+            }
+        ]);
+
+        // Deduplicate user models between cards and board
+        foreach ($this->currentBoard->columns as $column) {
+            foreach ($column->cards as $card) {
+                $card->setRelation('column', $column);
+
+                if ($card->relationLoaded('user')) {
+                    $sharedUser = $this->currentBoard->users->firstWhere('id', $card->user->id);
+                    if ($sharedUser) {
+                        $card->setRelation('user', $sharedUser);
+                    }
+                }
+            }
+        }
+    }   
 
     protected function authorizeView(): void
     {
@@ -147,7 +218,7 @@ class Show extends BaseComponent
         $this->columnForm->resetForm();
         
         if ($id) {
-            $column = $this->columnRepository->findWith($id, ['cards']);
+            $column = $this->currentBoard->columns->firstWhere('id', $id);
             if ($column) {
                 $this->columnForm->loadData($column);
             }
@@ -165,8 +236,17 @@ class Show extends BaseComponent
 
     public function showEditCardForm(int $cardId): void
     {
-        $card = $this->cardRepository->find($cardId);
-        $this->cardForm->loadData($card);
+        // Find the card from the already loaded data instead of making a new query
+        $card = null;
+        foreach ($this->currentBoard->columns as $column) {
+            $card = $column->cards->firstWhere('id', $cardId);
+            if ($card) break;
+        }
+        
+        if ($card) {
+            $this->cardForm->loadData($card);
+        }
+        
         $this->showModal('card-form');
     }
 
@@ -198,6 +278,9 @@ class Show extends BaseComponent
         $this->closeModal('card-form');
         $this->cardForm->resetForm();
 
+        // Refresh the board data after creating card
+        $this->refreshBoard();
+
         $this->toast([
             'heading' => 'Card created',
             'text' => 'Card created successfully.',
@@ -224,6 +307,9 @@ class Show extends BaseComponent
         $this->closeModal('card-form');
         $this->cardForm->resetForm();
 
+        // Refresh the board data after updating card
+        $this->refreshBoard();
+
         $this->toast([
             'heading' => 'Card updated',
             'text' => 'Card updated successfully.',
@@ -241,6 +327,9 @@ class Show extends BaseComponent
 
         $this->closeModal('delete-card-form');
         $this->cardForm->resetForm();
+
+        // Refresh the board data after deleting card
+        $this->refreshBoard();
 
         $this->toast([
             'heading' => 'Card Deleted',
@@ -270,6 +359,9 @@ class Show extends BaseComponent
         $this->closeModal('column-form');
         $this->columnForm->resetForm();
 
+        // Refresh the board data after creating column
+        $this->refreshBoard();
+
         $this->toast([
             'heading' => 'Column created',
             'text' => 'Column created successfully.',
@@ -289,6 +381,9 @@ class Show extends BaseComponent
         $this->closeModal('column-form');
         $this->columnForm->resetForm();
 
+        // Refresh the board data after updating column
+        $this->refreshBoard();
+
         $this->toast([
             'heading' => 'Column updated',
             'text' => 'Column updated successfully.',
@@ -306,6 +401,9 @@ class Show extends BaseComponent
 
         $this->closeModal('delete-column-form');
         $this->columnForm->resetForm();
+
+        // Refresh the board data after deleting column
+        $this->refreshBoard();
 
         $this->toast([
             'heading' => 'Column deleted',
@@ -336,6 +434,9 @@ class Show extends BaseComponent
         }
 
         event(new CardUpdated($updatedCard));
+
+        // Refresh the board data after updating card position
+        $this->refreshBoard();
     }
 
     public function updateColumnPosition(int $columnId, int $newPosition): void
@@ -348,17 +449,20 @@ class Show extends BaseComponent
         }
 
         event(new ColumnUpdated($updatedColumn));
+
+        // Refresh the board data after updating column position
+        $this->refreshBoard();
     }
 
     public function showDeleteColumnForm($id = null)
     {
         $this->authorize('delete kanban columns');
 
-        $column = $this->columnRepository->find($id);
+        // Use already loaded data instead of making a new query
+        $column = $this->currentBoard->columns->firstWhere('id', $id);
 
         if ($column) {
             $this->columnForm->loadData($column);
-
             $this->showModal('delete-column-form');
         }
     }
@@ -367,11 +471,15 @@ class Show extends BaseComponent
     {
         $this->authorize('delete kanban cards');
 
-        $card = $this->cardRepository->find($id);
+        // Find the card from the already loaded data
+        $card = null;
+        foreach ($this->currentBoard->columns as $column) {
+            $card = $column->cards->firstWhere('id', $id);
+            if ($card) break;
+        }
 
         if ($card) {
             $this->cardForm->loadData($card);
-
             $this->showModal('delete-card-form');
         }
     }
@@ -379,7 +487,10 @@ class Show extends BaseComponent
     public function getColumnOptions()
     {
         if ($this->columnOptionsCache === null) {
-            $this->columnOptionsCache = KanbanColumn::where('board_id', '=', $this->boardId)->orderBy('position')->pluck('title', 'id')->toArray();
+            $this->columnOptionsCache = $this->currentBoard->columns
+                ->sortBy('position')
+                ->mapWithKeys(fn($col) => [$col->id => $col->title])
+                ->toArray();
         }
 
         return $this->columnOptionsCache;
@@ -421,6 +532,9 @@ class Show extends BaseComponent
 
         $this->closeModal('users-associate-form');
 
+        // Refresh the board data after associating users
+        $this->refreshBoard();
+
         $this->toast([
             'heading' => 'Associated users',
             'text' => 'You have successfully associated users with this board.',
@@ -439,6 +553,9 @@ class Show extends BaseComponent
         })
         ->where('assigned_user_id', $id)
         ->update(['assigned_user_id' => null]);
+
+        // Refresh the board data after removing user
+        $this->refreshBoard();
 
         $this->toast([
             'heading' => 'Unassociated user',
@@ -461,28 +578,27 @@ class Show extends BaseComponent
             ->format('H:i');
     }
 
+    /**
+     * Get columns with cards, using the already loaded data to avoid duplicate queries
+     */
     #[Computed]
     public function columns()
     {
-        $columns = KanbanColumn::with([
-            'cards' => function ($query) {
-                $query->orderBy('position')->with([
-                    'user',
-                    'column.board', // ✅ this fixes the lazy loading error
-                ]);
-            }
-        ])
-        ->where('board_id', $this->boardId)
-        ->orderBy('position')
-        ->get();
+        if ($this->cachedColumns === null) {
+            // Ensure columns and their cards are loaded to avoid lazy loading errors
+            $this->currentBoard->loadMissing('columns.cards.user');
 
-        foreach ($columns as $column) {
-            foreach ($column->cards as $card) {
-                $card->badges = $card->badges ?? [];
+            $this->cachedColumns = $this->currentBoard->columns->sortBy('position');
+
+            foreach ($this->cachedColumns as $column) {
+                foreach ($column->cards as $card) {
+                    $card->setRelation('column', $column);
+                    $card->badges = is_array($card->badges) ? $card->badges : [];
+                }
             }
         }
 
-        return $columns;
+        return $this->cachedColumns;
     }
 
     public function updatedCardFormBadgeTitle()
@@ -499,7 +615,7 @@ class Show extends BaseComponent
     {
         return view('livewire.admin.kanban-boards.show', [
             'board' => $this->currentBoard,
-            'columns' => $this->columns ?? collect(),
+            'columns' => $this->columns,
         ]);
     }
 }

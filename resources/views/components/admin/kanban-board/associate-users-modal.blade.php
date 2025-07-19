@@ -18,7 +18,7 @@
         <div class="flex gap-2">
             <flux:spacer />
 
-            <flux:button x-on:click="$flux.modal('users-invite-form').close()">Cancel</flux:button>
+            <flux:button x-on:click="$flux.modal('users-associate-form').close()">Cancel</flux:button>
             <flux:button type="submit" variant="primary">Save</flux:button>
         </div>
     </form>

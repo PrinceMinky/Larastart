@@ -23,7 +23,11 @@
     <div class="flex flex-col gap-0">
         <flux:link
             variant="subtle"
-            :href="route('admin.kanban_card', [ $card->column->board->slug, $card->column->slug, $card->id ])"
+            :href="route('admin.kanban_card', [ 
+                $this->currentBoard->slug ?? $this->card->column->board->slug, // Card is used on both showing boards and cards. both using different methods to get board.
+                $card->column->slug, 
+                $card->id
+                ])"
         >
             <flux:heading>{{ $card->title }}</flux:heading>
         </flux:link>

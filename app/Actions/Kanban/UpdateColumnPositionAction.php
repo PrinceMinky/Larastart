@@ -32,7 +32,7 @@ class UpdateColumnPositionAction
         }
 
         // Get all columns of the board ordered by position
-        $columns = $this->columnRepository->getByBoardIdOrdered($boardId);
+        $columns = $this->columnRepository->getByBoardIdOrderedPlain($boardId);
 
         // Remove the column we're moving from the list
         $columns = $columns->filter(fn($col) => $col->id !== $columnId)->values();

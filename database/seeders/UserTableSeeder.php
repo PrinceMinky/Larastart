@@ -47,11 +47,24 @@ class UserTableSeeder extends Seeder
 
         if(! $this->simpleSeed)
         {
+            $adminPosts = Post::factory(2)->create(['user_id' => $awesomeAdmin->id]);
+            $superAdminPosts = Post::factory(2)->create(['user_id' => $superAdmin->id]);
+            
             User::factory(200)->create()->each(function (User $user) {
                 $role = (mt_rand(1, 100) <= 10) ? 'Admin' : 'User';
                 $user->assignRole($role);
 
                 event(new UserCreated($user));
+                
+                Post::factory(rand(0, 10))->create([
+                    'user_id' => $user->id
+                ])->each(function ($post) {
+                    $users = User::inRandomOrder()->take(rand(1, 5))->get(); 
+    
+                    foreach ($users as $likingUser) {
+                        $likingUser->likedPosts()->attach($post->id);
+                    }
+                });
                 
                 $potentialFollowers = User::where('id', '!=', $user->id)
                                           ->inRandomOrder()
@@ -73,7 +86,18 @@ class UserTableSeeder extends Seeder
                 $awesomeAdmin->following()->syncWithoutDetaching([$mutualUser->id => ['status' => 'accepted']]);
                 $mutualUser->following()->syncWithoutDetaching([$awesomeAdmin->id => ['status' => 'accepted']]);
             }
-              
+            $likingUsers = User::inRandomOrder()->limit(rand(10, 50))->get();
+            
+            foreach ($likingUsers as $user) {
+                foreach ($adminPosts as $post) {
+                    $user->likedPosts()->attach($post->id);
+                    $post->user->notify(new LikedPost($user, $post));
+                }
+                foreach ($superAdminPosts as $post) {
+                    $user->likedPosts()->attach($post->id);
+                    $post->user->notify(new LikedPost($user, $post));
+                }
+            }              
             $followRequesters = User::where('id', '!=', $superAdmin->id)
                 ->inRandomOrder()
                 ->limit(rand(12, 25))

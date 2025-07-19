@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admin\ActivityLog\Index as ActivityList;
+use App\Livewire\Admin\BadwordManagement;
 use App\Livewire\UserSearch;
 
 use App\Livewire\Admin\Kanban\Index as KanbanBoardsList;
@@ -45,12 +46,16 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', AdminDashboard::class)->name('dashboard')->can('view admin dashboard');
 
+        // Badwords
+        Route::get('badwords', BadwordManagement::class)->name('misc.badwords')->can('view badwords');
+
         // Activity Log
         Route::get('activity', ActivityList::class)->name('activity')->can('view activities');
     
         // Kanban Boards
         Route::get('kanban-boards', KanbanBoardsList::class)->name('kanban_list')->can('view kanban boards');
-        Route::get('kanban-board/{slug}', KanbanBoardShow::class)->name('kanban_board')->can('view kanban boards');
+        Route::get('kanban-board/{slug}/{selectedColumn?}', KanbanBoardShow::class)->name('kanban_board')->can('view kanban boards');
+
         Route::get('kanban-board/{boardSlug}/{columnSlug}/{cardId}', KanbanBoardCard::class)->name('kanban_card')->can('view kanban boards');
         
         // User Management

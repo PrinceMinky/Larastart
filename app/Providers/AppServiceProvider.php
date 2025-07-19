@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function configureModals(): void
     {
-        Model::shouldBeStrict(false);
+        Model::shouldBeStrict();
 
         Model::unguard();
     }

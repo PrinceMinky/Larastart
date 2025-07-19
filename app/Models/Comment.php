@@ -65,4 +65,13 @@ class Comment extends Model
         return $this->likedByUsers->contains(Auth::user()->id);
     }
 
+    public function getUserAttribute(): ?User
+    {
+        return $this->relationLoaded('user') ? $this->getRelation('user') : null;
+    }
+
+    public function scopeWithUser($query)
+    {
+        return $query->with('user');
+    }
 }
