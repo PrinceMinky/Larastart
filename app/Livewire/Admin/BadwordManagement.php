@@ -113,11 +113,6 @@ class BadwordManagement extends BaseComponent
         $this->reset('selectedItems');
     }
 
-    public function updatedReplaceBadwords($value)
-    {
-        // Coming soon
-    }
-
     /**
      * Paginated badword results with search and sort applied, cached.
      */

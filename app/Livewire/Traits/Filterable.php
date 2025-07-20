@@ -74,72 +74,101 @@ trait Filterable {
     protected function applyFilters($query)
     {
         $config = method_exists($this, 'filterConfig') ? $this->filterConfig() : [];
+        $overrides = method_exists($this, 'filterOverrides') ? $this->filterOverrides() : [];
+
+        // Early exit: Skip filtering entirely if all filters are empty/null/blank
+        $nonEmpty = collect($this->filters ?? [])->filter(function ($value) {
+            if (is_array($value)) {
+                return collect($value)->filter(fn($v) => $v !== '' && $v !== null)->isNotEmpty();
+            }
+            return $value !== '' && $value !== null;
+        });
+
+        if ($nonEmpty->isEmpty()) {
+            return $query;
+        }
 
         foreach ($config as $key => $meta) {
-            if (!isset($this->filters[$key]) || empty($this->filters[$key])) {
+            if (!isset($this->filters[$key])) {
                 continue;
             }
 
             $value = $this->filters[$key];
-            $column = $meta['column'] ?? $key;
 
-            switch ($meta['type'] ?? 'text') {
+            // Skip completely empty values
+            if ($value === '' || $value === null || (is_array($value) && count(array_filter($value, fn ($v) => $v !== '' && $v !== null)) === 0)) {
+                continue;
+            }
+
+            // Use override if defined
+            if (array_key_exists($key, $overrides) && is_callable($overrides[$key])) {
+                $overrides[$key]($query, $value);
+                continue;
+            }
+
+            $column = $meta['column'] ?? $key;
+            $type = $meta['type'] ?? 'text';
+
+            // Determine if this is a multiple select/radio
+            $isMulti = $meta['multiple'] ?? false;
+            if (!$isMulti && is_array($value) && in_array($type, ['select', 'radio-group'])) {
+                $isMulti = true;
+            }
+
+            switch ($type) {
                 case 'select':
                 case 'radio-group':
-                    // Exact match filter on specified column
-                    $query->where($column, $value);
+                    if ($isMulti && is_array($value) && count($value)) {
+                        $query->whereIn($column, $value);
+                    } elseif (!$isMulti) {
+                        $query->where($column, $value);
+                    }
                     break;
 
                 case 'checkbox':
-                    // If multiple values (array), whereIn; else exact match
-                    if (is_array($value)) {
+                    if (is_array($value) && count($value)) {
                         $query->whereIn($column, $value);
-                    } else {
+                    } elseif (!is_array($value)) {
                         $query->where($column, $value);
                     }
                     break;
 
                 case 'input-group':
                     $groupColumn = $meta['column'] ?? null;
-                    if (isset($meta['inputs']) && is_array($meta['inputs']) && is_array($value)) {
+                    if (isset($meta['inputs'], $value) && is_array($meta['inputs']) && is_array($value)) {
                         foreach ($meta['inputs'] as $inputKey => $inputMeta) {
-                            if (empty($value[$inputKey])) {
+                            $inputVal = $value[$inputKey] ?? null;
+                            if ($inputVal === '' || $inputVal === null) {
                                 continue;
                             }
 
-                            $filterValue = $value[$inputKey];
                             $inputType = $inputMeta['type'] ?? 'text';
-
-                            // Use input's own column or fallback to group column or input key
                             $subColumn = $inputMeta['column'] ?? $groupColumn ?? $inputKey;
 
                             if ($inputType === 'date') {
                                 if (Str::contains($inputKey, ['start', 'from'])) {
-                                    $query->whereDate($subColumn, '>=', $filterValue);
+                                    $query->whereDate($subColumn, '>=', $inputVal);
                                 } elseif (Str::contains($inputKey, ['end', 'to'])) {
-                                    $query->whereDate($subColumn, '<=', $filterValue);
+                                    $query->whereDate($subColumn, '<=', $inputVal);
                                 } else {
-                                    $query->whereDate($subColumn, $filterValue);
+                                    $query->whereDate($subColumn, $inputVal);
                                 }
                             } else {
-                                $query->where($subColumn, $filterValue);
+                                $query->where($subColumn, $inputVal);
                             }
                         }
                     }
                     break;
 
                 case 'switch':
-                    // Boolean switch filter
                     $query->where($column, $value ? 1 : 0);
                     break;
 
                 case 'date':
-                    // Single date exact match
                     $query->whereDate($column, $value);
                     break;
 
                 default:
-                    // Default to "like" search if string
                     if (is_string($value)) {
                         $query->where($column, 'like', "%{$value}%");
                     }
@@ -167,5 +196,55 @@ trait Filterable {
                 ],
             ],
         ];
+    }
+
+    protected function ageRangeFilter(string $label = 'Age Range', string $column = 'date_of_birth'): array
+    {
+        return [
+            'label' => $label,
+            'type' => 'input-group',
+            'column' => $column,
+            'inputs' => [
+                'min_age' => [
+                    'placeholder' => 'Min',
+                    'type' => 'number',
+                ],
+                'max_age' => [
+                    'placeholder' => 'Max',
+                    'type' => 'number',
+                ],
+            ],
+        ];
+    }
+
+    public function removeFilterItem(string $key, $item)
+    {
+        if (!isset($this->filters[$key]) || !is_array($this->filters[$key])) {
+            return;
+        }
+
+        $this->filters[$key] = array_values(array_filter($this->filters[$key], fn($v) => $v != $item));
+    }
+
+    public function clearAllFilters()
+    {
+        $this->filters = [];
+        $this->resetPage(); // If using pagination
+    }
+
+    public function clearInputGroup($groupKey)
+    {
+        $filterConfig = $this->filterConfig();
+        $config = $filterConfig[$groupKey] ?? [];
+        
+        if (isset($config['inputs'])) {
+            // Clear individual input keys
+            foreach (array_keys($config['inputs']) as $inputKey) {
+                unset($this->filters[$inputKey]);
+            }
+            
+            // Also clear the nested array if it exists
+            unset($this->filters[$groupKey]);
+        }
     }
 }

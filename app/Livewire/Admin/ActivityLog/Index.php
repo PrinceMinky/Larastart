@@ -81,20 +81,30 @@ class Index extends BaseComponent
                 'label' => 'Model',
                 'type' => 'select',
                 'searchable' => true,
-                'options' => $this->getModelsList,
+                'options' => $this->getModelsList()->mapWithKeys(function ($model) {
+                    return [$model->subject_type => $model->name];
+                })->toArray(),
                 'column' => 'subject_type',
             ],
             'causer_id' => [
                 'label' => 'Causer',
                 'type' => 'select',
                 'searchable' => true,
-                'options' => $this->getUsersList,
-                'display' => fn ($id) => \App\Models\User::find($id)?->name ?? 'Unknown',
+                'options' => $this->getUsersList()->pluck('name', 'id')->toArray(),
+                'display' => function ($ids) {
+                    $users = $this->getUsersList();
+
+                    if (is_array($ids)) {
+                        return implode(', ', array_map(fn($id) => $users->get($id)?->name ?? 'Unknown', $ids));
+                    }
+
+                    return $users->get($ids)?->name ?? 'Unknown';
+                },
+
             ],
             'date_range' => $this->dateRangeFilter(),
         ];
     }
-
     public function render()
     {
         return view('livewire.admin.activity-log.index',[

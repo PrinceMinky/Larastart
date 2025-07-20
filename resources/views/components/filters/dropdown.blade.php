@@ -14,6 +14,11 @@
     <flux:popover class="flex flex-col gap-4 w-130">
         @foreach($config as $key => $meta)
             @php
+                $active = $meta['active'] ?? true;
+                if (!$active) {
+                    continue;
+                }
+
                 $label = $meta['label'] ?? ucfirst(str_replace('_', ' ', $key));
                 $type = $meta['type'] ?? 'text';
                 $placeholder = $meta['placeholder'] ?? 'Enter ' . $label;
@@ -22,40 +27,48 @@
             @endphp
 
             @if($type === 'select' && (is_array($options) || $options instanceof \Illuminate\Support\Collection))
-                <flux:select wire:model.live="filters.{{ $key }}"
+                <flux:select wire:model.live.debounce.500ms="filters.{{ $key }}"
                             variant="listbox"
                             label="{{ $label }}"
                             placeholder="{{ $placeholder }}"
                             searchable="{{ $searchable }}"
+                            :multiple="$meta['multiple'] ?? 'false'"
                 >
                     @if(empty($options))
                         <flux:select.option value="">No users available</flux:select.option>
                     @else
                         @foreach($options as $optionKey => $optionLabel)
-                            <flux:select.option value="{{ $optionKey }}">{{ $optionLabel->name }}</flux:select.option>
+                            <flux:select.option value="{{ $optionKey }}">
+                                {{ is_object($optionLabel) ? $optionLabel->name : $optionLabel }}
+                            </flux:select.option>
                         @endforeach
                     @endif
                 </flux:select>
 
             @elseif($type === 'date')
-                <flux:date-picker type="date" wire:model.live="filters.{{ $key }}" label="{{ $label }}" />
+                <flux:date-picker type="date" wire:model.live.debounce.500ms="filters.{{ $key }}" label="{{ $label }}" />
 
             @elseif($type === 'radio-group' && (is_array($options) || $options instanceof \Illuminate\Support\Collection))
-                <flux:radio.group wire:model.live="filters.{{ $key }}" label="{{ $label }}">
+                <flux:radio.group wire:model.live.debounce.500ms="filters.{{ $key }}" label="{{ $label }}">
                     @foreach($options as $optionKey => $optionLabel)
                         <flux:radio value="{{ $optionKey }}" label="{{ $optionLabel }}" />
                     @endforeach
                 </flux:radio.group>
 
             @elseif($type === 'checkbox' && (is_array($options) || $options instanceof \Illuminate\Support\Collection))
-                <flux:checkbox.group wire:model.live="filters.{{ $key }}" label="{{ $label }}">
+                <flux:checkbox.group wire:model.live.debounce.500ms="filters.{{ $key }}" label="{{ $label }}">
                     @foreach($options as $optionKey => $optionLabel)
                         <flux:checkbox value="{{ $optionKey }}" label="{{ $optionLabel }}" />
                     @endforeach
                 </flux:checkbox.group>
 
             @elseif($type === 'switch')
-                <flux:switch wire:model.live="filters.{{ $key }}" label="{{ $label }}" />
+                <flux:switch
+                    wire:key="filters-{{ $key }}"
+                    wire:model.live="filters.{{ $key }}"
+                    label="{{ $label }}"
+                />
+
             @elseif($type === 'input-group' && is_array($meta['inputs']))
                 <flux:input.group label="{{ $label }}">
                     @foreach($meta['inputs'] as $inputKey => $inputMeta)
@@ -65,10 +78,10 @@
                         @endphp
 
                         @if($inputType === 'date')
-                            <flux:date-picker wire:model.live="filters.{{ $key }}.{{ $inputKey }}" placeholder="{{ $inputPlaceholder }}" class="w-full" />
+                            <flux:date-picker wire:model.live.debounce.500ms="filters.{{ $key }}.{{ $inputKey }}" placeholder="{{ $inputPlaceholder }}" class="w-full" />
                         @else
                             <flux:input
-                                wire:model.live="filters.{{ $key }}.{{ $inputKey }}"
+                                wire:model.live.debounce.500ms="filters.{{ $key }}.{{ $inputKey }}"
                                 type="{{ $inputType }}"
                                 placeholder="{{ $inputPlaceholder }}"
                             />
@@ -76,16 +89,8 @@
                     @endforeach
                 </flux:input.group>
             @else
-                <flux:input wire:model.live="filters.{{ $key }}" label="{{ $label }}" placeholder="{{ $placeholder }}" />
+                <flux:input wire:model.live.debounce.500ms="filters.{{ $key }}" label="{{ $label }}" placeholder="{{ $placeholder }}" />
             @endif
         @endforeach
-
-        @if($activeFiltersCount > 0)
-            <div class="pt-2 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:button wire:click="clearFilters" variant="ghost" size="sm" class="w-full">
-                    Clear All Filters
-                </flux:button>
-            </div>
-        @endif
     </flux:popover>
 </flux:dropdown>
