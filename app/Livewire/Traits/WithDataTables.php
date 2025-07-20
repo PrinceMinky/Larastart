@@ -6,5 +6,5 @@ use Livewire\WithPagination;
 
 trait WithDataTables 
 {
-    use WithModal, Sortable, Searchable, WithPagination, WithBulkActions;
+    use Filterable, Sortable, Searchable, WithPagination, WithModal, WithBulkActions;
 }

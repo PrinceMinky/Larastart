@@ -1,6 +1,10 @@
 <?php
 
 use App\Livewire\Admin\ActivityLog\Index as ActivityList;
+
+use App\Livewire\Admin\CommentsManagement\Index as CommentsIndex;
+use App\Livewire\Admin\CommentsManagement\Show as CommentsShow;
+
 use App\Livewire\Admin\BadwordManagement;
 use App\Livewire\UserSearch;
 
@@ -48,6 +52,10 @@ Route::middleware(['auth'])->group(function () {
 
         // Badwords
         Route::get('badwords', BadwordManagement::class)->name('misc.badwords')->can('view badwords');
+
+        // Comments
+        Route::get('comments', CommentsIndex::class)->name('comments.index')->can('view comments management');
+        Route::get('comments/{id}', CommentsShow::class)->name('comments.show')->can('view comments management');
 
         // Activity Log
         Route::get('activity', ActivityList::class)->name('activity')->can('view activities');

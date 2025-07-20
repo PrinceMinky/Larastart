@@ -325,8 +325,7 @@ trait HasFollowers
         
         $this->mutualFollowersCache = Cache::remember($cacheKey, now()->addMinutes(15), function () {
             // Single optimized query using whereHas for better performance
-            return User::select('id', 'name', 'username')
-                ->whereHas('followers', function ($query) {
+            return User::whereHas('followers', function ($query) {
                     $query->where('follower_id', $this->user->id)
                           ->where('status', 'accepted');
                 })

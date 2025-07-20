@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,16 @@ class Comment extends Model
     public function children()
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    public function getUrlAttribute()
+    {
+        return route('admin.comments.show', $this->id);
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return Str::limit($this->body, 10);
     }
 
     public function getLevel(): int

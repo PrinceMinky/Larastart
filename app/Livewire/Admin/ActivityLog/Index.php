@@ -11,7 +11,6 @@ use App\Livewire\Traits\Sortable;
 use Livewire\Attributes\Computed;
 use App\Livewire\Traits\Filterable;
 use App\Livewire\Traits\Searchable;
-use Illuminate\Support\Facades\Log;
 use Spatie\Activitylog\Models\Activity;
 
 #[Title('Activities')]
@@ -26,13 +25,23 @@ class Index extends BaseComponent
     #[Computed]
     public function activities()
     {
-        $query = Activity::query()->with('subject');
+        $query = Activity::query()
+            ->with('subject');
 
         $this->applyFilters($query);
         $this->applySorting($query);
         $this->applySearch($query, ['description']);
 
-        return $query->paginate(25);
+        $activities = $query->paginate(25);
+
+        // Optional: lazy eager-load nested relationships on subject
+        $activities->loadMorph('subject', [
+            \App\Models\Comment::class => ['user'],
+            \App\Models\KanbanColumn::class => ['board'],
+            \App\Models\KanbanCard::class => ['board','column'],
+        ]);
+
+        return $activities;
     }
 
     #[Computed]

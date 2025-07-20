@@ -15,6 +15,11 @@ trait Filterable {
         return collect($this->filters)->flatten()->filter()->count();
     }
 
+    public function UpdatedFilters()
+    {
+        $this->resetPage();
+    }
+
     public function clearFilters()
     {
         $this->filters = [];

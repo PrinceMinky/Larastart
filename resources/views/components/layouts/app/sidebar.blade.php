@@ -32,8 +32,9 @@
                 </flux:navlist.group>
                 @endcanany
 
-                <flux:navlist.group :heading="__('Miscellaneous')" :expandable="true" :expanded="request()->routeIs('admin.misc.*')">
+                <flux:navlist.group :heading="__('Miscellaneous')" :expandable="true" :expanded="request()->routeIs(['admin.misc.*','admin.comments.*'])">
                     <flux:navlist.item icon="no-symbol" :href="route('admin.misc.badwords')" :current="request()->routeIs('admin.misc.badwords')" wire:navigate>{{ __('Badwords') }}</flux:navlist.item>
+                    <flux:navlist.item icon="chat-bubble-bottom-center-text" :href="route('admin.comments.index')" :current="request()->routeIs('admin.comments.*')" wire:navigate>{{ __('Comments') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
