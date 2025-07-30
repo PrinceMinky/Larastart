@@ -33,12 +33,19 @@
                 @endcanany
 
                 <flux:navlist.group :heading="__('Miscellaneous')" :expandable="true" :expanded="request()->routeIs(['admin.misc.*','admin.comments.*'])">
+                    <flux:navlist.item icon="cog" :href="route('admin.misc.config.index')" :current="request()->routeIs('admin.misc.config.*')" wire:navigate>{{ __('Config') }}</flux:navlist.item>
                     <flux:navlist.item icon="no-symbol" :href="route('admin.misc.badwords')" :current="request()->routeIs('admin.misc.badwords')" wire:navigate>{{ __('Badwords') }}</flux:navlist.item>
                     <flux:navlist.item icon="chat-bubble-bottom-center-text" :href="route('admin.comments.index')" :current="request()->routeIs('admin.comments.*')" wire:navigate>{{ __('Comments') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
+
+            @role('Super Admin')
+            <flux:navlist variant="outline">
+                <flux:navlist.item icon="puzzle-piece" :href="route('playground')" :current="request()->routeIs('playground')" wire:navigate>{{ __('Playground') }}</flux:navlist.item>
+            </flux:navlist>
+            @endrole
 
             <!-- Desktop User Menu -->
             <flux:dropdown position="bottom" align="start">

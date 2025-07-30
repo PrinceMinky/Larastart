@@ -17,6 +17,7 @@
                     wire:keydown.escape="cancelEdit"
                     x-init="$el.focus()" 
                     data-inline-edit="true"
+                    class:input="!focus:ring-0 !focus:ring-offset-0"
                 />
                 <flux:button  
                     icon="check"

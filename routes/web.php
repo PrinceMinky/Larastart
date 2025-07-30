@@ -5,6 +5,8 @@ use App\Livewire\Admin\ActivityLog\Index as ActivityList;
 use App\Livewire\Admin\CommentsManagement\Index as CommentsIndex;
 use App\Livewire\Admin\CommentsManagement\Show as CommentsShow;
 
+use App\Livewire\Admin\Config;
+
 use App\Livewire\Admin\BadwordManagement;
 use App\Livewire\UserSearch;
 
@@ -25,6 +27,7 @@ use App\Livewire\Settings\Privacy;
 use App\Livewire\Settings\Profile;
 use App\Livewire\UserProfile;
 use App\Livewire\Welcome;
+use App\Livewire\Playground;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Welcome::class)->name('home');
@@ -46,9 +49,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/privacy', Privacy::class)->name('settings.privacy');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
+    Route::get('playground', Playground::class)->name('playground');
+    
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', AdminDashboard::class)->name('dashboard')->can('view admin dashboard');
+
+        // Config
+        Route::get('config', Config::class)->name('misc.config.index')->can('view config');
+        Route::get('config/{config_file}', Config::class)->name('misc.config.show')->can('view config file');
 
         // Badwords
         Route::get('badwords', BadwordManagement::class)->name('misc.badwords')->can('view badwords');

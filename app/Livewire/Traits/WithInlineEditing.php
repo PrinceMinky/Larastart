@@ -4,11 +4,11 @@ namespace App\Livewire\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-trait WithInlineEditing
+trait WithInlineEditing 
 {
     public $editing = null;
     public $temp = '';
-    
+
     /**
      * Start editing a field inline.
      */
@@ -57,9 +57,24 @@ trait WithInlineEditing
             return;
         }
 
+        // Store original value
+        $originalValue = $model->$field;
+
+        // Call before hook if method exists
+        if (method_exists($this, 'beforeInlineUpdate')) {
+            $this->beforeInlineUpdate($model, $field, $originalValue, $this->temp);
+        }
+
+        // Update the model
         $model->$field = $this->temp;
         $model->save();
 
+        // Call after hook if method exists
+        if (method_exists($this, 'afterInlineUpdate')) {
+            $this->afterInlineUpdate($model, $field, $originalValue, $model->$field);
+        }
+
+        // Reset editing state
         $this->editing = null;
         $this->temp = '';
 

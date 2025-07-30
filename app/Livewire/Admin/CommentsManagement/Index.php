@@ -30,7 +30,7 @@ class Index extends BaseComponent
         $this->applyFilters($query);
         $this->applySorting($query);
 
-        return $query->paginate(15);
+        return $query->paginate($this->perPage);
     }
 
     #[Computed]

@@ -11,6 +11,7 @@
             <flux:input wire:model.live="search" placeholder="Search Comments" clearable />
 
             {!! $this->filtersDropdown() !!}
+            {!! $this->perPageForm() !!}
         </div>
     </div>
 

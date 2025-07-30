@@ -1,21 +1,23 @@
 <section class="flex flex-col gap-2">
     <!-- Heading & Subheading -->
     <x-page-heading>
-        <x-slot name="heading">Badwords Management</x-slot.heading>
-        <x-slot name="subheading">A comprehensive list of badwords.</x-slot.heading>
+        <x-slot name="heading">Badwords Management</x-slot:heading>
+        <x-slot name="subheading">A comprehensive list of badwords.</x-slot:heading>
         
         <x-slot name="actions">
             <div class="flex gap-1">
-                <flux:button x-on:click="$flux.modal('badwords-form').show()">Add Badword</flux:button>
-                {{-- <flux:button x-on:click="$flux.modal('badword-settings-form').show()" icon="cog" square /> --}}
+                <flux:button x-on:click="$flux.modal('import-form').show()" variant="ghost">Import</flux:button>
+                <flux:button x-on:click="$wire.word = ''; $flux.modal('badwords-form').show()">Add Badword</flux:button>
             </div>
         </x-slot>
     </x-page-heading>
 
     <!-- Search -->
     <div class="flex">
-        <div class="w-1/2">
-            <flux:input wire:model.live="search" placeholder="Search Users" clearable />
+        <div class="flex gap-2 w-1/2">
+            <flux:input wire:model.live="search" placeholder="Search badwords..." clearable />
+            
+            {!! $this->perPageForm() !!}
         </div>
 
         <div class="w-1/2 flex justify-end items-center gap-2" x-cloak x-show="$wire.selectedItems.length > 0">
@@ -38,16 +40,6 @@
                     <flux:checkbox.all />
                 </flux:table.column>
 
-                <flux:table.column 
-                    sortable 
-                    :sorted="$sortBy === 'id'" 
-                    :direction="$sortDirection" 
-                    wire:click="sort('id')" 
-                    class="w-8 text-center"
-                >
-                    #
-                </flux:table.column>
-
                 <flux:table.column sortable :sorted="$sortBy === 'word'" :direction="$sortDirection" wire:click="sort('word')">Badword</flux:table.column>
                 
                 @if(config('larastart.replace_badwords'))
@@ -61,11 +53,6 @@
                     <flux:table.row :key="$badword->id">
                         <flux:table.cell class="whitespace-nowrap">
                             <flux:checkbox wire:model="selectedItems" :value="$badword->id" />
-                        </flux:table.cell>
-                        <flux:table.cell class="whitespace-nowrap">
-                            <flux:text variant="subtle">
-                                {{ $badword->id }}
-                            </flux:text>
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">
                             <x-inline-edit 
@@ -97,13 +84,13 @@
                 @if($this->search)
                     No badwords found, please refine your search.
                 @else
-                    No badwords added to database. Why not <flux:link x-on:click="$flux.modal('badwords-form').show()" class="cursor-pointer">add some</flux:link>.
+                    No badwords added to database. Why not <flux:link x-on:click="$flux.modal('import-form').show()" class="cursor-pointer">add some</flux:link>.
                 @endif
             </flux:text>
         </flux:card>
     @endif
 
-    <!-- Form -->
+    <!-- Add Badword Form -->
     <flux:modal name="badwords-form" class="w-full">
         <form wire:submit="create" class="flex flex-col gap-4">
             <flux:input wire:model="word" label="Word" placeholder="Enter word..."  />
@@ -112,8 +99,47 @@
             <flux:input wire:model="replacement" label="Replacement Word" placeholder="Enter replacement..." />
             @endif
 
-            <div class="flex justify-end">
+            <div class="flex justify-end gap-1">
+                <flux:modal.close>
+                    <flux:button variant="ghost">Cancel</flux:button>
+                </flux:modal.close>
+
                 <flux:button type="submit">Add Badword</flux:button>
+            </div>
+        </form>
+    </flux:modal>
+
+    <!-- Import Form -->
+    <flux:modal name="import-form" class="w-full max-w-2xl">
+        <form wire:submit="import" class="flex flex-col gap-6">
+            <div class="flex flex-col gap-0">
+                <flux:heading size="lg">Import Badwords</flux:heading>
+                <flux:subheading>
+                    Select categories to import all words from those categories into your database.
+                </flux:subheading>
+            </div>
+
+            <flux:checkbox.group wire:model="selectedCategories" label="Categories" variant="pills">
+                @foreach($this->importCategories as $category)
+                    <flux:checkbox 
+                        :value="$category" 
+                        :label="ucfirst(str_replace('-', ' ', $category))" 
+                    />
+                @endforeach
+            </flux:checkbox.group>
+
+            <div class="flex justify-end gap-1">
+                <flux:modal.close>
+                    <flux:button variant="ghost">Cancel</flux:button>
+                </flux:modal.close>
+
+                <flux:button 
+                    variant="primary" 
+                    color="teal" 
+                    type="submit"
+                >
+                    Import Selected Categories
+                </flux:button>
             </div>
         </form>
     </flux:modal>
@@ -130,29 +156,12 @@
                 </flux:subheading>
             </div>
 
-            <div class="flex gap-2">
-                <flux:spacer />
-
+            <div class="flex justify-end gap-1">
                 <flux:modal.close>
                     <flux:button variant="ghost">Cancel</flux:button>
                 </flux:modal.close>
 
-                <flux:button type="submit" variant="danger" wire:click="delete" autofocus>Delete permission</flux:button>
-            </div>
-        </div>
-    </flux:modal>
-
-    <!-- Badword Management Settings -->
-    <flux:modal name="badword-settings-form" class="w-full">
-        <div class="space-y-6">
-            <div>
-                <flux:heading size="lg">Settings</flux:heading>
-
-                <flux:subheading>Global settings for badwords management.</flux:subheading>
-            </div>
-
-            <div>
-                <flux:switch wire:model.live="replace_badwords" label="Replace Badwords" description="If selected - badwords will be automatically replaced with asterisks. Otherwise you'll need to choose replacement words yourself." align="right" />
+                <flux:button type="submit" variant="danger" wire:click="delete" autofocus>Delete badword</flux:button>
             </div>
         </div>
     </flux:modal>

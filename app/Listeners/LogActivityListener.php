@@ -46,6 +46,11 @@ class LogActivityListener
 
         \App\Events\Kanban\UserAssigned::class => ':causer.name assigned user :properties.assigned_user_name to card ":subject.title"',
         \App\Events\Kanban\UserUnassigned::class => ':causer.name unassigned user from card ":subject.title"',
+
+        // Badwords Component
+        \App\Events\Badwords\BadwordCreated::class => ':causer.name added badword ":subject.word"',
+        \App\Events\Badwords\BadwordUpdated::class => ':causer.name updated badword ":subject.word"',
+        \App\Events\Badwords\BadwordDeleted::class => ':causer.name deleted badword ":subject.word"',
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\Badwords\{BadwordCreated, BadwordDeleted, BadwordUpdated};
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -65,5 +66,9 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(CardDeleted::class, LogActivityListener::class);
         Event::listen(UserAssigned::class, LogActivityListener::class);
         Event::listen(UserUnassigned::class, LogActivityListener::class);
+
+        Event::listen(BadwordCreated::class, LogActivityListener::class);
+        Event::listen(BadwordUpdated::class, LogActivityListener::class);
+        Event::listen(BadwordDeleted::class, LogActivityListener::class);
     }
 }
